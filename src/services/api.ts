@@ -1,0 +1,181 @@
+import { AuthResponse, LoginCredentials, RegisterPayload, UserProfile } from '../types/auth'
+import { CreateProductInput, Product } from '../types/product'
+import { CheckoutPayload, Order } from '../types/order'
+import { WeatherResponse } from '../types/weather'
+
+const API_BASE_URL = 'http://localhost:8080'
+
+/**
+ * ApiError wraps HTTP error responses with status code and message.
+ */
+export class ApiError extends Error {
+  public statusCode: number
+
+  constructor(message: string, statusCode: number) {
+    super(message)
+    this.statusCode = statusCode
+    this.name = 'ApiError'
+  }
+}
+
+/**
+ * Fetch agricultural weather analytics from BMKG service via Gateway.
+ *
+ * @param region - Sentra pertanian name (e.g. Jawa Barat, Jawa Tengah, Jawa Timur).
+ * @returns WeatherResponse containing climate data and farming recommendations.
+ */
+export async function fetchWeather(region: string = 'Jawa Barat'): Promise<WeatherResponse> {
+  const url = `${API_BASE_URL}/api/weather?region=${encodeURIComponent(region)}`
+  const response = await fetch(url)
+  if (!response.ok) {
+    throw new ApiError('Failed to fetch weather parameters', response.status)
+  }
+  return response.json()
+}
+
+/**
+ * Fetch list of agricultural commodities from MongoDB Catalog via Gateway.
+ *
+ * @param search - Optional query string for commodity name search.
+ * @param category - Optional category filter.
+ * @returns Array of Product items.
+ */
+export async function fetchProducts(search?: string, category?: string): Promise<Product[]> {
+  const params = new URLSearchParams()
+  if (search) params.append('search', search)
+  if (category && category !== 'Semua') params.append('category', category)
+
+  const response = await fetch(`${API_BASE_URL}/api/products?${params.toString()}`)
+  if (!response.ok) {
+    throw new ApiError('Failed to fetch catalog commodities', response.status)
+  }
+  return response.json()
+}
+
+/**
+ * Create new agricultural product in MongoDB catalog (Requires JWT Bearer Token).
+ *
+ * @param payload - Commodity specification input.
+ * @param token - Bearer JWT string.
+ * @returns Created Product item.
+ */
+export async function createProduct(payload: CreateProductInput, token: string): Promise<Product> {
+  const response = await fetch(`${API_BASE_URL}/api/products`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(payload),
+  })
+
+  if (!response.ok) {
+    const errData = await response.json().catch(() => ({}))
+    throw new ApiError(errData.error || 'Failed to publish product', response.status)
+  }
+  return response.json()
+}
+
+/**
+ * Delete agricultural product from catalog (Requires JWT Bearer Token).
+ *
+ * @param id - Product ObjectId hex string.
+ * @param token - Bearer JWT string.
+ */
+export async function deleteProduct(id: string, token: string): Promise<void> {
+  const response = await fetch(`${API_BASE_URL}/api/products/${id}`, {
+    method: 'DELETE',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+
+  if (!response.ok) {
+    throw new ApiError('Failed to delete commodity', response.status)
+  }
+}
+
+/**
+ * Authenticate user and obtain JWT Bearer Token.
+ *
+ * @param credentials - User email and password.
+ * @returns AuthResponse with JWT and User profile.
+ */
+export async function loginUser(credentials: LoginCredentials): Promise<AuthResponse> {
+  const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(credentials),
+  })
+
+  if (!response.ok) {
+    const errData = await response.json().catch(() => ({}))
+    throw new ApiError(errData.error || 'Invalid email or password', response.status)
+  }
+  return response.json()
+}
+
+/**
+ * Register a new user profile in MySQL database.
+ *
+ * @param payload - User registration information.
+ * @returns Newly registered UserProfile.
+ */
+export async function registerUser(payload: RegisterPayload): Promise<UserProfile> {
+  const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  })
+
+  if (!response.ok) {
+    const errData = await response.json().catch(() => ({}))
+    throw new ApiError(errData.error || 'Registration failed', response.status)
+  }
+  const result = await response.json()
+  return result.user
+}
+
+/**
+ * Submit checkout transaction with ACID atomicity and stock deduction.
+ *
+ * @param payload - Order items and delivery address.
+ * @param token - Bearer JWT string.
+ * @returns Confirmed Order object with order code.
+ */
+export async function createOrder(payload: CheckoutPayload, token: string): Promise<Order> {
+  const response = await fetch(`${API_BASE_URL}/api/orders`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(payload),
+  })
+
+  if (!response.ok) {
+    const errData = await response.json().catch(() => ({}))
+    throw new ApiError(errData.error || 'Transaction execution failed', response.status)
+  }
+  return response.json()
+}
+
+/**
+ * Fetch purchase history for authenticated buyer.
+ *
+ * @param userId - Buyer user identifier.
+ * @param token - Bearer JWT string.
+ * @returns Array of previous orders.
+ */
+export async function fetchUserOrders(userId: number, token: string): Promise<Order[]> {
+  const response = await fetch(`${API_BASE_URL}/api/orders/user?user_id=${userId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+
+  if (!response.ok) {
+    throw new ApiError('Failed to load transaction history', response.status)
+  }
+  return response.json()
+}
