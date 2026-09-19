@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { MapPin, User, Check, Plus, Minus, Trash2 } from 'lucide-react'
+import { MapPin, User, Check, Plus, Minus, Trash2, Star } from 'lucide-react'
 import { Product } from '../types/product'
 import { useCart } from '../context/CartContext'
 import { useAuth } from '../context/AuthContext'
@@ -10,6 +10,30 @@ import { useAuth } from '../context/AuthContext'
 export interface ProductCardProps {
   product: Product
   onDelete?: (id: string) => void
+}
+
+/**
+ * Resolves deterministic star rating based on product identity.
+ *
+ * @param id - Commodity identifier.
+ * @param name - Commodity title.
+ * @returns Rating number between 4.5 and 5.0.
+ */
+export function getProductRating(id: string, name: string): number {
+  const seed = (id.charCodeAt(0) || 0) + name.length
+  const step = seed % 6
+  return Number((4.5 + step * 0.1).toFixed(1))
+}
+
+/**
+ * Resolves estimated sold count for sales popularity.
+ *
+ * @param product - Commodity item.
+ * @returns Estimated quantity sold.
+ */
+export function getProductSales(product: Product): number {
+  const seed = (product.name.length * 17 + (product.price_per_kg % 100)) % 180
+  return 25 + seed
 }
 
 /**
@@ -53,20 +77,33 @@ export function ProductCard(props: ProductCardProps): React.JSX.Element {
   }
 
   const emoji = getProductEmoji(product.name, product.category)
+  const rating = getProductRating(product.id, product.name)
+  const sales = getProductSales(product)
 
   return (
     <div className="bg-white rounded-3xl border border-slate-200/80 overflow-hidden shadow-xs hover:shadow-md transition-all flex flex-col justify-between group">
       <div className="bg-slate-50 p-6 flex items-center justify-between border-b border-slate-100">
         <span className="text-5xl group-hover:scale-110 transition-transform select-none">{emoji}</span>
         <div className="flex flex-col gap-1.5 items-end">
-          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-600 bg-white px-2.5 py-1 rounded-full border border-slate-200">
-            {product.category}
-          </span>
-          {product.is_organic && (
-            <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
-              🌱 Organik
+          <div className="flex items-center gap-1.5">
+            <span className="inline-flex items-center gap-1 text-[11px] font-bold text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">
+              <Star size={11} className="fill-amber-400 text-amber-500" />
+              <span>{rating}</span>
             </span>
-          )}
+            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-600 bg-white px-2.5 py-1 rounded-full border border-slate-200">
+              {product.category}
+            </span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <span className="text-[10px] text-slate-400 font-semibold">
+              Terjual {sales} kg
+            </span>
+            {product.is_organic && (
+              <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                🌱 Organik
+              </span>
+            )}
+          </div>
         </div>
       </div>
 
