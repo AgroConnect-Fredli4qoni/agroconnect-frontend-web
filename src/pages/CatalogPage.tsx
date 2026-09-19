@@ -28,7 +28,7 @@ export interface CatalogPageProps {
  */
 export function CatalogPage(props: CatalogPageProps): React.JSX.Element {
   const { isAddProductOpen, setIsAddProductOpen } = props
-  const { token, user, isAuthenticated } = useAuth()
+  const { token, isAuthenticated } = useAuth()
   const [searchParams, setSearchParams] = useSearchParams()
 
   const [rawProducts, setRawProducts] = useState<Product[]>([])
@@ -168,7 +168,7 @@ export function CatalogPage(props: CatalogPageProps): React.JSX.Element {
           </p>
         </div>
 
-        {isAuthenticated && (user?.role === 'farmer' || user?.role === 'admin') && (
+        {isAuthenticated && (
           <button
             type="button"
             className="self-start md:self-auto inline-flex items-center gap-2 px-4 py-2.5 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 rounded-xl shadow-xs transition-all cursor-pointer"

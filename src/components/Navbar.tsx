@@ -35,7 +35,7 @@ export function Navbar(props: NavbarProps): React.JSX.Element {
           </div>
         </Link>
 
-        {isAuthenticated && (user?.role === 'farmer' || user?.role === 'admin') && (
+        {isAuthenticated && (
           <nav className="hidden md:flex items-center gap-1.5">
             <button
               type="button"
@@ -83,7 +83,7 @@ export function Navbar(props: NavbarProps): React.JSX.Element {
             <div className="flex flex-col text-right">
               <span className="text-xs font-bold text-slate-800 leading-tight">{user.name}</span>
               <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded mt-0.5 self-end">
-                {user.role === 'farmer' ? 'Petani' : user.role === 'admin' ? 'Admin' : 'Pembeli'}
+                {user.role === 'admin' ? 'Admin' : 'Mitra Tani'}
               </span>
             </div>
             <button

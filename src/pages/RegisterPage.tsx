@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
-import { User, Mail, Lock, ShieldCheck, ArrowRight, Eye, EyeOff } from 'lucide-react'
+import { User, Mail, Lock, ArrowRight, Eye, EyeOff } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 
 /**
- * RegisterPage renders dedicated registration view for new farmers and buyers.
+ * RegisterPage renders dedicated registration view for new AgroConnect members.
  *
  * @returns JSX Element presenting account registration form with password toggle.
  */
@@ -15,7 +15,6 @@ export function RegisterPage(): React.JSX.Element {
   const [name, setName] = useState<string>('')
   const [email, setEmail] = useState<string>('')
   const [password, setPassword] = useState<string>('')
-  const [role, setRole] = useState<'farmer' | 'buyer'>('farmer')
   const [showPassword, setShowPassword] = useState<boolean>(false)
 
   const [isLoading, setIsLoading] = useState<boolean>(false)
@@ -27,7 +26,7 @@ export function RegisterPage(): React.JSX.Element {
     setIsLoading(true)
 
     try {
-      await register({ name, email, password, role })
+      await register({ name, email, password, role: 'farmer' })
       navigate('/login', {
         state: { registeredSuccess: 'Pendaftaran akun berhasil! Silakan masuk dengan akun baru Anda.' }
       })
@@ -123,24 +122,6 @@ export function RegisterPage(): React.JSX.Element {
               >
                 {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
               </button>
-            </div>
-          </div>
-
-          <div className="space-y-1.5">
-            <label htmlFor="reg-role" className="block text-xs font-semibold text-slate-700">
-              Peran Pengguna
-            </label>
-            <div className="relative flex items-center">
-              <ShieldCheck size={18} className="absolute left-3.5 text-slate-400 pointer-events-none" />
-              <select
-                id="reg-role"
-                value={role}
-                onChange={(e) => setRole(e.target.value as 'farmer' | 'buyer')}
-                className="w-full pl-10 pr-3.5 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white text-slate-900 transition-all cursor-pointer font-medium"
-              >
-                <option value="farmer">Petani / Kelompok Produsen Hasil Tani</option>
-                <option value="buyer">Pembeli / Konsumen Komoditas Segar</option>
-              </select>
             </div>
           </div>
 
