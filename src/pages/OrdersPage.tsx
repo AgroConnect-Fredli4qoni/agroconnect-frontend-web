@@ -43,7 +43,7 @@ export function OrdersPage(): React.JSX.Element {
 
   useEffect(() => {
     if (!isAuthenticated) {
-      navigate('/auth', { state: { from: { pathname: '/orders' } } })
+      navigate('/login', { state: { from: { pathname: '/orders' } } })
       return
     }
     loadOrders()
@@ -59,7 +59,7 @@ export function OrdersPage(): React.JSX.Element {
           <h2 className="text-xl font-bold text-slate-900">Autentikasi Diperlukan</h2>
           <p className="text-xs text-slate-500">Silakan masuk ke akun Anda untuk meninjau riwayat pesanan komoditas pertanian.</p>
           <Link
-            to="/auth"
+            to="/login"
             className="inline-flex items-center justify-center py-2.5 px-6 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow transition-all"
           >
             Masuk ke Akun

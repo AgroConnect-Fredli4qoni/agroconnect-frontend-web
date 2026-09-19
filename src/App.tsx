@@ -6,7 +6,8 @@ import { Navbar } from './components/Navbar'
 import { HomePage } from './pages/HomePage'
 import { CatalogPage } from './pages/CatalogPage'
 import { CartPage } from './pages/CartPage'
-import { AuthPage } from './pages/AuthPage'
+import { LoginPage } from './pages/LoginPage'
+import { RegisterPage } from './pages/RegisterPage'
 import { OrdersPage } from './pages/OrdersPage'
 
 /**
@@ -38,7 +39,9 @@ export function AppRoot(): React.JSX.Element {
                 />
                 <Route path="/katalog" element={<Navigate to="/catalog" replace />} />
                 <Route path="/cart" element={<CartPage />} />
-                <Route path="/auth" element={<AuthPage />} />
+                <Route path="/login" element={<LoginPage />} />
+                <Route path="/register" element={<RegisterPage />} />
+                <Route path="/auth" element={<Navigate to="/login" replace />} />
                 <Route path="/orders" element={<OrdersPage />} />
                 <Route path="*" element={<Navigate to="/" replace />} />
               </Routes>

@@ -98,9 +98,9 @@ export function Navbar(props: NavbarProps): React.JSX.Element {
         ) : (
           <div className="flex items-center gap-2">
             <Link
-              to="/auth?mode=login"
+              to="/login"
               className={`inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold rounded-xl border border-slate-200 text-slate-700 hover:text-emerald-700 hover:bg-emerald-50/60 hover:border-emerald-200 transition-all cursor-pointer ${
-                location.pathname === '/auth' && location.search !== '?mode=register'
+                location.pathname === '/login'
                   ? 'bg-slate-100 text-slate-900 border-slate-300'
                   : ''
               }`}
@@ -110,9 +110,9 @@ export function Navbar(props: NavbarProps): React.JSX.Element {
               <span>Masuk</span>
             </Link>
             <Link
-              to="/auth?mode=register"
+              to="/register"
               className={`inline-flex items-center gap-1.5 px-4 py-2 text-xs font-bold rounded-xl shadow-xs transition-all cursor-pointer ${
-                location.pathname === '/auth' && location.search === '?mode=register'
+                location.pathname === '/register'
                   ? 'bg-emerald-800 text-white'
                   : 'bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white hover:shadow-sm'
               }`}

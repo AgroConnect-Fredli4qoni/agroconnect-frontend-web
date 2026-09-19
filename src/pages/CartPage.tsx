@@ -26,7 +26,7 @@ export function CartPage(): React.JSX.Element {
   const handleCheckout = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault()
     if (!isAuthenticated || !token || !user) {
-      navigate('/auth', { state: { from: { pathname: '/cart' } } })
+      navigate('/login', { state: { from: { pathname: '/cart' } } })
       return
     }
 
@@ -297,7 +297,7 @@ export function CartPage(): React.JSX.Element {
               <button
                 type="button"
                 className="w-full mt-2 py-3 px-4 bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold rounded-xl shadow transition-all cursor-pointer"
-                onClick={() => navigate('/auth', { state: { from: { pathname: '/cart' } } })}
+                onClick={() => navigate('/login', { state: { from: { pathname: '/cart' } } })}
               >
                 <span>Masuk untuk Melanjutkan Pembayaran</span>
               </button>
