@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import {
-  ChevronLeft,
-  ChevronRight,
   Sparkles,
   Store,
   CloudSun,
@@ -15,7 +13,8 @@ import {
   Wind,
   CheckCircle2,
   ShieldAlert,
-  CalendarCheck
+  CalendarCheck,
+  ChevronRight
 } from 'lucide-react'
 import { WeatherResponse } from '../types/weather'
 
@@ -34,7 +33,7 @@ const TOTAL_SLIDES = 3
 const AUTO_PLAY_INTERVAL = 7000
 
 /**
- * HeroSlideshow integrates Platform Introduction, Farming Recommendations, and BMKG Weather Forecasts into an interactive carousel.
+ * HeroSlideshow integrates Platform Introduction, Farming Recommendations, and BMKG Weather Forecasts into an interactive carousel with minimalist styling.
  *
  * @param props - Weather state and region selector handler.
  * @returns JSX Element rendering hero banner slideshow.
@@ -44,14 +43,6 @@ export function HeroSlideshow(props: HeroSlideshowProps): React.JSX.Element {
   const [currentSlide, setCurrentSlide] = useState<number>(0)
   const [isPaused, setIsPaused] = useState<boolean>(false)
   const timerRef = useRef<NodeJS.Timeout | null>(null)
-
-  const nextSlide = (): void => {
-    setCurrentSlide((prev) => (prev + 1) % TOTAL_SLIDES)
-  }
-
-  const prevSlide = (): void => {
-    setCurrentSlide((prev) => (prev - 1 + TOTAL_SLIDES) % TOTAL_SLIDES)
-  }
 
   useEffect(() => {
     if (isPaused) return
@@ -73,62 +64,62 @@ export function HeroSlideshow(props: HeroSlideshowProps): React.JSX.Element {
 
   return (
     <div
-      className="relative rounded-3xl overflow-hidden shadow-xl"
+      className="relative rounded-3xl overflow-hidden bg-emerald-900 text-white shadow-lg border border-emerald-800/60"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
-      <div className="relative min-h-[460px] sm:min-h-[420px] lg:min-h-[380px] flex items-center">
+      <div className="w-full">
         {currentSlide === 0 && (
-          <div className="w-full h-full bg-gradient-to-br from-emerald-900 via-emerald-800 to-teal-950 p-8 sm:p-12 text-white flex flex-col justify-between">
+          <div className="w-full min-h-[400px] sm:min-h-[360px] p-6 sm:p-10 lg:p-12 pb-14 flex flex-col justify-between space-y-6">
             <div className="max-w-3xl space-y-4">
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/15 backdrop-blur-xs text-emerald-200 text-xs font-semibold">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-emerald-800 border border-emerald-700/60 text-emerald-200 text-xs font-semibold">
                 <Sparkles size={14} />
                 <span>Platform Agrikultur Cerdas Terintegrasi BMKG</span>
               </div>
 
-              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-tight">
+              <h1 className="text-2xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-tight">
                 Hubungkan Hasil Panen Petani Langsung ke Meja Anda
               </h1>
 
-              <p className="text-xs sm:text-sm text-emerald-100 leading-relaxed max-w-2xl">
+              <p className="text-xs sm:text-sm text-emerald-100/90 leading-relaxed max-w-2xl">
                 Solusi digital rantai pasok agrikultur Indonesia dengan panduan cuaca presisi BMKG,
                 transparansi harga pasar adil, dan kepastian transaksi aman bagi petani maupun pembeli.
               </p>
 
-              <div className="flex flex-wrap items-center gap-3 pt-2">
+              <div className="flex flex-wrap items-center gap-3 pt-1">
                 <Link
                   to="/catalog"
-                  className="inline-flex items-center gap-2 px-6 py-3 bg-white text-emerald-800 hover:bg-emerald-50 text-xs sm:text-sm font-black rounded-xl shadow-md transition-all cursor-pointer"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-emerald-900 hover:bg-emerald-50 text-xs sm:text-sm font-bold rounded-xl shadow-xs transition-all cursor-pointer"
                 >
-                  <Store size={18} />
+                  <Store size={17} />
                   <span>Jelajahi Katalog Lengkap</span>
                 </Link>
                 <button
                   type="button"
-                  onClick={() => setCurrentSlide(2)}
-                  className="inline-flex items-center gap-2 px-5 py-3 bg-white/15 hover:bg-white/25 text-white text-xs sm:text-sm font-bold rounded-xl transition-all cursor-pointer"
+                  onClick={() => setCurrentSlide(1)}
+                  className="inline-flex items-center gap-2 px-4 py-2.5 bg-emerald-800/80 hover:bg-emerald-800 text-white border border-emerald-700/60 text-xs sm:text-sm font-semibold rounded-xl transition-all cursor-pointer"
                 >
-                  <CloudSun size={18} />
-                  <span>Cek Cuaca BMKG</span>
+                  <CalendarCheck size={17} />
+                  <span>Rekomendasi Tani</span>
                 </button>
                 <button
                   type="button"
-                  onClick={() => setCurrentSlide(1)}
-                  className="inline-flex items-center gap-2 px-5 py-3 bg-white/15 hover:bg-white/25 text-white text-xs sm:text-sm font-bold rounded-xl transition-all cursor-pointer"
+                  onClick={() => setCurrentSlide(2)}
+                  className="inline-flex items-center gap-2 px-4 py-2.5 bg-emerald-800/80 hover:bg-emerald-800 text-white border border-emerald-700/60 text-xs sm:text-sm font-semibold rounded-xl transition-all cursor-pointer"
                 >
-                  <CalendarCheck size={18} />
-                  <span>Rekomendasi Tani</span>
+                  <CloudSun size={17} />
+                  <span>Cek Cuaca BMKG</span>
                 </button>
               </div>
             </div>
 
-            <div className="flex flex-wrap gap-4 pt-6 text-xs text-emerald-200/90 border-t border-white/10 mt-6">
+            <div className="flex flex-wrap gap-5 pt-4 text-xs text-emerald-200/80 border-t border-emerald-800/80">
               <div className="flex items-center gap-1.5">
-                <ShieldCheck size={16} />
+                <ShieldCheck size={16} className="text-emerald-400" />
                 <span>Transaksi Terlindungi & Mutu Terjamin</span>
               </div>
               <div className="flex items-center gap-1.5">
-                <CloudSun size={16} />
+                <CloudSun size={16} className="text-emerald-400" />
                 <span>Satelit & Sensor Agroklimat BMKG</span>
               </div>
             </div>
@@ -136,12 +127,12 @@ export function HeroSlideshow(props: HeroSlideshowProps): React.JSX.Element {
         )}
 
         {currentSlide === 1 && (
-          <div className="w-full h-full bg-gradient-to-br from-teal-950 via-emerald-900 to-slate-900 p-8 sm:p-12 text-white flex flex-col justify-between">
+          <div className="w-full min-h-[400px] sm:min-h-[360px] p-6 sm:p-10 lg:p-12 pb-14 flex flex-col justify-between space-y-6">
             <div className="space-y-4">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-white/15">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-emerald-800/80">
                 <div className="flex items-center gap-2.5">
-                  <div className={`p-2 rounded-xl ${isAlert ? 'bg-amber-500/20 text-amber-300' : 'bg-emerald-500/20 text-emerald-300'}`}>
-                    {isAlert ? <ShieldAlert size={22} /> : <Sparkles size={22} />}
+                  <div className={`p-2 rounded-xl ${isAlert ? 'bg-amber-400/20 text-amber-300' : 'bg-emerald-400/20 text-emerald-300'}`}>
+                    {isAlert ? <ShieldAlert size={20} /> : <Sparkles size={20} />}
                   </div>
                   <div>
                     <h2 className="text-xl sm:text-2xl font-black tracking-tight text-white">Rekomendasi Aksi Tani Hari Ini</h2>
@@ -150,52 +141,52 @@ export function HeroSlideshow(props: HeroSlideshowProps): React.JSX.Element {
                 </div>
 
                 <div className="flex flex-wrap items-center gap-2 text-xs">
-                  <span className="text-emerald-200">Status Tindakan:</span>
-                  <span className={`px-3 py-1 rounded-full font-black text-xs ${
+                  <span className="text-emerald-200/90">Status Tindakan:</span>
+                  <span className={`px-3 py-1 rounded-lg font-bold text-xs ${
                     isAlert
                       ? 'bg-amber-400 text-amber-950'
                       : isOptimal
                       ? 'bg-emerald-400 text-emerald-950'
-                      : 'bg-sky-400 text-sky-950'
+                      : 'bg-sky-300 text-sky-950'
                   }`}>
                     {recommendation?.action_label || 'Pemeriksaan Cuaca'}
                   </span>
-                  <span className="bg-white/15 backdrop-blur-xs font-bold px-3 py-1 rounded-full text-white border border-white/15">
+                  <span className="bg-emerald-800 border border-emerald-700/60 font-semibold px-3 py-1 rounded-lg text-emerald-100">
                     Kesesuaian: {recommendation?.suitability || 'Sedang Dihitung'}
                   </span>
                 </div>
               </div>
 
               {recommendation ? (
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
-                  <div className="bg-white/10 backdrop-blur-xs border border-white/15 rounded-2xl p-4.5 space-y-2 hover:bg-white/15 transition-all">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-1">
+                  <div className="bg-emerald-800/60 border border-emerald-700/60 rounded-2xl p-4.5 space-y-2 hover:bg-emerald-800/80 transition-all">
                     <div className="flex items-center gap-2 text-emerald-300">
-                      <div className="p-2 rounded-lg bg-emerald-500/20">
+                      <div className="p-1.5 rounded-lg bg-emerald-700/50">
                         <Sprout size={18} />
                       </div>
                       <h3 className="font-bold text-xs text-white">Aplikasi Pemupukan</h3>
                     </div>
-                    <p className="text-xs text-emerald-100 leading-relaxed">{recommendation.fertilizing_advice}</p>
+                    <p className="text-xs text-emerald-100/90 leading-relaxed">{recommendation.fertilizing_advice}</p>
                   </div>
 
-                  <div className="bg-white/10 backdrop-blur-xs border border-white/15 rounded-2xl p-4.5 space-y-2 hover:bg-white/15 transition-all">
+                  <div className="bg-emerald-800/60 border border-emerald-700/60 rounded-2xl p-4.5 space-y-2 hover:bg-emerald-800/80 transition-all">
                     <div className="flex items-center gap-2 text-sky-300">
-                      <div className="p-2 rounded-lg bg-sky-500/20">
+                      <div className="p-1.5 rounded-lg bg-emerald-700/50">
                         <Droplet size={18} />
                       </div>
                       <h3 className="font-bold text-xs text-white">Manajemen Irigasi & Air</h3>
                     </div>
-                    <p className="text-xs text-emerald-100 leading-relaxed">{recommendation.irrigation_advice}</p>
+                    <p className="text-xs text-emerald-100/90 leading-relaxed">{recommendation.irrigation_advice}</p>
                   </div>
 
-                  <div className="bg-white/10 backdrop-blur-xs border border-white/15 rounded-2xl p-4.5 space-y-2 hover:bg-white/15 transition-all">
+                  <div className="bg-emerald-800/60 border border-emerald-700/60 rounded-2xl p-4.5 space-y-2 hover:bg-emerald-800/80 transition-all">
                     <div className="flex items-center gap-2 text-amber-300">
-                      <div className="p-2 rounded-lg bg-amber-500/20">
+                      <div className="p-1.5 rounded-lg bg-emerald-700/50">
                         <Scissors size={18} />
                       </div>
                       <h3 className="font-bold text-xs text-white">Jadwal Panen Komoditas</h3>
                     </div>
-                    <p className="text-xs text-emerald-100 leading-relaxed">{recommendation.harvest_advice}</p>
+                    <p className="text-xs text-emerald-100/90 leading-relaxed">{recommendation.harvest_advice}</p>
                   </div>
                 </div>
               ) : (
@@ -205,9 +196,9 @@ export function HeroSlideshow(props: HeroSlideshowProps): React.JSX.Element {
               )}
             </div>
 
-            <div className="flex items-center justify-between pt-4 border-t border-white/10 mt-4 text-xs text-emerald-200/80">
+            <div className="flex items-center justify-between pt-4 border-t border-emerald-800/80 text-xs text-emerald-200/80">
               <span>Wilayah Pemantauan: {weather?.region || selectedRegion}</span>
-              <Link to="/catalog" className="font-bold text-white hover:text-emerald-300 transition-colors inline-flex items-center gap-1">
+              <Link to="/catalog" className="font-semibold text-emerald-200 hover:text-white transition-colors inline-flex items-center gap-1">
                 <span>Belanja Komoditas Tani Sesuai Panen</span>
                 <ChevronRight size={14} />
               </Link>
@@ -216,11 +207,11 @@ export function HeroSlideshow(props: HeroSlideshowProps): React.JSX.Element {
         )}
 
         {currentSlide === 2 && (
-          <div className="w-full h-full bg-gradient-to-br from-slate-900 via-teal-950 to-emerald-950 p-8 sm:p-12 text-white flex flex-col justify-between">
+          <div className="w-full min-h-[400px] sm:min-h-[360px] p-6 sm:p-10 lg:p-12 pb-14 flex flex-col justify-between space-y-6">
             <div className="space-y-4">
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-3 border-b border-white/15">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-3 border-b border-emerald-800/80">
                 <div>
-                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 text-emerald-200 text-xs font-semibold mb-1">
+                  <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-lg bg-emerald-800 border border-emerald-700/60 text-emerald-200 text-xs font-semibold mb-1">
                     <CloudSun size={14} />
                     <span>BMKG Agroklimat Real-Time</span>
                   </div>
@@ -228,15 +219,15 @@ export function HeroSlideshow(props: HeroSlideshowProps): React.JSX.Element {
                 </div>
 
                 <div className="flex flex-wrap items-center gap-1.5">
-                  <span className="text-xs text-emerald-200/90 mr-1 hidden sm:inline">Pilih Wilayah:</span>
+                  <span className="text-xs text-emerald-200/80 mr-1 hidden sm:inline">Wilayah:</span>
                   {regions.map((reg) => (
                     <button
                       key={reg}
                       type="button"
-                      className={`px-3 py-1 text-xs font-semibold rounded-full transition-all cursor-pointer ${
+                      className={`px-3 py-1 text-xs font-semibold rounded-lg transition-all cursor-pointer ${
                         selectedRegion === reg
-                          ? 'bg-emerald-500 text-slate-950 font-black shadow-xs'
-                          : 'bg-white/15 text-emerald-100 hover:bg-white/25'
+                          ? 'bg-emerald-500 text-emerald-950 font-bold'
+                          : 'bg-emerald-800/70 text-emerald-200 hover:bg-emerald-800 border border-emerald-700/50'
                       }`}
                       onClick={() => onSelectRegion(reg)}
                     >
@@ -253,11 +244,11 @@ export function HeroSlideshow(props: HeroSlideshowProps): React.JSX.Element {
                 </div>
               ) : weather ? (
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 pt-1">
-                  <div className="bg-white/10 backdrop-blur-xs border border-white/15 rounded-2xl p-5 flex flex-col justify-between">
+                  <div className="bg-emerald-800/60 border border-emerald-700/60 rounded-2xl p-5 flex flex-col justify-between">
                     <div>
                       <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-300 block">{weather.region}</span>
                       <div className="my-2">
-                        <span className="text-4xl font-black tracking-tight text-white block">
+                        <span className="text-3xl sm:text-4xl font-black tracking-tight text-white block">
                           {weather.current_weather.temperature_c}°C
                         </span>
                         <span className="text-xs font-semibold text-emerald-200 mt-1 block">
@@ -265,7 +256,7 @@ export function HeroSlideshow(props: HeroSlideshowProps): React.JSX.Element {
                         </span>
                       </div>
                     </div>
-                    <div className="pt-2 border-t border-white/10 text-[10px] text-emerald-200/80 flex items-center justify-between">
+                    <div className="pt-2 border-t border-emerald-700/60 text-[10px] text-emerald-200/80 flex items-center justify-between">
                       <span>{weather.current_weather.forecast_time}</span>
                       <span className="inline-flex items-center gap-1 font-semibold text-emerald-300">
                         <CheckCircle2 size={11} />
@@ -274,37 +265,37 @@ export function HeroSlideshow(props: HeroSlideshowProps): React.JSX.Element {
                     </div>
                   </div>
 
-                  <div className="bg-white/10 backdrop-blur-xs border border-white/15 rounded-2xl p-5 flex flex-col justify-between hover:bg-white/15 transition-all">
-                    <div className="w-9 h-9 rounded-xl bg-amber-400/20 text-amber-300 flex items-center justify-center mb-2">
-                      <Thermometer size={20} />
+                  <div className="bg-emerald-800/60 border border-emerald-700/60 rounded-2xl p-5 flex flex-col justify-between hover:bg-emerald-800/80 transition-all">
+                    <div className="w-8 h-8 rounded-lg bg-emerald-700/50 text-amber-300 flex items-center justify-center mb-2">
+                      <Thermometer size={18} />
                     </div>
                     <div>
-                      <span className="text-[11px] font-medium text-emerald-200 block">Suhu Udara Rata-rata</span>
-                      <span className="text-2xl font-black text-white mt-0.5 block">
+                      <span className="text-[11px] font-medium text-emerald-200/90 block">Suhu Udara Rata-rata</span>
+                      <span className="text-xl sm:text-2xl font-black text-white mt-0.5 block">
                         {weather.current_weather.temperature_c} °C
                       </span>
                     </div>
                   </div>
 
-                  <div className="bg-white/10 backdrop-blur-xs border border-white/15 rounded-2xl p-5 flex flex-col justify-between hover:bg-white/15 transition-all">
-                    <div className="w-9 h-9 rounded-xl bg-sky-400/20 text-sky-300 flex items-center justify-center mb-2">
-                      <Droplets size={20} />
+                  <div className="bg-emerald-800/60 border border-emerald-700/60 rounded-2xl p-5 flex flex-col justify-between hover:bg-emerald-800/80 transition-all">
+                    <div className="w-8 h-8 rounded-lg bg-emerald-700/50 text-sky-300 flex items-center justify-center mb-2">
+                      <Droplets size={18} />
                     </div>
                     <div>
-                      <span className="text-[11px] font-medium text-emerald-200 block">Kelembaban Relatif</span>
-                      <span className="text-2xl font-black text-white mt-0.5 block">
+                      <span className="text-[11px] font-medium text-emerald-200/90 block">Kelembaban Relatif</span>
+                      <span className="text-xl sm:text-2xl font-black text-white mt-0.5 block">
                         {weather.current_weather.humidity_percent} %
                       </span>
                     </div>
                   </div>
 
-                  <div className="bg-white/10 backdrop-blur-xs border border-white/15 rounded-2xl p-5 flex flex-col justify-between hover:bg-white/15 transition-all">
-                    <div className="w-9 h-9 rounded-xl bg-teal-400/20 text-teal-300 flex items-center justify-center mb-2">
-                      <Wind size={20} />
+                  <div className="bg-emerald-800/60 border border-emerald-700/60 rounded-2xl p-5 flex flex-col justify-between hover:bg-emerald-800/80 transition-all">
+                    <div className="w-8 h-8 rounded-lg bg-emerald-700/50 text-teal-300 flex items-center justify-center mb-2">
+                      <Wind size={18} />
                     </div>
                     <div>
-                      <span className="text-[11px] font-medium text-emerald-200 block">Kecepatan Angin</span>
-                      <span className="text-2xl font-black text-white mt-0.5 block">
+                      <span className="text-[11px] font-medium text-emerald-200/90 block">Kecepatan Angin</span>
+                      <span className="text-xl sm:text-2xl font-black text-white mt-0.5 block">
                         {weather.current_weather.wind_speed_kmh} km/j
                       </span>
                     </div>
@@ -317,9 +308,9 @@ export function HeroSlideshow(props: HeroSlideshowProps): React.JSX.Element {
               )}
             </div>
 
-            <div className="flex items-center justify-between pt-4 border-t border-white/10 mt-4 text-xs text-emerald-200/80">
+            <div className="flex items-center justify-between pt-4 border-t border-emerald-800/80 text-xs text-emerald-200/80">
               <span>Data resmi BMKG Open Data Agrometeorologi</span>
-              <Link to="/catalog" className="font-bold text-white hover:text-emerald-300 transition-colors inline-flex items-center gap-1">
+              <Link to="/catalog" className="font-semibold text-emerald-200 hover:text-white transition-colors inline-flex items-center gap-1">
                 <span>Pesan Hasil Panen Sesuai Kondisi Cuaca</span>
                 <ChevronRight size={14} />
               </Link>
@@ -328,41 +319,29 @@ export function HeroSlideshow(props: HeroSlideshowProps): React.JSX.Element {
         )}
       </div>
 
-      <button
-        type="button"
-        onClick={prevSlide}
-        className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/30 hover:bg-black/50 text-white backdrop-blur-sm flex items-center justify-center transition-all cursor-pointer shadow-md"
-        aria-label="Slide Sebelumnya"
-      >
-        <ChevronLeft size={22} />
-      </button>
-
-      <button
-        type="button"
-        onClick={nextSlide}
-        className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/30 hover:bg-black/50 text-white backdrop-blur-sm flex items-center justify-center transition-all cursor-pointer shadow-md"
-        aria-label="Slide Berikutnya"
-      >
-        <ChevronRight size={22} />
-      </button>
-
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2 bg-black/30 backdrop-blur-md px-3.5 py-1.5 rounded-full z-20">
+      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2 z-20">
         <button
           type="button"
           onClick={() => setCurrentSlide(0)}
-          className={`h-2 rounded-full transition-all cursor-pointer ${currentSlide === 0 ? 'w-6 bg-emerald-400' : 'w-2 bg-white/50 hover:bg-white/80'}`}
+          className={`h-1.5 rounded-full transition-all cursor-pointer ${
+            currentSlide === 0 ? 'w-8 bg-emerald-400' : 'w-2 bg-white/40 hover:bg-white/70'
+          }`}
           title="Slide 1: AgroConnect Hero"
         />
         <button
           type="button"
           onClick={() => setCurrentSlide(1)}
-          className={`h-2 rounded-full transition-all cursor-pointer ${currentSlide === 1 ? 'w-6 bg-emerald-400' : 'w-2 bg-white/50 hover:bg-white/80'}`}
+          className={`h-1.5 rounded-full transition-all cursor-pointer ${
+            currentSlide === 1 ? 'w-8 bg-emerald-400' : 'w-2 bg-white/40 hover:bg-white/70'
+          }`}
           title="Slide 2: Rekomendasi Aksi Tani"
         />
         <button
           type="button"
           onClick={() => setCurrentSlide(2)}
-          className={`h-2 rounded-full transition-all cursor-pointer ${currentSlide === 2 ? 'w-6 bg-emerald-400' : 'w-2 bg-white/50 hover:bg-white/80'}`}
+          className={`h-1.5 rounded-full transition-all cursor-pointer ${
+            currentSlide === 2 ? 'w-8 bg-emerald-400' : 'w-2 bg-white/40 hover:bg-white/70'
+          }`}
           title="Slide 3: Parameter Cuaca BMKG"
         />
       </div>
