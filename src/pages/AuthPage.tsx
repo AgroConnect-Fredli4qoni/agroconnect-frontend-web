@@ -34,12 +34,6 @@ export function AuthPage(): React.JSX.Element {
     }
   }, [searchParams])
 
-  const handleQuickLogin = (quickEmail: string, quickPass: string): void => {
-    setEmail(quickEmail)
-    setPassword(quickPass)
-    setMode('login')
-  }
-
   const handleSubmit = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault()
     setErrorMsg('')
@@ -203,26 +197,6 @@ export function AuthPage(): React.JSX.Element {
             <ArrowRight size={18} />
           </button>
         </form>
-
-        <div className="mt-6 pt-5 border-t border-slate-100 text-center">
-          <span className="block text-xs font-semibold text-slate-500 mb-2.5">Akun Demo Pengujian Cepat:</span>
-          <div className="flex flex-wrap gap-2 justify-center">
-            <button
-              type="button"
-              onClick={() => handleQuickLogin('budi@tani.id', 'petani123')}
-              className="px-3 py-1.5 text-xs font-medium bg-slate-50 hover:bg-emerald-50 text-slate-700 hover:text-emerald-700 border border-slate-200 hover:border-emerald-300 rounded-full transition-all cursor-pointer"
-            >
-              Budi Santoso (Petani)
-            </button>
-            <button
-              type="button"
-              onClick={() => handleQuickLogin('rina@pasar.id', 'pembeli123')}
-              className="px-3 py-1.5 text-xs font-medium bg-slate-50 hover:bg-emerald-50 text-slate-700 hover:text-emerald-700 border border-slate-200 hover:border-emerald-300 rounded-full transition-all cursor-pointer"
-            >
-              Rina Wijaya (Pembeli)
-            </button>
-          </div>
-        </div>
       </div>
     </div>
   )
