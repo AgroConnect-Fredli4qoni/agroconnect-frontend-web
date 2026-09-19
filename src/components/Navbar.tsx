@@ -1,63 +1,59 @@
 import React from 'react'
+import { Link, useLocation } from 'react-router-dom'
 import { ShoppingCart, CloudSun, Store, PlusCircle, ClipboardList, User, LogOut } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { useCart } from '../context/CartContext'
 
 /**
- * NavbarProps defines configurable callbacks for navigation and modal toggles.
+ * NavbarProps defines callback for farmer product addition modal.
  */
 export interface NavbarProps {
-  activeTab: 'marketplace' | 'weather' | 'manage'
-  setActiveTab: (tab: 'marketplace' | 'weather' | 'manage') => void
-  onOpenCart: () => void
-  onOpenOrders: () => void
-  onOpenAuth: () => void
   onOpenAddProduct: () => void
 }
 
 /**
- * Navbar header component with branding, navigation links, and session actions.
+ * Navbar provides top application header, routing navigation, and user session controls.
  *
- * @param props - Navigation states and trigger handlers.
- * @returns JSX Element representing top application header.
+ * @param props - Trigger callback for farmer product addition modal.
+ * @returns JSX Element rendering application navigation bar.
  */
 export function Navbar(props: NavbarProps): React.JSX.Element {
+  const { onOpenAddProduct } = props
+  const location = useLocation()
   const { user, isAuthenticated, logout } = useAuth()
   const { totalItems } = useCart()
 
   return (
     <header className="navbar">
       <div className="navbar-left">
-        <div className="brand" onClick={() => props.setActiveTab('marketplace')}>
+        <Link to="/" className="brand">
           <span className="brand-icon">🌱</span>
           <div className="brand-titles">
             <span className="brand-text">AgroConnect</span>
             <span className="brand-subtitle">Smart Agro-Commerce & Weather</span>
           </div>
-        </div>
+        </Link>
 
         <nav className="nav-links">
-          <button
-            type="button"
-            className={`nav-btn ${props.activeTab === 'marketplace' ? 'active' : ''}`}
-            onClick={() => props.setActiveTab('marketplace')}
+          <Link
+            to="/"
+            className={`nav-btn ${location.pathname === '/' ? 'active' : ''}`}
           >
             <Store size={18} />
             <span>Katalog Hasil Tani</span>
-          </button>
-          <button
-            type="button"
-            className={`nav-btn ${props.activeTab === 'weather' ? 'active' : ''}`}
-            onClick={() => props.setActiveTab('weather')}
+          </Link>
+          <a
+            href="/#cuaca"
+            className="nav-btn"
           >
             <CloudSun size={18} />
             <span>Prakiraan Cuaca BMKG</span>
-          </button>
+          </a>
           {isAuthenticated && (user?.role === 'farmer' || user?.role === 'admin') && (
             <button
               type="button"
               className="nav-btn action"
-              onClick={props.onOpenAddProduct}
+              onClick={onOpenAddProduct}
             >
               <PlusCircle size={18} />
               <span>Tambah Komoditas</span>
@@ -68,26 +64,24 @@ export function Navbar(props: NavbarProps): React.JSX.Element {
 
       <div className="navbar-right">
         {isAuthenticated && (
-          <button
-            type="button"
-            className="action-icon-btn"
+          <Link
+            to="/orders"
+            className={`action-icon-btn ${location.pathname === '/orders' ? 'active' : ''}`}
             title="Riwayat Transaksi Pesanan"
-            onClick={props.onOpenOrders}
           >
             <ClipboardList size={20} />
             <span className="icon-label">Pesanan</span>
-          </button>
+          </Link>
         )}
 
-        <button
-          type="button"
-          className="cart-btn"
-          onClick={props.onOpenCart}
+        <Link
+          to="/cart"
+          className={`cart-btn ${location.pathname === '/cart' ? 'active' : ''}`}
           title="Keranjang Belanja"
         >
           <ShoppingCart size={20} />
           {totalItems > 0 && <span className="cart-badge">{totalItems}</span>}
-        </button>
+        </Link>
 
         {isAuthenticated && user ? (
           <div className="user-profile-badge">
@@ -107,14 +101,13 @@ export function Navbar(props: NavbarProps): React.JSX.Element {
             </button>
           </div>
         ) : (
-          <button
-            type="button"
-            className="login-trigger-btn"
-            onClick={props.onOpenAuth}
+          <Link
+            to="/auth"
+            className={`login-trigger-btn ${location.pathname === '/auth' ? 'active' : ''}`}
           >
             <User size={18} />
             <span>Masuk / Daftar</span>
-          </button>
+          </Link>
         )}
       </div>
     </header>
