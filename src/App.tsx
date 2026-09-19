@@ -20,10 +20,10 @@ export function AppRoot(): React.JSX.Element {
     <BrowserRouter>
       <AuthProvider>
         <CartProvider>
-          <div className="app-layout">
+          <div className="min-h-screen flex flex-col bg-slate-50 text-slate-900 font-sans">
             <Navbar onOpenAddProduct={() => setIsAddProductOpen(true)} />
 
-            <main className="main-content">
+            <main className="flex-1">
               <Routes>
                 <Route
                   path="/"
@@ -41,17 +41,17 @@ export function AppRoot(): React.JSX.Element {
               </Routes>
             </main>
 
-            <footer className="footer">
-              <div className="footer-content">
-                <div className="footer-brand">
-                  <span className="footer-logo">🌱</span>
+            <footer className="bg-slate-900 text-slate-400 py-8 px-4 border-t border-slate-800">
+              <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 text-xs">
+                <div className="flex items-center gap-3">
+                  <span className="text-3xl">🌱</span>
                   <div>
-                    <span className="footer-name">AgroConnect Platform</span>
-                    <p className="footer-tagline">Solusi Agrikultur Cerdas & Rantai Pasok Hasil Tani Nusantara</p>
+                    <span className="font-bold text-white text-sm block">AgroConnect Platform</span>
+                    <p className="text-slate-400 text-xs mt-0.5">Solusi Agrikultur Cerdas & Rantai Pasok Hasil Tani Nusantara</p>
                   </div>
                 </div>
 
-                <div className="footer-meta">
+                <div className="flex flex-col md:items-end gap-1 text-slate-400">
                   <span>Standardisasi Kompetensi SKKNI Level 6 (BNSP)</span>
                   <span>Data Cuaca Terintegrasi Badan Meteorologi, Klimatologi, dan Geofisika (BMKG)</span>
                 </div>

@@ -55,77 +55,85 @@ export function ProductCard(props: ProductCardProps): React.JSX.Element {
   const emoji = getProductEmoji(product.name, product.category)
 
   return (
-    <div className="product-card">
-      <div className="product-card-top">
-        <div className="product-emoji-display">{emoji}</div>
-        <div className="product-badges">
-          <span className="category-tag">{product.category}</span>
-          {product.is_organic && <span className="organic-tag">🌱 Organik</span>}
+    <div className="bg-white rounded-3xl border border-slate-200/80 overflow-hidden shadow-xs hover:shadow-md transition-all flex flex-col justify-between group">
+      <div className="bg-slate-50 p-6 flex items-center justify-between border-b border-slate-100">
+        <span className="text-5xl group-hover:scale-110 transition-transform select-none">{emoji}</span>
+        <div className="flex flex-col gap-1.5 items-end">
+          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-600 bg-white px-2.5 py-1 rounded-full border border-slate-200">
+            {product.category}
+          </span>
+          {product.is_organic && (
+            <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
+              🌱 Organik
+            </span>
+          )}
         </div>
       </div>
 
-      <div className="product-body">
-        <h3 className="product-name">{product.name}</h3>
-        <p className="product-desc">{product.description}</p>
+      <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
+        <div>
+          <h3 className="font-black text-slate-900 text-base leading-snug">{product.name}</h3>
+          <p className="text-xs text-slate-500 line-clamp-2 mt-1 leading-relaxed">{product.description}</p>
+        </div>
 
-        <div className="product-meta">
-          <div className="meta-row">
-            <MapPin size={14} />
+        <div className="space-y-1 text-xs text-slate-500">
+          <div className="flex items-center gap-1.5">
+            <MapPin size={13} className="text-slate-400" />
             <span>{product.origin_region}</span>
           </div>
-          <div className="meta-row">
-            <User size={14} />
+          <div className="flex items-center gap-1.5">
+            <User size={13} className="text-slate-400" />
             <span>{product.farmer_name}</span>
           </div>
         </div>
 
-        <div className="product-pricing">
+        <div className="pt-3 border-t border-slate-100 flex items-center justify-between">
           <div>
-            <span className="price-label">Harga per {product.unit}</span>
-            <div className="price-value">
-              Rp {product.price_per_kg.toLocaleString('id-ID')}
-            </div>
+            <span className="text-[10px] text-slate-400 block uppercase font-bold">Harga / {product.unit}</span>
+            <span className="text-base font-black text-emerald-700">Rp {product.price_per_kg.toLocaleString('id-ID')}</span>
           </div>
-          <div className="stock-info">
-            <span className="stock-label">Stok Panen</span>
-            <span className={`stock-value ${product.stock_kg < 50 ? 'low' : ''}`}>
+          <div className="text-right">
+            <span className="text-[10px] text-slate-400 block uppercase font-bold">Stok Panen</span>
+            <span className={`text-xs font-black ${product.stock_kg < 50 ? 'text-amber-600' : 'text-slate-700'}`}>
               {product.stock_kg} {product.unit}
             </span>
           </div>
         </div>
       </div>
 
-      <div className="product-footer">
+      <div className="p-4 bg-slate-50/70 border-t border-slate-100 flex items-center justify-between gap-2">
         {product.stock_kg > 0 ? (
-          <div className="cart-action-group">
-            <div className="qty-control">
+          <div className="flex items-center gap-2 flex-1">
+            <div className="flex items-center gap-0.5 bg-white border border-slate-200 rounded-xl p-0.5 shadow-2xs">
               <button
                 type="button"
-                className="qty-btn"
+                className="w-6 h-6 flex items-center justify-center rounded-lg text-slate-600 hover:bg-slate-100 disabled:opacity-30 cursor-pointer"
                 onClick={() => setQty((prev: number): number => Math.max(1, prev - 1))}
                 disabled={qty <= 1}
               >
-                <Minus size={14} />
+                <Minus size={13} />
               </button>
-              <span className="qty-number">{qty}</span>
+              <span className="w-6 text-center text-xs font-bold text-slate-800">{qty}</span>
               <button
                 type="button"
-                className="qty-btn"
+                className="w-6 h-6 flex items-center justify-center rounded-lg text-slate-600 hover:bg-slate-100 disabled:opacity-30 cursor-pointer"
                 onClick={() => setQty((prev: number): number => Math.min(product.stock_kg, prev + 1))}
                 disabled={qty >= product.stock_kg}
               >
-                <Plus size={14} />
+                <Plus size={13} />
               </button>
             </div>
 
             <button
               type="button"
-              className={`add-cart-btn ${isAdded ? 'success' : ''}`}
+              className={`flex-1 py-2 px-3 text-xs font-bold rounded-xl shadow-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                isAdded ? 'bg-emerald-700 text-white' : 'bg-emerald-600 hover:bg-emerald-700 text-white'
+              }`}
               onClick={handleAdd}
             >
               {isAdded ? (
                 <>
-                  <Check size={16} />
+                  <Check size={14} />
                   <span>Ditambahkan</span>
                 </>
               ) : (
@@ -134,17 +142,19 @@ export function ProductCard(props: ProductCardProps): React.JSX.Element {
             </button>
           </div>
         ) : (
-          <div className="out-of-stock-notice">Stok Habis</div>
+          <span className="text-xs font-bold text-rose-500 py-1.5 px-3 bg-rose-50 rounded-xl border border-rose-100 w-full text-center">
+            Stok Habis
+          </span>
         )}
 
         {user?.role === 'admin' && onDelete && (
           <button
             type="button"
-            className="delete-item-btn"
+            className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-colors cursor-pointer"
             onClick={() => onDelete(product.id)}
             title="Hapus komoditas dari katalog"
           >
-            <Trash2 size={16} />
+            <Trash2 size={15} />
           </button>
         )}
       </div>

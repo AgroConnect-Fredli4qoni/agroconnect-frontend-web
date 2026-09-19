@@ -83,7 +83,7 @@ export function HomePage(props: HomePageProps): React.JSX.Element {
   }
 
   return (
-    <div className="home-page-container">
+    <div className="max-w-6xl mx-auto px-4 py-8">
       <RecommendationBanner recommendation={weather?.recommendation || null} />
 
       <WeatherWidget
@@ -93,12 +93,10 @@ export function HomePage(props: HomePageProps): React.JSX.Element {
         onSelectRegion={(reg: string) => setSelectedRegion(reg)}
       />
 
-      <section className="marketplace-section" id="katalog">
-        <div className="section-header">
-          <div>
-            <h2>🌾 Katalog Hasil Panen Petani</h2>
-            <p className="section-desc">Pesan komoditas pangan segar langsung dari sentra pertanian tanpa perantara.</p>
-          </div>
+      <section className="my-8" id="katalog">
+        <div className="mb-6">
+          <h2 className="text-xl font-black text-slate-900 tracking-tight">🌾 Katalog Hasil Panen Petani</h2>
+          <p className="text-xs text-slate-500 mt-0.5">Pesan komoditas pangan segar langsung dari sentra pertanian tanpa perantara.</p>
         </div>
 
         <ProductFilter
@@ -109,16 +107,16 @@ export function HomePage(props: HomePageProps): React.JSX.Element {
         />
 
         {isProductsLoading ? (
-          <div className="catalog-loading">
-            <div className="spinner" />
-            <p>Memuat komoditas panen dari database MongoDB...</p>
+          <div className="flex flex-col items-center justify-center py-16 space-y-3">
+            <div className="w-8 h-8 border-3 border-emerald-600 border-t-transparent rounded-full animate-spin" />
+            <p className="text-xs text-slate-500 font-medium">Memuat komoditas panen dari database MongoDB...</p>
           </div>
         ) : products.length === 0 ? (
-          <div className="empty-catalog">
-            <p>Tidak ada komoditas hasil panen yang sesuai dengan pencarian.</p>
+          <div className="text-center py-16 bg-white rounded-3xl border border-slate-200/80 p-8 shadow-xs">
+            <p className="text-xs text-slate-500">Tidak ada komoditas hasil panen yang sesuai dengan pencarian.</p>
           </div>
         ) : (
-          <div className="products-grid">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {products.map((product: Product) => (
               <ProductCard
                 key={product.id}

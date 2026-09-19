@@ -86,23 +86,33 @@ export function AddProductModal(props: AddProductModalProps): React.JSX.Element 
   }
 
   return (
-    <div className="modal-overlay">
-      <div className="modal-card">
-        <div className="modal-header">
-          <div className="modal-title-wrap">
-            <PlusCircle size={22} className="text-primary" />
-            <h3>Unggah Komoditas Panen Baru</h3>
+    <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
+      <div className="bg-white rounded-3xl border border-slate-200 shadow-2xl max-w-lg w-full p-6 sm:p-8 space-y-6 my-8 transition-all">
+        <div className="flex items-center justify-between pb-4 border-b border-slate-100">
+          <div className="flex items-center gap-2.5">
+            <PlusCircle size={22} className="text-emerald-600" />
+            <h3 className="font-black text-slate-900 text-lg tracking-tight">Unggah Komoditas Panen Baru</h3>
           </div>
-          <button type="button" className="close-btn" onClick={onClose}>
-            <X size={20} />
+          <button
+            type="button"
+            className="p-2 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-xl transition-colors cursor-pointer"
+            onClick={onClose}
+          >
+            <X size={18} />
           </button>
         </div>
 
-        {errorMsg && <div className="modal-error-alert">{errorMsg}</div>}
+        {errorMsg && (
+          <div className="p-3.5 rounded-xl text-xs font-medium bg-rose-50 text-rose-700 border border-rose-200">
+            {errorMsg}
+          </div>
+        )}
 
-        <form onSubmit={handleSubmit} className="modal-form">
-          <div className="form-group">
-            <label htmlFor="prod-name">Nama Komoditas / Hasil Tani *</label>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label htmlFor="prod-name" className="block text-xs font-semibold text-slate-700 mb-1.5">
+              Nama Komoditas / Hasil Tani *
+            </label>
             <input
               id="prod-name"
               type="text"
@@ -110,16 +120,20 @@ export function AddProductModal(props: AddProductModalProps): React.JSX.Element 
               placeholder="Contoh: Beras Rojolele Super"
               value={name}
               onChange={(e) => setName(e.target.value)}
+              className="w-full px-3.5 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white text-slate-900 transition-all placeholder:text-slate-400"
             />
           </div>
 
-          <div className="form-row">
-            <div className="form-group">
-              <label htmlFor="prod-cat">Kategori Pertanian *</label>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label htmlFor="prod-cat" className="block text-xs font-semibold text-slate-700 mb-1.5">
+                Kategori Pertanian *
+              </label>
               <select
                 id="prod-cat"
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
+                className="w-full px-3.5 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white text-slate-900 transition-all cursor-pointer"
               >
                 <option value="Pangan Pokok">Pangan Pokok</option>
                 <option value="Sayur">Sayur</option>
@@ -128,8 +142,10 @@ export function AddProductModal(props: AddProductModalProps): React.JSX.Element 
               </select>
             </div>
 
-            <div className="form-group">
-              <label htmlFor="prod-region">Asal Daerah Sentra *</label>
+            <div>
+              <label htmlFor="prod-region" className="block text-xs font-semibold text-slate-700 mb-1.5">
+                Asal Daerah Sentra *
+              </label>
               <input
                 id="prod-region"
                 type="text"
@@ -137,13 +153,16 @@ export function AddProductModal(props: AddProductModalProps): React.JSX.Element 
                 placeholder="Contoh: Cianjur, Jawa Barat"
                 value={region}
                 onChange={(e) => setRegion(e.target.value)}
+                className="w-full px-3.5 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white text-slate-900 transition-all placeholder:text-slate-400"
               />
             </div>
           </div>
 
-          <div className="form-row">
-            <div className="form-group">
-              <label htmlFor="prod-price">Harga per Kg (Rp) *</label>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label htmlFor="prod-price" className="block text-xs font-semibold text-slate-700 mb-1.5">
+                Harga per Kg (Rp) *
+              </label>
               <input
                 id="prod-price"
                 type="number"
@@ -152,11 +171,14 @@ export function AddProductModal(props: AddProductModalProps): React.JSX.Element 
                 placeholder="16500"
                 value={price}
                 onChange={(e) => setPrice(e.target.value)}
+                className="w-full px-3.5 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white text-slate-900 transition-all placeholder:text-slate-400"
               />
             </div>
 
-            <div className="form-group">
-              <label htmlFor="prod-stock">Jumlah Stok Panen (Kg) *</label>
+            <div>
+              <label htmlFor="prod-stock" className="block text-xs font-semibold text-slate-700 mb-1.5">
+                Jumlah Stok Panen (Kg) *
+              </label>
               <input
                 id="prod-stock"
                 type="number"
@@ -165,48 +187,65 @@ export function AddProductModal(props: AddProductModalProps): React.JSX.Element 
                 placeholder="500"
                 value={stock}
                 onChange={(e) => setStock(e.target.value)}
+                className="w-full px-3.5 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white text-slate-900 transition-all placeholder:text-slate-400"
               />
             </div>
           </div>
 
-          <div className="form-group">
-            <label htmlFor="prod-farmer">Nama Petani / Kelompok Tani *</label>
+          <div>
+            <label htmlFor="prod-farmer" className="block text-xs font-semibold text-slate-700 mb-1.5">
+              Nama Petani / Kelompok Tani *
+            </label>
             <input
               id="prod-farmer"
               type="text"
               required
               value={farmerName}
               onChange={(e) => setFarmerName(e.target.value)}
+              className="w-full px-3.5 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white text-slate-900 transition-all placeholder:text-slate-400"
             />
           </div>
 
-          <div className="checkbox-row">
-            <label className="checkbox-label">
+          <div>
+            <label className="inline-flex items-center gap-2 text-xs font-semibold text-slate-700 cursor-pointer">
               <input
                 type="checkbox"
                 checked={isOrganic}
                 onChange={(e) => setIsOrganic(e.target.checked)}
+                className="rounded border-slate-300 text-emerald-600 focus:ring-emerald-500 w-4 h-4 cursor-pointer"
               />
               <span>Kultivasi Organik (Bebas Pestisida Kimia)</span>
             </label>
           </div>
 
-          <div className="form-group">
-            <label htmlFor="prod-desc">Deskripsi & Spesifikasi Mutu</label>
+          <div>
+            <label htmlFor="prod-desc" className="block text-xs font-semibold text-slate-700 mb-1.5">
+              Deskripsi & Spesifikasi Mutu
+            </label>
             <textarea
               id="prod-desc"
               rows={3}
               placeholder="Jelaskan kualitas hasil panen, varietas benih, dan jadwal pemetikan..."
               value={description}
               onChange={(e) => setDescription(e.target.value)}
+              className="w-full px-3.5 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white text-slate-900 transition-all placeholder:text-slate-400 resize-none"
             />
           </div>
 
-          <div className="modal-actions">
-            <button type="button" className="cancel-btn" onClick={onClose} disabled={isLoading}>
+          <div className="pt-4 border-t border-slate-100 flex items-center justify-end gap-3">
+            <button
+              type="button"
+              className="py-2.5 px-5 text-xs font-bold text-slate-600 hover:bg-slate-100 rounded-xl transition-all cursor-pointer"
+              onClick={onClose}
+              disabled={isLoading}
+            >
               Batal
             </button>
-            <button type="submit" className="submit-btn" disabled={isLoading}>
+            <button
+              type="submit"
+              className="py-2.5 px-5 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white text-xs font-bold rounded-xl shadow-xs transition-all disabled:opacity-50 cursor-pointer"
+              disabled={isLoading}
+            >
               {isLoading ? 'Menyimpan...' : 'Simpan ke Katalog'}
             </button>
           </div>
