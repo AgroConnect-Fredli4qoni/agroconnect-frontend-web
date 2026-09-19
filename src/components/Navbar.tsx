@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { ShoppingCart, CloudSun, Store, PlusCircle, ClipboardList, User, LogOut } from 'lucide-react'
+import { ShoppingCart, Store, PlusCircle, ClipboardList, User, LogOut } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { useCart } from '../context/CartContext'
 
@@ -44,13 +44,6 @@ export function Navbar(props: NavbarProps): React.JSX.Element {
             <Store size={18} />
             <span>Katalog Hasil Tani</span>
           </Link>
-          <a
-            href="/#cuaca"
-            className="inline-flex items-center gap-2 px-3 py-2 text-xs font-semibold rounded-xl transition-all cursor-pointer text-slate-600 hover:text-slate-900 hover:bg-slate-100"
-          >
-            <CloudSun size={18} />
-            <span>Prakiraan Cuaca BMKG</span>
-          </a>
           {isAuthenticated && (user?.role === 'farmer' || user?.role === 'admin') && (
             <button
               type="button"
