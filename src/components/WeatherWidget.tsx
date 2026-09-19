@@ -70,8 +70,6 @@ export function WeatherWidget(props: WeatherWidgetProps): React.JSX.Element {
                 <CheckCircle2 size={14} />
                 {weather.source}
               </span>
-              {weather.cached && <span className="cache-tag">In-Memory Cached</span>}
-              {weather.fallback && <span className="fallback-tag">Offline Fallback Mode</span>}
             </div>
           </div>
 
