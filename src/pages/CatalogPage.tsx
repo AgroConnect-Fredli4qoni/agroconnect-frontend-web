@@ -1,12 +1,14 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowLeft, PlusCircle, Store } from 'lucide-react'
+import { ArrowLeft, PlusCircle, Store, ChevronLeft, ChevronRight } from 'lucide-react'
 import { ProductFilter } from '../components/ProductFilter'
 import { ProductCard } from '../components/ProductCard'
 import { AddProductModal } from '../components/AddProductModal'
 import { Product } from '../types/product'
 import { fetchProducts, deleteProduct } from '../services/api'
 import { useAuth } from '../context/AuthContext'
+
+const ITEMS_PER_PAGE = 20
 
 /**
  * CatalogPageProps defines modal controllers for farmer product publication.
@@ -17,10 +19,10 @@ export interface CatalogPageProps {
 }
 
 /**
- * CatalogPage presents the dedicated comprehensive agricultural marketplace and search filters.
+ * CatalogPage presents the dedicated comprehensive agricultural marketplace, search filters, and pagination.
  *
  * @param props - Modal controller state for commodity creation.
- * @returns JSX Element rendering complete commodity catalog.
+ * @returns JSX Element rendering complete commodity catalog with pagination.
  */
 export function CatalogPage(props: CatalogPageProps): React.JSX.Element {
   const { isAddProductOpen, setIsAddProductOpen } = props
@@ -30,6 +32,7 @@ export function CatalogPage(props: CatalogPageProps): React.JSX.Element {
   const [isProductsLoading, setIsProductsLoading] = useState<boolean>(false)
   const [search, setSearch] = useState<string>('')
   const [category, setCategory] = useState<string>('Semua')
+  const [currentPage, setCurrentPage] = useState<number>(1)
 
   const loadProducts = useCallback(async (): Promise<void> => {
     setIsProductsLoading(true)
@@ -47,6 +50,10 @@ export function CatalogPage(props: CatalogPageProps): React.JSX.Element {
     loadProducts()
   }, [loadProducts])
 
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [search, category])
+
   const handleDeleteProduct = async (id: string): Promise<void> => {
     if (!token) return
     if (!window.confirm('Apakah Anda yakin ingin menghapus komoditas ini dari katalog?')) return
@@ -60,6 +67,11 @@ export function CatalogPage(props: CatalogPageProps): React.JSX.Element {
       }
     }
   }
+
+  const totalPages = Math.max(1, Math.ceil(products.length / ITEMS_PER_PAGE))
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE
+  const endIndex = startIndex + ITEMS_PER_PAGE
+  const paginatedProducts = products.slice(startIndex, endIndex)
 
   return (
     <div className="max-w-[1680px] mx-auto px-4 sm:px-8 lg:px-12 py-8 space-y-6">
@@ -101,7 +113,11 @@ export function CatalogPage(props: CatalogPageProps): React.JSX.Element {
       />
 
       <div className="flex items-center justify-between text-xs text-slate-500 font-semibold px-1">
-        <span>Menampilkan {products.length} komoditas pertanian</span>
+        <span>
+          {products.length > 0
+            ? `Menampilkan ${startIndex + 1} - ${Math.min(endIndex, products.length)} dari ${products.length} komoditas (Maks. ${ITEMS_PER_PAGE} per halaman)`
+            : 'Menampilkan 0 komoditas'}
+        </span>
         <span>Kategori: {category}</span>
       </div>
 
@@ -116,14 +132,70 @@ export function CatalogPage(props: CatalogPageProps): React.JSX.Element {
           <p className="text-xs text-slate-400">Silakan gunakan kata kunci lain atau pilih kategori yang berbeda.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {products.map((product: Product) => (
-            <ProductCard
-              key={product.id}
-              product={product}
-              onDelete={handleDeleteProduct}
-            />
-          ))}
+        <div className="space-y-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {paginatedProducts.map((product: Product) => (
+              <ProductCard
+                key={product.id}
+                product={product}
+                onDelete={handleDeleteProduct}
+              />
+            ))}
+          </div>
+
+          {totalPages > 1 && (
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 pb-2 border-t border-slate-200">
+              <span className="text-xs text-slate-500 font-medium">
+                Halaman {currentPage} dari {totalPages} ({products.length} komoditas)
+              </span>
+
+              <div className="flex items-center gap-1.5">
+                <button
+                  type="button"
+                  disabled={currentPage <= 1}
+                  onClick={() => {
+                    setCurrentPage((prev) => Math.max(1, prev - 1))
+                    window.scrollTo({ top: 0, behavior: 'smooth' })
+                  }}
+                  className="inline-flex items-center gap-1 px-3.5 py-2 text-xs font-semibold rounded-xl border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition-all cursor-pointer shadow-2xs"
+                >
+                  <ChevronLeft size={16} />
+                  <span>Sebelumnya</span>
+                </button>
+
+                {Array.from({ length: totalPages }, (_, idx) => idx + 1).map((pageNum) => (
+                  <button
+                    key={pageNum}
+                    type="button"
+                    onClick={() => {
+                      setCurrentPage(pageNum)
+                      window.scrollTo({ top: 0, behavior: 'smooth' })
+                    }}
+                    className={`w-9 h-9 flex items-center justify-center text-xs font-bold rounded-xl transition-all cursor-pointer ${
+                      currentPage === pageNum
+                        ? 'bg-emerald-600 text-white shadow-xs'
+                        : 'border border-slate-200 bg-white text-slate-700 hover:bg-slate-50'
+                    }`}
+                  >
+                    {pageNum}
+                  </button>
+                ))}
+
+                <button
+                  type="button"
+                  disabled={currentPage >= totalPages}
+                  onClick={() => {
+                    setCurrentPage((prev) => Math.min(totalPages, prev + 1))
+                    window.scrollTo({ top: 0, behavior: 'smooth' })
+                  }}
+                  className="inline-flex items-center gap-1 px-3.5 py-2 text-xs font-semibold rounded-xl border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition-all cursor-pointer shadow-2xs"
+                >
+                  <span>Berikutnya</span>
+                  <ChevronRight size={16} />
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       )}
 
