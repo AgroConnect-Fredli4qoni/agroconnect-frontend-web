@@ -83,7 +83,7 @@ export function HomePage(props: HomePageProps): React.JSX.Element {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+    <div className="max-w-[1680px] mx-auto px-4 sm:px-8 lg:px-12 py-8 space-y-8">
       <RecommendationBanner recommendation={weather?.recommendation || null} />
 
       <WeatherWidget
@@ -116,7 +116,7 @@ export function HomePage(props: HomePageProps): React.JSX.Element {
             <p className="text-xs text-slate-500">Tidak ada komoditas hasil panen yang sesuai dengan pencarian.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {products.map((product: Product) => (
               <ProductCard
                 key={product.id}

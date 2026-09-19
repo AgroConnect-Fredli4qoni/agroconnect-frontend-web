@@ -25,7 +25,7 @@ export function Navbar(props: NavbarProps): React.JSX.Element {
 
   return (
     <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-xs">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between">
+      <div className="max-w-[1680px] mx-auto px-4 sm:px-8 lg:px-12 py-3 flex items-center justify-between">
         <div className="flex items-center gap-6 lg:gap-8">
         <Link to="/" className="flex items-center gap-2.5 group">
           <span className="text-2xl transition-transform group-hover:scale-110">🌱</span>
