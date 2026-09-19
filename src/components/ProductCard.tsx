@@ -102,7 +102,7 @@ export function ProductCard(props: ProductCardProps): React.JSX.Element {
               <button
                 type="button"
                 className="qty-btn"
-                onClick={() => setQty((prev) => Math.max(1, prev - 1))}
+                onClick={() => setQty((prev: number): number => Math.max(1, prev - 1))}
                 disabled={qty <= 1}
               >
                 <Minus size={14} />
@@ -111,7 +111,7 @@ export function ProductCard(props: ProductCardProps): React.JSX.Element {
               <button
                 type="button"
                 className="qty-btn"
-                onClick={() => setQty((prev) => Math.min(product.stock_kg, prev + 1))}
+                onClick={() => setQty((prev: number): number => Math.min(product.stock_kg, prev + 1))}
                 disabled={qty >= product.stock_kg}
               >
                 <Plus size={14} />

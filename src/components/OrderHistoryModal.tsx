@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { X, ClipboardList, PackageCheck, Calendar, MapPin } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { fetchUserOrders } from '../services/api'
-import { Order } from '../types/order'
+import { Order, OrderItem } from '../types/order'
 
 /**
  * OrderHistoryModalProps defines modal visibility controller.
@@ -77,7 +77,7 @@ export function OrderHistoryModal(props: OrderHistoryModalProps): React.JSX.Elem
           </div>
         ) : (
           <div className="orders-scroll-list">
-            {orders.map((order) => (
+            {orders.map((order: Order) => (
               <div key={order.order_code} className="order-history-card">
                 <div className="order-card-head">
                   <div className="order-id-group">
@@ -99,7 +99,7 @@ export function OrderHistoryModal(props: OrderHistoryModalProps): React.JSX.Elem
 
                 {order.items && order.items.length > 0 && (
                   <div className="order-items-snippet">
-                    {order.items.map((it) => (
+                    {order.items.map((it: OrderItem) => (
                       <div key={it.id || it.product_id} className="order-item-mini-row">
                         <span>{it.product_name} ({it.quantity}x)</span>
                         <span>Rp {it.subtotal.toLocaleString('id-ID')}</span>

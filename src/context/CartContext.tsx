@@ -34,11 +34,11 @@ export function CartProvider({ children }: { children: React.ReactNode }): React
   }, [items])
 
   const addItem = (product: Product, quantity: number = 1): void => {
-    setItems((prev) => {
-      const existing = prev.find((item) => item.product_id === product.id)
+    setItems((prev: CartItem[]): CartItem[] => {
+      const existing = prev.find((item: CartItem): boolean => item.product_id === product.id)
       if (existing) {
         const nextQty = Math.min(existing.quantity + quantity, product.stock_kg)
-        return prev.map((item) =>
+        return prev.map((item: CartItem): CartItem =>
           item.product_id === product.id ? { ...item, quantity: nextQty } : item,
         )
       }
@@ -57,7 +57,9 @@ export function CartProvider({ children }: { children: React.ReactNode }): React
   }
 
   const removeItem = (productId: string): void => {
-    setItems((prev) => prev.filter((item) => item.product_id !== productId))
+    setItems((prev: CartItem[]): CartItem[] =>
+      prev.filter((item: CartItem): boolean => item.product_id !== productId),
+    )
   }
 
   const updateQuantity = (productId: string, quantity: number): void => {
@@ -65,8 +67,8 @@ export function CartProvider({ children }: { children: React.ReactNode }): React
       removeItem(productId)
       return
     }
-    setItems((prev) =>
-      prev.map((item) =>
+    setItems((prev: CartItem[]): CartItem[] =>
+      prev.map((item: CartItem): CartItem =>
         item.product_id === productId
           ? { ...item, quantity: Math.min(quantity, item.stock_available) }
           : item,
@@ -78,8 +80,11 @@ export function CartProvider({ children }: { children: React.ReactNode }): React
     setItems([])
   }
 
-  const totalItems = items.reduce((acc, item) => acc + item.quantity, 0)
-  const totalAmount = items.reduce((acc, item) => acc + item.price * item.quantity, 0)
+  const totalItems = items.reduce((acc: number, item: CartItem): number => acc + item.quantity, 0)
+  const totalAmount = items.reduce(
+    (acc: number, item: CartItem): number => acc + item.price * item.quantity,
+    0,
+  )
 
   return (
     <CartContext.Provider

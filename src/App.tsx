@@ -131,7 +131,7 @@ function MainDashboard(): React.JSX.Element {
               </div>
             ) : (
               <div className="products-grid">
-                {products.map((product) => (
+                {products.map((product: Product) => (
                   <ProductCard
                     key={product.id}
                     product={product}
