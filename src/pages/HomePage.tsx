@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowRight, Sparkles, Store, CloudSun, ShieldCheck } from 'lucide-react'
-import { WeatherWidget } from '../components/WeatherWidget'
-import { RecommendationBanner } from '../components/RecommendationBanner'
+import { ArrowRight } from 'lucide-react'
+import { HeroSlideshow } from '../components/HeroSlideshow'
+import { CategorySection } from '../components/CategorySection'
 import { ProductCard } from '../components/ProductCard'
 import { Product } from '../types/product'
 import { WeatherResponse } from '../types/weather'
@@ -10,7 +10,7 @@ import { fetchProducts, fetchWeather, deleteProduct } from '../services/api'
 import { useAuth } from '../context/AuthContext'
 
 /**
- * HomePage presents the primary platform landing view, hero banner, BMKG weather analytics, and featured commodities.
+ * HomePage presents the primary platform landing view, hero banner slideshow, category navigation, and featured commodities.
  *
  * @returns JSX Element rendering homepage view.
  */
@@ -74,60 +74,14 @@ export function HomePage(): React.JSX.Element {
 
   return (
     <div className="max-w-[1680px] mx-auto px-4 sm:px-8 lg:px-12 py-8 space-y-8">
-      <section className="bg-gradient-to-br from-emerald-800 via-emerald-700 to-teal-900 rounded-3xl p-8 sm:p-12 text-white shadow-lg relative overflow-hidden">
-        <div className="relative z-10 max-w-3xl space-y-4">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/15 backdrop-blur-xs text-emerald-200 text-xs font-semibold">
-            <Sparkles size={14} />
-            <span>Platform Agrikultur Cerdas Terintegrasi BMKG</span>
-          </div>
-
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-tight">
-            Hubungkan Hasil Panen Petani Langsung ke Meja Anda
-          </h1>
-
-          <p className="text-sm sm:text-base text-emerald-100 leading-relaxed max-w-2xl">
-            Solusi digital rantai pasok agrikultur Indonesia dengan panduan cuaca presisi BMKG,
-            transparansi harga pasar adil, dan kepastian transaksi aman bagi petani maupun pembeli.
-          </p>
-
-          <div className="flex flex-wrap items-center gap-3 pt-2">
-            <Link
-              to="/catalog"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-white text-emerald-800 hover:bg-emerald-50 text-xs sm:text-sm font-black rounded-xl shadow-md transition-all cursor-pointer"
-            >
-              <Store size={18} />
-              <span>Jelajahi Katalog Lengkap</span>
-            </Link>
-            <a
-              href="#cuaca"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-white/15 hover:bg-white/25 text-white text-xs sm:text-sm font-bold rounded-xl transition-all cursor-pointer"
-            >
-              <CloudSun size={18} />
-              <span>Pantau Cuaca Tani BMKG</span>
-            </a>
-          </div>
-
-          <div className="flex flex-wrap gap-4 pt-4 text-xs text-emerald-200 border-t border-white/10">
-            <div className="flex items-center gap-1.5">
-              <ShieldCheck size={16} />
-              <span>Transaksi Aman & Bergaransi Mutu</span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <CloudSun size={16} />
-              <span>Satelit & Sensor Agroklimat BMKG</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <RecommendationBanner recommendation={weather?.recommendation || null} />
-
-      <WeatherWidget
+      <HeroSlideshow
         weather={weather}
-        isLoading={isWeatherLoading}
+        isWeatherLoading={isWeatherLoading}
         selectedRegion={selectedRegion}
         onSelectRegion={(reg: string) => setSelectedRegion(reg)}
       />
+
+      <CategorySection />
 
       <section className="space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 pb-3 border-b border-slate-200">

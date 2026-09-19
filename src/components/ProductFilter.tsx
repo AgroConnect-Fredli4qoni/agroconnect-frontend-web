@@ -11,7 +11,7 @@ export interface ProductFilterProps {
   onCategoryChange: (category: string) => void
 }
 
-const categories = ['Semua', 'Pangan Pokok', 'Sayur', 'Bumbu']
+const categories = ['Semua', 'Pangan Pokok', 'Sayur', 'Bumbu', 'Palawija']
 
 /**
  * ProductFilter component provides real-time search filtering and category segmentation.

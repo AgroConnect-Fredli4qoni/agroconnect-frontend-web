@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import { ArrowLeft, PlusCircle, Store, ChevronLeft, ChevronRight } from 'lucide-react'
 import { ProductFilter } from '../components/ProductFilter'
 import { ProductCard } from '../components/ProductCard'
@@ -27,12 +27,32 @@ export interface CatalogPageProps {
 export function CatalogPage(props: CatalogPageProps): React.JSX.Element {
   const { isAddProductOpen, setIsAddProductOpen } = props
   const { token, user, isAuthenticated } = useAuth()
+  const [searchParams, setSearchParams] = useSearchParams()
+  const categoryParam = searchParams.get('category') || 'Semua'
 
   const [products, setProducts] = useState<Product[]>([])
   const [isProductsLoading, setIsProductsLoading] = useState<boolean>(false)
   const [search, setSearch] = useState<string>('')
-  const [category, setCategory] = useState<string>('Semua')
+  const [category, setCategory] = useState<string>(categoryParam)
   const [currentPage, setCurrentPage] = useState<number>(1)
+
+  useEffect(() => {
+    const urlCat = searchParams.get('category')
+    if (urlCat && urlCat !== category) {
+      setCategory(urlCat)
+    }
+  }, [searchParams, category])
+
+  const handleCategoryChange = (newCat: string): void => {
+    setCategory(newCat)
+    if (newCat === 'Semua') {
+      const nextParams = new URLSearchParams(searchParams)
+      nextParams.delete('category')
+      setSearchParams(nextParams)
+    } else {
+      setSearchParams({ category: newCat })
+    }
+  }
 
   const loadProducts = useCallback(async (): Promise<void> => {
     setIsProductsLoading(true)
@@ -109,7 +129,7 @@ export function CatalogPage(props: CatalogPageProps): React.JSX.Element {
         search={search}
         onSearchChange={setSearch}
         selectedCategory={category}
-        onCategoryChange={setCategory}
+        onCategoryChange={handleCategoryChange}
       />
 
       <div className="flex items-center justify-between text-xs text-slate-500 font-semibold px-1">
