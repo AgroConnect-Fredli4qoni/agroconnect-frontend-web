@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { useNavigate, useLocation, Link } from 'react-router-dom'
+import React, { useState, useEffect } from 'react'
+import { useNavigate, useLocation, useSearchParams, Link } from 'react-router-dom'
 import { User, Mail, Lock, ShieldCheck, ArrowRight, ArrowLeft } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 
@@ -11,9 +11,11 @@ import { useAuth } from '../context/AuthContext'
 export function AuthPage(): React.JSX.Element {
   const navigate = useNavigate()
   const location = useLocation()
+  const [searchParams] = useSearchParams()
   const { login, register } = useAuth()
 
-  const [mode, setMode] = useState<'login' | 'register'>('login')
+  const initialMode = searchParams.get('mode') === 'register' ? 'register' : 'login'
+  const [mode, setMode] = useState<'login' | 'register'>(initialMode)
   const [name, setName] = useState<string>('')
   const [email, setEmail] = useState<string>('')
   const [password, setPassword] = useState<string>('')
@@ -22,6 +24,15 @@ export function AuthPage(): React.JSX.Element {
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [errorMsg, setErrorMsg] = useState<string>('')
   const [successMsg, setSuccessMsg] = useState<string>('')
+
+  useEffect(() => {
+    const queryMode = searchParams.get('mode')
+    if (queryMode === 'register' || queryMode === 'login') {
+      setMode(queryMode)
+      setErrorMsg('')
+      setSuccessMsg('')
+    }
+  }, [searchParams])
 
   const handleQuickLogin = (quickEmail: string, quickPass: string): void => {
     setEmail(quickEmail)
