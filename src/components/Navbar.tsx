@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { ShoppingCart, Store, PlusCircle, ClipboardList, User, LogOut } from 'lucide-react'
+import { ShoppingCart, PlusCircle, ClipboardList, User, LogOut } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { useCart } from '../context/CartContext'
 
@@ -35,17 +35,8 @@ export function Navbar(props: NavbarProps): React.JSX.Element {
           </div>
         </Link>
 
-        <nav className="hidden md:flex items-center gap-1.5">
-          <Link
-            to="/catalog"
-            className={`inline-flex items-center gap-2 px-3 py-2 text-xs font-semibold rounded-xl transition-all cursor-pointer ${
-              location.pathname === '/catalog' || location.pathname === '/katalog' ? 'bg-emerald-50 text-emerald-700 font-bold' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-            }`}
-          >
-            <Store size={18} />
-            <span>Katalog Hasil Tani</span>
-          </Link>
-          {isAuthenticated && (user?.role === 'farmer' || user?.role === 'admin') && (
+        {isAuthenticated && (user?.role === 'farmer' || user?.role === 'admin') && (
+          <nav className="hidden md:flex items-center gap-1.5">
             <button
               type="button"
               className="inline-flex items-center gap-2 px-3 py-2 text-xs font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 rounded-xl transition-all cursor-pointer"
@@ -54,8 +45,8 @@ export function Navbar(props: NavbarProps): React.JSX.Element {
               <PlusCircle size={18} />
               <span>Tambah Komoditas</span>
             </button>
-          )}
-        </nav>
+          </nav>
+        )}
       </div>
 
       <div className="flex items-center gap-3">
