@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react'
-import { Link, useSearchParams } from 'react-router-dom'
-import { ArrowLeft, PlusCircle, Store, ChevronLeft, ChevronRight } from 'lucide-react'
+import { useSearchParams } from 'react-router-dom'
+import { PlusCircle, Store, ChevronLeft, ChevronRight } from 'lucide-react'
 import { CatalogSidebar } from '../components/CatalogSidebar'
 import { CatalogSortBar, SortOption } from '../components/CatalogSortBar'
 import { ProductCard, getProductRating, getProductSales } from '../components/ProductCard'
@@ -159,13 +159,6 @@ export function CatalogPage(props: CatalogPageProps): React.JSX.Element {
     <div className="max-w-[1680px] mx-auto px-4 sm:px-8 lg:px-12 py-8 space-y-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-200">
         <div>
-          <Link
-            to="/"
-            className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-emerald-600 transition-colors mb-2"
-          >
-            <ArrowLeft size={16} />
-            <span>Kembali ke Beranda</span>
-          </Link>
           <div className="flex items-center gap-2.5">
             <Store size={24} className="text-emerald-700" />
             <h1 className="text-2xl font-black text-slate-900 tracking-tight">Katalog Hasil Panen Petani</h1>

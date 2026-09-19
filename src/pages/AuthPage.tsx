@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate, useLocation, useSearchParams, Link } from 'react-router-dom'
-import { User, Mail, Lock, ShieldCheck, ArrowRight, ArrowLeft } from 'lucide-react'
+import { User, Mail, Lock, ShieldCheck, ArrowRight } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 
 /**
@@ -71,14 +71,10 @@ export function AuthPage(): React.JSX.Element {
     <div className="min-h-[calc(100vh-140px)] flex items-center justify-center py-12 px-4 bg-gradient-to-b from-emerald-50/60 to-transparent">
       <div className="w-full max-w-md bg-white rounded-2xl border border-slate-200/80 shadow-xl p-8 transition-all">
         <div className="text-center mb-6">
-          <Link to="/" className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-emerald-600 transition-colors mb-4">
-            <ArrowLeft size={16} />
-            <span>Kembali ke Beranda</span>
-          </Link>
-          <div className="flex items-center justify-center gap-2 mb-1.5">
-            <span className="text-3xl">🌱</span>
+          <Link to="/" className="inline-flex items-center justify-center gap-2 mb-1.5 group">
+            <span className="text-3xl group-hover:scale-110 transition-transform">🌱</span>
             <h1 className="text-2xl font-black text-emerald-900 tracking-tight">AgroConnect</h1>
-          </div>
+          </Link>
           <p className="text-xs text-slate-500 text-center leading-relaxed">
             {mode === 'login'
               ? 'Masuk ke platform ekosistem agrikultur cerdas'
