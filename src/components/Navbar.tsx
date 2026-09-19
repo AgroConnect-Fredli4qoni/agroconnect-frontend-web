@@ -37,9 +37,9 @@ export function Navbar(props: NavbarProps): React.JSX.Element {
 
         <nav className="hidden md:flex items-center gap-1.5">
           <Link
-            to="/"
+            to="/catalog"
             className={`inline-flex items-center gap-2 px-3 py-2 text-xs font-semibold rounded-xl transition-all cursor-pointer ${
-              location.pathname === '/' ? 'bg-emerald-50 text-emerald-700 font-bold' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+              location.pathname === '/catalog' || location.pathname === '/katalog' ? 'bg-emerald-50 text-emerald-700 font-bold' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
             }`}
           >
             <Store size={18} />

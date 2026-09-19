@@ -4,6 +4,7 @@ import { AuthProvider } from './context/AuthContext'
 import { CartProvider } from './context/CartContext'
 import { Navbar } from './components/Navbar'
 import { HomePage } from './pages/HomePage'
+import { CatalogPage } from './pages/CatalogPage'
 import { CartPage } from './pages/CartPage'
 import { AuthPage } from './pages/AuthPage'
 import { OrdersPage } from './pages/OrdersPage'
@@ -25,15 +26,17 @@ export function AppRoot(): React.JSX.Element {
 
             <main className="flex-1">
               <Routes>
+                <Route path="/" element={<HomePage />} />
                 <Route
-                  path="/"
+                  path="/catalog"
                   element={
-                    <HomePage
+                    <CatalogPage
                       isAddProductOpen={isAddProductOpen}
                       setIsAddProductOpen={setIsAddProductOpen}
                     />
                   }
                 />
+                <Route path="/katalog" element={<Navigate to="/catalog" replace />} />
                 <Route path="/cart" element={<CartPage />} />
                 <Route path="/auth" element={<AuthPage />} />
                 <Route path="/orders" element={<OrdersPage />} />
