@@ -1,6 +1,7 @@
-import React from 'react'
-import { Filter, RotateCcw, MapPin, DollarSign, Check } from 'lucide-react'
+import React, { useState } from 'react'
+import { Filter, RotateCcw, MapPin, DollarSign, Check, Navigation, X } from 'lucide-react'
 import { CustomNumberInput } from './CustomNumberInput'
+import { LocationMapModal } from './LocationMapModal'
 
 /**
  * CatalogSidebarProps defines filtering attributes, options, and callbacks.
@@ -9,7 +10,6 @@ export interface CatalogSidebarProps {
   categories: string[]
   selectedCategory: string
   onSelectCategory: (category: string) => void
-  locations: string[]
   selectedLocation: string
   onSelectLocation: (location: string) => void
   minPrice: string
@@ -31,7 +31,6 @@ export function CatalogSidebar(props: CatalogSidebarProps): React.JSX.Element {
     categories,
     selectedCategory,
     onSelectCategory,
-    locations,
     selectedLocation,
     onSelectLocation,
     minPrice,
@@ -41,6 +40,8 @@ export function CatalogSidebar(props: CatalogSidebarProps): React.JSX.Element {
     onResetFilters,
     totalFiltered
   } = props
+
+  const [isMapOpen, setIsMapOpen] = useState<boolean>(false)
 
   const hasActiveFilters =
     selectedCategory !== 'Semua' ||
@@ -113,29 +114,54 @@ export function CatalogSidebar(props: CatalogSidebarProps): React.JSX.Element {
             )}
           </div>
 
-          <div className="flex flex-col gap-1 max-h-52 overflow-y-auto pr-1">
-            {locations.map((loc) => {
-              const isSelected = selectedLocation === loc
-              return (
-                <button
-                  key={loc}
-                  type="button"
-                  onClick={() => onSelectLocation(loc)}
-                  className={`flex items-center justify-between px-3.5 py-2.5 rounded-lg text-xs font-semibold transition-all text-left cursor-pointer ${
-                    isSelected
-                      ? 'bg-emerald-600 text-white font-bold shadow-2xs'
-                      : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
-                  }`}
-                >
-                  <div className="flex items-center gap-1.5 truncate">
-                    <MapPin size={12} className={isSelected ? 'text-white' : 'text-emerald-600 shrink-0'} />
-                    <span className="truncate">{loc}</span>
-                  </div>
-                  {isSelected && <Check size={14} />}
-                </button>
-              )
-            })}
-          </div>
+          <button
+            type="button"
+            onClick={() => setIsMapOpen(true)}
+            className={`w-full flex items-center justify-between gap-2 px-3.5 py-2.5 text-xs font-semibold rounded-lg transition-all cursor-pointer shadow-2xs group ${
+              selectedLocation !== 'Semua'
+                ? 'bg-emerald-600 hover:bg-emerald-700 text-white border border-emerald-700'
+                : 'bg-emerald-50 hover:bg-emerald-100 text-emerald-900 border border-emerald-200/80'
+            }`}
+          >
+            <div className="flex items-center gap-2 truncate">
+              <Navigation
+                size={14}
+                className={`shrink-0 group-hover:scale-110 transition-transform ${
+                  selectedLocation !== 'Semua' ? 'text-white' : 'text-emerald-700'
+                }`}
+              />
+              <span className="truncate">
+                {selectedLocation === 'Semua' ? 'Pilih di Peta / GPS' : selectedLocation}
+              </span>
+            </div>
+            <span
+              className={`inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-md border shrink-0 ${
+                selectedLocation !== 'Semua'
+                  ? 'bg-emerald-700 text-white border-emerald-500'
+                  : 'bg-white text-emerald-800 border-emerald-200'
+              }`}
+            >
+              <MapPin size={10} />
+              <span>Peta</span>
+            </span>
+          </button>
+
+          {selectedLocation !== 'Semua' && (
+            <div className="flex items-center justify-between bg-emerald-50/80 border border-emerald-200/80 px-3 py-2 rounded-lg text-xs">
+              <div className="flex items-center gap-1.5 text-emerald-950 truncate">
+                <MapPin size={13} className="text-emerald-600 shrink-0" />
+                <span className="truncate font-semibold">{selectedLocation}</span>
+              </div>
+              <button
+                type="button"
+                onClick={() => onSelectLocation('Semua')}
+                className="p-1 text-slate-400 hover:text-rose-600 rounded-md hover:bg-rose-50 transition-colors ml-2 shrink-0 cursor-pointer"
+                title="Hapus filter lokasi"
+              >
+                <X size={12} />
+              </button>
+            </div>
+          )}
         </div>
 
         <div className="pt-4 border-t border-slate-100 space-y-3">
@@ -189,6 +215,16 @@ export function CatalogSidebar(props: CatalogSidebarProps): React.JSX.Element {
           </button>
         )}
       </div>
+
+      <LocationMapModal
+        isOpen={isMapOpen}
+        onClose={() => setIsMapOpen(false)}
+        currentLocation={selectedLocation}
+        onSelectLocation={(loc) => {
+          onSelectLocation(loc)
+        }}
+        title="Pilih Lokasi Sentra Tani"
+      />
     </aside>
   )
 }

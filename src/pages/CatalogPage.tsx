@@ -48,11 +48,6 @@ export function CatalogPage(props: CatalogPageProps): React.JSX.Element {
     return ['Semua', ...dynamicCats]
   }, [rawProducts])
 
-  const locations = useMemo(() => {
-    const dynamicLocs = Array.from(new Set(rawProducts.map((p) => p.origin_region))).filter(Boolean).sort()
-    return ['Semua', ...dynamicLocs]
-  }, [rawProducts])
-
   useEffect(() => {
     const urlCat = searchParams.get('category')
     if (urlCat && urlCat !== category) {
@@ -112,8 +107,12 @@ export function CatalogPage(props: CatalogPageProps): React.JSX.Element {
     return rawProducts
       .filter((p) => {
         if (category !== 'Semua' && p.category !== category) return false
-        if (selectedLocation !== 'Semua' && !p.origin_region.toLowerCase().includes(selectedLocation.toLowerCase())) {
-          return false
+        if (selectedLocation !== 'Semua') {
+          const productLoc = p.origin_region.toLowerCase()
+          const filterLoc = selectedLocation.toLowerCase()
+          if (!productLoc.includes(filterLoc) && !filterLoc.includes(productLoc)) {
+            return false
+          }
         }
         if (minPrice && p.price_per_kg < Number(minPrice)) return false
         if (maxPrice && p.price_per_kg > Number(maxPrice)) return false
@@ -202,7 +201,6 @@ export function CatalogPage(props: CatalogPageProps): React.JSX.Element {
           categories={categories}
           selectedCategory={category}
           onSelectCategory={handleCategoryChange}
-          locations={locations}
           selectedLocation={selectedLocation}
           onSelectLocation={setSelectedLocation}
           minPrice={minPrice}
