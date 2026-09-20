@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { BrowserRouter, Routes, Route, Navigate, useParams } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate, useParams, useLocation } from 'react-router-dom'
 import { Sprout } from 'lucide-react'
 import { AuthProvider } from './context/AuthContext'
 import { CartProvider } from './context/CartContext'
@@ -17,64 +17,74 @@ function FarmerRouteRedirect(): React.JSX.Element {
   return <Navigate to={`/petani/${slug || ''}`} replace />
 }
 
+function AppContent(): React.JSX.Element {
+  const [isAddProductOpen, setIsAddProductOpen] = useState<boolean>(false)
+  const location = useLocation()
+  const isAuthPage = location.pathname === '/login' || location.pathname === '/register'
+
+  return (
+    <div className="min-h-screen flex flex-col bg-slate-50 text-slate-900 font-sans">
+      {!isAuthPage && <Navbar onOpenAddProduct={() => setIsAddProductOpen(true)} />}
+
+      <main className="flex-1">
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route
+            path="/catalog"
+            element={
+              <CatalogPage
+                isAddProductOpen={isAddProductOpen}
+                setIsAddProductOpen={setIsAddProductOpen}
+              />
+            }
+          />
+          <Route path="/katalog" element={<Navigate to="/catalog" replace />} />
+          <Route path="/cart" element={<CartPage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/auth" element={<Navigate to="/login" replace />} />
+          <Route path="/orders" element={<OrdersPage />} />
+          <Route path="/petani/:slug" element={<FarmerProfilePage />} />
+          <Route path="/farmer/:slug" element={<FarmerRouteRedirect />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </main>
+
+      {!isAuthPage && (
+        <footer className="bg-slate-900 text-slate-400 py-8 border-t border-slate-800 mt-12">
+          <div className="max-w-[1680px] mx-auto px-4 sm:px-8 lg:px-12 flex flex-col md:flex-row items-center justify-between gap-6 text-xs">
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-xl bg-emerald-600 text-white flex items-center justify-center shadow-xs shrink-0">
+                <Sprout size={20} />
+              </div>
+              <div>
+                <span className="font-bold text-white text-sm block">AgroConnect Platform</span>
+                <p className="text-slate-400 text-xs mt-0.5">Solusi Agrikultur Cerdas & Rantai Pasok Hasil Tani Nusantara</p>
+              </div>
+            </div>
+
+            <div className="flex flex-col md:items-end gap-1 text-slate-400">
+              <span>Standardisasi Kompetensi SKKNI Level 6 (BNSP)</span>
+              <span>Data Cuaca Terintegrasi Badan Meteorologi, Klimatologi, dan Geofisika (BMKG)</span>
+            </div>
+          </div>
+        </footer>
+      )}
+    </div>
+  )
+}
+
 /**
  * AppRoot wraps global providers, routing layers, and top-level navigation.
  *
  * @returns JSX Element presenting entire web application.
  */
 export function AppRoot(): React.JSX.Element {
-  const [isAddProductOpen, setIsAddProductOpen] = useState<boolean>(false)
-
   return (
     <BrowserRouter>
       <AuthProvider>
         <CartProvider>
-          <div className="min-h-screen flex flex-col bg-slate-50 text-slate-900 font-sans">
-            <Navbar onOpenAddProduct={() => setIsAddProductOpen(true)} />
-
-            <main className="flex-1">
-              <Routes>
-                <Route path="/" element={<HomePage />} />
-                <Route
-                  path="/catalog"
-                  element={
-                    <CatalogPage
-                      isAddProductOpen={isAddProductOpen}
-                      setIsAddProductOpen={setIsAddProductOpen}
-                    />
-                  }
-                />
-                <Route path="/katalog" element={<Navigate to="/catalog" replace />} />
-                <Route path="/cart" element={<CartPage />} />
-                <Route path="/login" element={<LoginPage />} />
-                <Route path="/register" element={<RegisterPage />} />
-                <Route path="/auth" element={<Navigate to="/login" replace />} />
-                <Route path="/orders" element={<OrdersPage />} />
-                <Route path="/petani/:slug" element={<FarmerProfilePage />} />
-                <Route path="/farmer/:slug" element={<FarmerRouteRedirect />} />
-                <Route path="*" element={<Navigate to="/" replace />} />
-              </Routes>
-            </main>
-
-            <footer className="bg-slate-900 text-slate-400 py-8 border-t border-slate-800 mt-12">
-              <div className="max-w-[1680px] mx-auto px-4 sm:px-8 lg:px-12 flex flex-col md:flex-row items-center justify-between gap-6 text-xs">
-                <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-xl bg-emerald-600 text-white flex items-center justify-center shadow-xs shrink-0">
-                    <Sprout size={20} />
-                  </div>
-                  <div>
-                    <span className="font-bold text-white text-sm block">AgroConnect Platform</span>
-                    <p className="text-slate-400 text-xs mt-0.5">Solusi Agrikultur Cerdas & Rantai Pasok Hasil Tani Nusantara</p>
-                  </div>
-                </div>
-
-                <div className="flex flex-col md:items-end gap-1 text-slate-400">
-                  <span>Standardisasi Kompetensi SKKNI Level 6 (BNSP)</span>
-                  <span>Data Cuaca Terintegrasi Badan Meteorologi, Klimatologi, dan Geofisika (BMKG)</span>
-                </div>
-              </div>
-            </footer>
-          </div>
+          <AppContent />
         </CartProvider>
       </AuthProvider>
     </BrowserRouter>

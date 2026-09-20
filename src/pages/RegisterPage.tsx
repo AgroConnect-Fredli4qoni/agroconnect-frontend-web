@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
-import { User, Mail, Lock, ArrowRight, Eye, EyeOff, Sprout } from 'lucide-react'
+import { User, Mail, Lock, ArrowRight, ArrowLeft, Eye, EyeOff, Sprout } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 
 /**
@@ -49,7 +49,17 @@ export function RegisterPage(): React.JSX.Element {
   }
 
   return (
-    <div className="min-h-[calc(100vh-140px)] flex items-center justify-center py-12 px-4 bg-slate-50">
+    <div className="min-h-screen flex flex-col items-center justify-center py-12 px-4 bg-slate-50">
+      <div className="w-full max-w-md mb-3">
+        <Link
+          to="/"
+          className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 hover:text-emerald-700 transition-colors"
+        >
+          <ArrowLeft size={14} />
+          <span>Kembali ke Beranda</span>
+        </Link>
+      </div>
+
       <div className="w-full max-w-md bg-white rounded-2xl border border-slate-200/90 shadow-xl p-8 transition-all">
         <div className="text-center mb-6">
           <Link to="/" className="inline-flex items-center justify-center gap-2 mb-1.5 group">
