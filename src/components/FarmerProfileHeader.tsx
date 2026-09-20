@@ -78,9 +78,9 @@ export function FarmerProfileHeader(props: FarmerProfileHeaderProps): React.JSX.
         </div>
 
         <div className="p-6 sm:p-8 pt-0">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 -mt-16 sm:-mt-20 relative z-10">
-            <div className="flex flex-col sm:flex-row items-center sm:items-end gap-5 text-center sm:text-left">
-              <div className="relative w-28 h-28 sm:w-36 sm:h-36 rounded-2xl overflow-hidden bg-white p-1.5 shadow-xl border border-slate-200 shrink-0">
+          <div className="flex flex-col md:flex-row md:items-start justify-between gap-6 relative z-10">
+            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5 text-center sm:text-left">
+              <div className="-mt-14 sm:-mt-16 relative w-28 h-28 sm:w-32 sm:h-32 rounded-2xl overflow-hidden bg-white p-1.5 shadow-xl border border-slate-200 shrink-0">
                 {!avatarFailed ? (
                   <img
                     src={farmer.avatar_url}
@@ -103,7 +103,7 @@ export function FarmerProfileHeader(props: FarmerProfileHeaderProps): React.JSX.
                 )}
               </div>
 
-              <div className="space-y-1.5">
+              <div className="pt-2 sm:pt-3 space-y-1.5">
                 <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
                   <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
                     {farmer.name}
@@ -125,7 +125,7 @@ export function FarmerProfileHeader(props: FarmerProfileHeaderProps): React.JSX.
               </div>
             </div>
 
-            <div className="flex items-center justify-center sm:justify-end gap-2.5 shrink-0 self-center sm:self-end">
+            <div className="flex items-center justify-center sm:justify-end gap-2.5 shrink-0 pt-2 sm:pt-4 self-center md:self-start">
               <button
                 type="button"
                 onClick={() => setIsContactOpen(true)}
