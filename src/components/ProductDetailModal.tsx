@@ -161,7 +161,7 @@ export function ProductDetailModal(props: ProductDetailModalProps): React.JSX.El
 
         <div className="overflow-y-auto p-5 sm:p-7">
           <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
-            <div className="md:col-span-5">
+            <div className="md:col-span-5 space-y-3">
               <div className="relative w-full aspect-square rounded-xl overflow-hidden bg-slate-100 border border-slate-200/80 shadow-2xs">
                 {hasImage ? (
                   <img
@@ -202,6 +202,59 @@ export function ProductDetailModal(props: ProductDetailModalProps): React.JSX.El
                   </span>
                 </div>
               </div>
+
+              <div className="p-3 bg-slate-50/90 rounded-xl border border-slate-200/80 flex flex-col gap-2.5">
+                <div className="flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <div className="relative w-9 h-9 rounded-full overflow-hidden bg-white border border-slate-200 shrink-0 shadow-2xs">
+                      {product.farmer_avatar_url && !farmerAvatarFailed ? (
+                        <img
+                          src={product.farmer_avatar_url}
+                          alt={product.farmer_name}
+                          className="w-full h-full object-cover"
+                          onError={() => setFarmerAvatarFailed(true)}
+                        />
+                      ) : (
+                        <div className="w-full h-full bg-emerald-100 text-emerald-800 flex items-center justify-center font-black text-xs">
+                          {product.farmer_name.slice(0, 2).toUpperCase()}
+                        </div>
+                      )}
+                    </div>
+                    <div className="min-w-0">
+                      <span className="text-[10px] uppercase font-bold text-slate-400 block tracking-wider leading-none">
+                        Mitra Petani
+                      </span>
+                      <span className="text-xs font-black text-slate-900 block truncate mt-0.5">
+                        {product.farmer_name}
+                      </span>
+                    </div>
+                  </div>
+
+                  <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-700 bg-emerald-100/70 px-2 py-0.5 rounded-full border border-emerald-200 shrink-0">
+                    <ShieldCheck size={11} />
+                    <span>Terverifikasi</span>
+                  </span>
+                </div>
+
+                <div className="pt-2 border-t border-slate-200/60 flex items-center justify-between gap-2 text-[11px]">
+                  <div className="flex items-center gap-1 text-slate-500 truncate min-w-0">
+                    <MapPin size={11} className="text-slate-400 shrink-0" />
+                    <span className="truncate">{product.origin_region}</span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      onClose()
+                      navigate(`/petani/${slugifyFarmerName(product.farmer_name)}`)
+                    }}
+                    className="inline-flex items-center gap-1 text-xs font-bold text-emerald-700 hover:text-emerald-800 hover:underline cursor-pointer shrink-0"
+                  >
+                    <Store size={12} />
+                    <span>Kunjungi Toko</span>
+                    <ArrowRight size={11} />
+                  </button>
+                </div>
+              </div>
             </div>
 
             <div className="md:col-span-7 flex flex-col space-y-4">
@@ -216,52 +269,6 @@ export function ProductDetailModal(props: ProductDetailModalProps): React.JSX.El
                   <span className="text-xs font-bold text-slate-400 uppercase">
                     / {product.unit}
                   </span>
-                </div>
-              </div>
-
-              <div className="p-3 bg-slate-50/90 rounded-xl border border-slate-200/80 flex items-center justify-between gap-3">
-                <div className="flex items-center gap-2.5 min-w-0">
-                  <div className="relative w-10 h-10 rounded-full overflow-hidden bg-white border border-slate-200 shrink-0 shadow-2xs">
-                    {product.farmer_avatar_url && !farmerAvatarFailed ? (
-                      <img
-                        src={product.farmer_avatar_url}
-                        alt={product.farmer_name}
-                        className="w-full h-full object-cover"
-                        onError={() => setFarmerAvatarFailed(true)}
-                      />
-                    ) : (
-                      <div className="w-full h-full bg-emerald-100 text-emerald-800 flex items-center justify-center font-black text-xs">
-                        {product.farmer_name.slice(0, 2).toUpperCase()}
-                      </div>
-                    )}
-                  </div>
-                  <div className="min-w-0">
-                    <span className="text-[10px] uppercase font-bold text-slate-400 block tracking-wider leading-none">Mitra Petani</span>
-                    <span className="text-xs font-black text-slate-900 block truncate mt-0.5">{product.farmer_name}</span>
-                    <div className="flex items-center gap-1 text-[11px] text-slate-500 mt-0.5">
-                      <MapPin size={11} className="text-slate-400 shrink-0" />
-                      <span className="truncate">{product.origin_region}</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="text-right flex flex-col items-end gap-1 shrink-0">
-                  <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-700 bg-emerald-100/70 px-2 py-0.5 rounded-full border border-emerald-200">
-                    <ShieldCheck size={11} />
-                    <span>Terverifikasi</span>
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      onClose()
-                      navigate(`/petani/${slugifyFarmerName(product.farmer_name)}`)
-                    }}
-                    className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-700 hover:text-emerald-800 hover:underline cursor-pointer"
-                  >
-                    <Store size={12} />
-                    <span>Kunjungi Toko</span>
-                    <ArrowRight size={11} />
-                  </button>
                 </div>
               </div>
 
