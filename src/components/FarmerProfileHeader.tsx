@@ -62,24 +62,24 @@ export function FarmerProfileHeader(props: FarmerProfileHeaderProps): React.JSX.
         </span>
       </div>
 
-      <div className="relative rounded-2xl overflow-hidden border border-slate-200/80 shadow-md bg-white">
-        <div className="relative w-full h-36 sm:h-44 lg:h-52 bg-slate-900 overflow-hidden">
-          {!bannerFailed ? (
-            <img
-              src={farmer.banner_url}
-              alt={`Lahan ${farmer.name}`}
-              className="w-full h-full object-cover opacity-90"
-              onError={() => setBannerFailed(true)}
-            />
-          ) : (
-            <div className="w-full h-full bg-gradient-to-r from-emerald-900 via-teal-900 to-slate-900" />
-          )}
-          <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/30 to-transparent" />
-        </div>
+      <div className="relative w-full h-44 sm:h-56 lg:h-64 rounded-2xl overflow-hidden border border-slate-200/80 shadow-xs bg-slate-900">
+        {!bannerFailed ? (
+          <img
+            src={farmer.banner_url}
+            alt={`Lahan ${farmer.name}`}
+            className="w-full h-full object-cover opacity-90"
+            onError={() => setBannerFailed(true)}
+          />
+        ) : (
+          <div className="w-full h-full bg-gradient-to-r from-emerald-900 via-teal-900 to-slate-900" />
+        )}
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-transparent to-transparent" />
+      </div>
 
-        <div className="px-5 sm:px-6 pb-5 pt-0">
-          <div className="flex flex-col sm:flex-row items-start gap-4 sm:gap-5 relative z-10">
-            <div className="-mt-8 sm:-mt-10 relative w-20 h-20 sm:w-24 sm:h-24 rounded-2xl overflow-hidden bg-white p-1.5 shadow-xl border border-slate-200 shrink-0">
+      <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs p-6 sm:p-7 space-y-6">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-5 text-center sm:text-left">
+            <div className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-2xl overflow-hidden bg-slate-100 p-1 border border-slate-200 shrink-0 shadow-2xs">
               {!avatarFailed ? (
                 <img
                   src={farmer.avatar_url}
@@ -94,69 +94,68 @@ export function FarmerProfileHeader(props: FarmerProfileHeaderProps): React.JSX.
               )}
               {farmer.is_verified && (
                 <div
-                  className="absolute bottom-1.5 right-1.5 w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center shadow-md border-2 border-white"
+                  className="absolute bottom-1.5 right-1.5 w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center shadow-md border-2 border-white"
                   title="Petani Terverifikasi AgroConnect"
                 >
-                  <Check size={12} />
+                  <Check size={13} />
                 </div>
               )}
             </div>
 
-            <div className="flex-1 min-w-0 pt-1 sm:pt-1.5 space-y-1.5">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
-                <div className="flex flex-wrap items-center gap-2">
-                  <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
-                    {farmer.name}
-                  </h1>
-                  <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-800 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200 shadow-2xs">
-                    <ShieldCheck size={13} className="text-emerald-700" />
-                    <span>Mitra Terverifikasi</span>
-                  </span>
-                </div>
-
-                <div className="flex items-center gap-2 shrink-0">
-                  <button
-                    type="button"
-                    onClick={() => setIsContactOpen(true)}
-                    className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white rounded-lg text-xs font-bold shadow-xs transition-all cursor-pointer"
-                  >
-                    <Phone size={14} />
-                    <span>Hubungi Petani</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={handleShare}
-                    className="inline-flex items-center gap-1.5 px-3 py-2 bg-white hover:bg-slate-50 text-slate-700 rounded-lg text-xs font-bold border border-slate-200 shadow-2xs transition-all cursor-pointer"
-                    title="Salin tautan toko"
-                  >
-                    {isCopied ? (
-                      <>
-                        <Check size={14} className="text-emerald-600" />
-                        <span className="text-emerald-700">Tersalin!</span>
-                      </>
-                    ) : (
-                      <>
-                        <Share2 size={14} className="text-slate-500" />
-                        <span>Bagikan</span>
-                      </>
-                    )}
-                  </button>
-                </div>
+            <div className="space-y-1.5">
+              <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
+                <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
+                  {farmer.name}
+                </h1>
+                <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-800 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200 shadow-2xs">
+                  <ShieldCheck size={13} className="text-emerald-700" />
+                  <span>Mitra Terverifikasi</span>
+                </span>
               </div>
 
-              <div className="flex items-center gap-1.5 text-xs text-slate-500 font-semibold">
+              <div className="flex items-center justify-center sm:justify-start gap-1.5 text-xs text-slate-500 font-semibold">
                 <MapPin size={13} className="text-emerald-600 shrink-0" />
                 <span className="text-slate-700">{farmer.origin_region}</span>
               </div>
 
-              <p className="text-xs text-slate-600 max-w-3xl leading-relaxed">
+              <p className="text-xs text-slate-600 max-w-2xl leading-relaxed">
                 {farmer.description}
               </p>
             </div>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mt-4 pt-4 border-t border-slate-100">
+          <div className="flex items-center justify-center sm:justify-end gap-2.5 shrink-0 self-center md:self-center">
+            <button
+              type="button"
+              onClick={() => setIsContactOpen(true)}
+              className="inline-flex items-center gap-2 px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white rounded-lg text-xs font-bold shadow-xs transition-all cursor-pointer"
+            >
+              <Phone size={14} />
+              <span>Hubungi Petani</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={handleShare}
+              className="inline-flex items-center gap-1.5 px-3.5 py-2.5 bg-white hover:bg-slate-50 text-slate-700 rounded-lg text-xs font-bold border border-slate-200 shadow-2xs transition-all cursor-pointer"
+              title="Salin tautan toko"
+            >
+              {isCopied ? (
+                <>
+                  <Check size={14} className="text-emerald-600" />
+                  <span className="text-emerald-700">Tersalin!</span>
+                </>
+              ) : (
+                <>
+                  <Share2 size={14} className="text-slate-500" />
+                  <span>Bagikan</span>
+                </>
+              )}
+            </button>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 pt-6 border-t border-slate-100">
             <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200/70">
               <div className="flex items-center gap-1.5 text-amber-600 font-bold text-xs mb-1">
                 <Star size={15} className="fill-amber-400 text-amber-500" />
@@ -201,7 +200,6 @@ export function FarmerProfileHeader(props: FarmerProfileHeaderProps): React.JSX.
             </div>
           </div>
         </div>
-      </div>
 
       {isContactOpen && (
         <div
