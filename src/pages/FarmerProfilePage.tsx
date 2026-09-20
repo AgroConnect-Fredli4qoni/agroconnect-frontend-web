@@ -1,17 +1,16 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import { useParams } from 'react-router-dom'
-import { Store, MessageSquare, Info, SlidersHorizontal, ArrowUpDown } from 'lucide-react'
+import { Store, Info, SlidersHorizontal, ArrowUpDown } from 'lucide-react'
 import { Product } from '../types/product'
 import { fetchProducts, deleteProduct } from '../services/api'
 import { useAuth } from '../context/AuthContext'
-import { slugifyFarmerName, getFarmerProfile, getFarmerReviews } from '../services/farmerService'
+import { slugifyFarmerName, getFarmerProfile } from '../services/farmerService'
 import { FarmerProfileHeader } from '../components/FarmerProfileHeader'
-import { FarmerReviewsTab } from '../components/FarmerReviewsTab'
 import { FarmerAboutTab } from '../components/FarmerAboutTab'
 import { ProductCard, getProductRating, getProductSales } from '../components/ProductCard'
 import { ProductDetailModal } from '../components/ProductDetailModal'
 
-type TabType = 'catalog' | 'reviews' | 'about'
+type TabType = 'catalog' | 'about'
 type SortType = 'popular' | 'latest' | 'price_asc' | 'price_desc'
 
 const CATEGORY_TABS = ['Semua', 'Pangan Pokok', 'Sayur', 'Bumbu', 'Palawija']
@@ -59,10 +58,6 @@ export function FarmerProfilePage(): React.JSX.Element {
       return pSlug === targetSlug || p.farmer_name.toLowerCase() === farmer.name.toLowerCase()
     })
   }, [allProducts, targetSlug, farmer.name])
-
-  const reviews = useMemo(() => {
-    return getFarmerReviews(farmer.name, farmerProducts)
-  }, [farmer.name, farmerProducts])
 
   const filteredAndSortedProducts = useMemo(() => {
     return farmerProducts
@@ -135,26 +130,6 @@ export function FarmerProfilePage(): React.JSX.Element {
               }`}
             >
               {farmerProducts.length}
-            </span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setActiveTab('reviews')}
-            className={`inline-flex items-center gap-2 pb-3 px-1 text-xs sm:text-sm font-bold border-b-2 transition-all cursor-pointer whitespace-nowrap ${
-              activeTab === 'reviews'
-                ? 'border-emerald-600 text-emerald-700'
-                : 'border-transparent text-slate-500 hover:text-slate-800'
-            }`}
-          >
-            <MessageSquare size={16} />
-            <span>Ulasan Pembeli</span>
-            <span
-              className={`text-[11px] px-2 py-0.5 rounded-full font-bold ${
-                activeTab === 'reviews' ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-600'
-              }`}
-            >
-              {reviews.length}
             </span>
           </button>
 
@@ -238,14 +213,6 @@ export function FarmerProfilePage(): React.JSX.Element {
               </div>
             )}
           </div>
-        )}
-
-        {activeTab === 'reviews' && (
-          <FarmerReviewsTab
-            reviews={reviews}
-            overallRating={farmer.rating}
-            totalReviews={farmer.total_reviews}
-          />
         )}
 
         {activeTab === 'about' && (

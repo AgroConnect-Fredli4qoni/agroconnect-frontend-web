@@ -4,14 +4,14 @@ import {
   ArrowLeft,
   MapPin,
   ShieldCheck,
-  Star,
   Share2,
   Phone,
-  Clock,
   Check,
   X,
   Sprout,
-  Store
+  Store,
+  Scale,
+  Leaf
 } from 'lucide-react'
 import { FarmerProfile } from '../types/farmer'
 
@@ -156,49 +156,54 @@ export function FarmerProfileHeader(props: FarmerProfileHeaderProps): React.JSX.
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 pt-6 border-t border-slate-100">
-            <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200/70">
-              <div className="flex items-center gap-1.5 text-amber-600 font-bold text-xs mb-1">
-                <Star size={15} className="fill-amber-400 text-amber-500" />
-                <span>Rating Toko</span>
-              </div>
-              <div className="flex items-baseline gap-1.5">
-                <span className="text-xl font-black text-slate-900">{farmer.rating}</span>
-                <span className="text-[11px] text-slate-400">/ 5.0 ({farmer.total_reviews} ulasan)</span>
-              </div>
+          <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200/70">
+            <div className="flex items-center gap-1.5 text-emerald-700 font-bold text-xs mb-1">
+              <Store size={15} />
+              <span>Komoditas Panen</span>
             </div>
-
-            <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200/70">
-              <div className="flex items-center gap-1.5 text-emerald-700 font-bold text-xs mb-1">
-                <Store size={15} />
-                <span>Komoditas Aktif</span>
-              </div>
-              <div className="flex items-baseline gap-1.5">
-                <span className="text-xl font-black text-slate-900">{productCount}</span>
-                <span className="text-[11px] text-slate-400">Pilihan Panen</span>
-              </div>
-            </div>
-
-            <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200/70">
-              <div className="flex items-center gap-1.5 text-slate-600 font-bold text-xs mb-1">
-                <Sprout size={15} className="text-emerald-600" />
-                <span>Pengalaman Panen</span>
-              </div>
-              <div className="flex items-baseline gap-1.5">
-                <span className="text-xl font-black text-slate-900">Sejak {farmer.joined_year}</span>
-                <span className="text-[11px] text-slate-400">Mitra Resmi</span>
-              </div>
-            </div>
-
-            <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200/70">
-              <div className="flex items-center gap-1.5 text-teal-700 font-bold text-xs mb-1">
-                <Clock size={15} />
-                <span>Respons Chat</span>
-              </div>
-              <div className="flex items-baseline gap-1.5">
-                <span className="text-xl font-black text-slate-900">{farmer.response_rate}</span>
-              </div>
+            <div className="flex items-baseline gap-1.5">
+              <span className="text-xl font-black text-slate-900">{productCount}</span>
+              <span className="text-[11px] text-slate-400">Pilihan Aktif</span>
             </div>
           </div>
+
+          <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200/70">
+            <div className="flex items-center gap-1.5 text-slate-700 font-bold text-xs mb-1">
+              <Scale size={15} className="text-emerald-600" />
+              <span>Stok Siap Kirim</span>
+            </div>
+            <div className="flex items-baseline gap-1.5">
+              <span className="text-xl font-black text-slate-900">
+                {farmer.total_stock_kg.toLocaleString('id-ID')}
+              </span>
+              <span className="text-[11px] text-slate-400">Kg Tersedia</span>
+            </div>
+          </div>
+
+          <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200/70">
+            <div className="flex items-center gap-1.5 text-emerald-800 font-bold text-xs mb-1">
+              <Sprout size={15} className="text-emerald-600" />
+              <span>Kategori Utama</span>
+            </div>
+            <div className="flex items-baseline gap-1.5">
+              <span className="text-base font-black text-slate-900 truncate">
+                {farmer.primary_category}
+              </span>
+            </div>
+          </div>
+
+          <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200/70">
+            <div className="flex items-center gap-1.5 text-teal-700 font-bold text-xs mb-1">
+              <Leaf size={15} className="text-teal-600" />
+              <span>Metode Budidaya</span>
+            </div>
+            <div className="flex items-baseline gap-1.5">
+              <span className="text-xs font-black text-slate-900 truncate">
+                {farmer.is_organic ? 'Organik Alami' : 'Terstandarisasi'}
+              </span>
+            </div>
+          </div>
+        </div>
         </div>
 
       {isContactOpen && (

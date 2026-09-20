@@ -1,5 +1,5 @@
 import { Product } from '../types/product'
-import { FarmerProfile, FarmerReview } from '../types/farmer'
+import { FarmerProfile } from '../types/farmer'
 
 /**
  * Converts farmer name string into URL-friendly identifier.
@@ -33,10 +33,10 @@ const FARMER_AVATARS = [
 ]
 
 /**
- * Resolves complete farmer profile data by slug or name using available catalog products.
+ * Resolves complete farmer profile data by slug or name using real database catalog products.
  *
  * @param slugOrName - Identifier slug or full name of the farmer.
- * @param allProducts - Full catalog list for commodity association.
+ * @param allProducts - Full catalog list from MongoDB.
  * @returns Fully populated FarmerProfile instance.
  */
 export function getFarmerProfile(slugOrName: string, allProducts: Product[]): FarmerProfile {
@@ -52,10 +52,9 @@ export function getFarmerProfile(slugOrName: string, allProducts: Product[]): Fa
 
   const bannerIndex = seed % FARMER_BANNERS.length
   const avatarIndex = (seed * 3) % FARMER_AVATARS.length
-  const totalSales = matchedProducts.reduce((acc, p) => acc + p.stock_kg * 3, 450 + (seed % 300))
-  const rating = Number((4.8 + ((seed % 3) * 0.1)).toFixed(1))
-  const totalReviews = 45 + (seed % 80)
-  const joinedYear = 2021 + (seed % 4)
+  const totalStock = matchedProducts.reduce((acc, p) => acc + p.stock_kg, 0)
+  const categories = Array.from(new Set(matchedProducts.map((p) => p.category)))
+  const primaryCategory = categories[0] || 'Komoditas Pangan'
 
   const isOrganicFarmer = matchedProducts.some((p) => p.is_organic)
   const farmingMethods = isOrganicFarmer
@@ -73,12 +72,11 @@ export function getFarmerProfile(slugOrName: string, allProducts: Product[]): Fa
     origin_region: region,
     avatar_url: FARMER_AVATARS[avatarIndex],
     banner_url: FARMER_BANNERS[bannerIndex],
-    description: `Mitra petani andalan AgroConnect yang berdedikasi menghasilkan komoditas pangan bermutu tinggi langsung dari lahan sentra ${region}. Berpengalaman mengelola panen terstandarisasi untuk menjamin kesegaran dan nutrisi maksimal ke tangan konsumen.`,
-    rating,
-    total_reviews: totalReviews,
-    total_sales_kg: totalSales,
-    joined_year: joinedYear,
-    response_rate: '99% (Sangat Cepat)',
+    description: `Mitra kelompok tani resmi AgroConnect yang memproduksi komoditas ${primaryCategory.toLowerCase()} bermutu tinggi langsung dari lahan sentra ${region}. Seluruh komoditas dipanen terstandarisasi untuk menjamin kesegaran maksimal.`,
+    total_products: matchedProducts.length,
+    total_stock_kg: totalStock,
+    primary_category: primaryCategory,
+    is_organic: isOrganicFarmer,
     is_verified: true,
     farming_methods: farmingMethods,
     certifications,
@@ -86,59 +84,7 @@ export function getFarmerProfile(slugOrName: string, allProducts: Product[]): Fa
       phone: '+62 812-8920-4411',
       address: `Kawasan Lahan Pertanian Sentra, ${region}`,
       operating_hours: 'Senin - Sabtu (06.00 - 17.00 WIB)',
-      land_area: `${3 + (seed % 6)} Hektar Lahan Produktif`
+      land_area: 'Lahan Produktif Sentra Tani Mitra'
     }
   }
-}
-
-/**
- * Generates verified buyer feedback for the selected farmer and their commodities.
- *
- * @param farmerName - Name of the farmer producer.
- * @param farmerProducts - Products provided by this farmer.
- * @returns Array of realistic customer reviews.
- */
-export function getFarmerReviews(farmerName: string, farmerProducts: Product[]): FarmerReview[] {
-  const seed = farmerName.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0)
-  const primaryProduct = farmerProducts[0]?.name || 'Komoditas Pangan Pilihan'
-  const secondaryProduct = farmerProducts[1]?.name || farmerProducts[0]?.name || 'Hasil Panen Segar'
-
-  return [
-    {
-      id: `rev-${seed}-1`,
-      buyer_name: 'Hendra Gunawan',
-      rating: 5,
-      date: '16 September 2026',
-      comment: `Kualitas ${primaryProduct} dari ${farmerName} benar-benar luar biasa. Barang sampai dalam kondisi segar tanpa cacat, kemasan rapi dan higienis. Pasti langganan untuk kebutuhan resto kami.`,
-      product_name: primaryProduct,
-      helpful_count: 14
-    },
-    {
-      id: `rev-${seed}-2`,
-      buyer_name: 'Dewi Anggraini',
-      rating: 5,
-      date: '12 September 2026',
-      comment: `Sangat puas belanja langsung dari petaninya! Terasa sekali bedanya antara produk fresh dari kebun ${farmerName} dibanding beli di pasar biasa. Aromanya khas dan rasanya mantap.`,
-      product_name: secondaryProduct,
-      helpful_count: 9
-    },
-    {
-      id: `rev-${seed}-3`,
-      buyer_name: 'Bambang Sudarmono',
-      rating: 4,
-      date: '05 September 2026',
-      comment: `Pengiriman cepat dan komunikasi petani sangat ramah ketika ditanya tips penyimpanan. Komoditas ${primaryProduct} berbobot padat sesuai deskripsi. Rekomendasi untuk keluarga sehat.`,
-      product_name: primaryProduct,
-      helpful_count: 6
-    },
-    {
-      id: `rev-${seed}-4`,
-      buyer_name: 'Siti Nurhaliza',
-      rating: 5,
-      date: '28 Agustus 2026',
-      comment: `Langsung dipanen begitu ada order masuk, tingkat kesegaran 100% terjaga. Senang sekali bisa mendukung petani lokal seperti ${farmerName}. Sukses selalu!`,
-      product_name: secondaryProduct,
-      helpful_count: 11
-    }
-  ]
 }
