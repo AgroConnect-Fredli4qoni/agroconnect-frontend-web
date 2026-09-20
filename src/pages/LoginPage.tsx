@@ -1,42 +1,44 @@
 import React, { useState } from 'react'
-import { useNavigate, useLocation, Link } from 'react-router-dom'
-import { Mail, Lock, ArrowRight, Eye, EyeOff } from 'lucide-react'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
+import { Mail, Lock, ArrowRight, Eye, EyeOff, Sprout } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 
 /**
- * LoginPage renders dedicated authentication view for existing platform members.
+ * LoginPage provides dedicated authentication portal for registered users.
  *
- * @returns JSX Element presenting user login form with password visibility toggle.
+ * @returns JSX Element presenting user login form.
  */
 export function LoginPage(): React.JSX.Element {
   const navigate = useNavigate()
   const location = useLocation()
   const { login } = useAuth()
 
-  const [email, setEmail] = useState<string>('')
-  const [password, setPassword] = useState<string>('')
-  const [showPassword, setShowPassword] = useState<boolean>(false)
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+  const [errorMsg, setErrorMsg] = useState('')
+  const [successMsg, setSuccessMsg] = useState('')
 
-  const [isLoading, setIsLoading] = useState<boolean>(false)
-  const [errorMsg, setErrorMsg] = useState<string>('')
-  const [successMsg] = useState<string>(
-    (location.state as { registeredSuccess?: string })?.registeredSuccess || ''
-  )
+  const from = (location.state as { from?: { pathname: string } })?.from?.pathname || '/'
 
   const handleSubmit = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault()
-    setErrorMsg('')
     setIsLoading(true)
+    setErrorMsg('')
+    setSuccessMsg('')
 
     try {
       await login({ email, password })
-      const from = (location.state as { from?: { pathname?: string } })?.from?.pathname || '/'
-      navigate(from, { replace: true })
+      setSuccessMsg('Login berhasil! Mengalihkan...')
+      setTimeout(() => {
+        navigate(from, { replace: true })
+      }, 500)
     } catch (err: unknown) {
       if (err instanceof Error) {
         setErrorMsg(err.message)
       } else {
-        setErrorMsg('Terjadi kesalahan saat memproses login.')
+        setErrorMsg('Gagal masuk ke akun. Periksa kredensial Anda.')
       }
     } finally {
       setIsLoading(false)
@@ -48,7 +50,9 @@ export function LoginPage(): React.JSX.Element {
       <div className="w-full max-w-md bg-white rounded-2xl border border-slate-200/90 shadow-xl p-8 transition-all">
         <div className="text-center mb-6">
           <Link to="/" className="inline-flex items-center justify-center gap-2 mb-1.5 group">
-            <span className="text-3xl group-hover:scale-110 transition-transform">🌱</span>
+            <div className="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform">
+              <Sprout size={22} />
+            </div>
             <span className="text-2xl font-black text-emerald-900 tracking-tight">AgroConnect</span>
           </Link>
           <h1 className="text-xl font-black text-slate-900 mt-2">Masuk ke Akun Anda</h1>

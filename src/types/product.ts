@@ -12,6 +12,7 @@ export interface Product {
   farmer_name: string
   is_organic: boolean
   description: string
+  image_url?: string
   created_at: string
 }
 
@@ -28,4 +29,5 @@ export interface CreateProductInput {
   farmer_name: string
   is_organic: boolean
   description: string
+  image_url?: string
 }

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowRight } from 'lucide-react'
+import { ArrowRight, Sparkles } from 'lucide-react'
 import { HeroSlideshow } from '../components/HeroSlideshow'
 import { CategorySection } from '../components/CategorySection'
 import { ProductCard } from '../components/ProductCard'
@@ -86,7 +86,10 @@ export function HomePage(): React.JSX.Element {
       <section className="space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 pb-3 border-b border-slate-200">
           <div>
-            <h2 className="text-2xl font-black text-slate-900 tracking-tight">🌾 Komoditas Pilihan Unggulan</h2>
+            <div className="flex items-center gap-2.5">
+              <Sparkles size={22} className="text-emerald-700" />
+              <h2 className="text-2xl font-black text-slate-900 tracking-tight">Komoditas Pilihan Unggulan</h2>
+            </div>
             <p className="text-xs text-slate-500 mt-1">
               Beberapa hasil panen terbaik dari mitra petani lokal yang siap dikirim langsung hari ini.
             </p>

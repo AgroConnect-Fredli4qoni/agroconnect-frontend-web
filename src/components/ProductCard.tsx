@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { MapPin, User, Check, Plus, Minus, Trash2, Star } from 'lucide-react'
+import { MapPin, User, Check, Plus, Minus, Trash2, Star, Wheat, Salad, Carrot, Flame, Sprout, Leaf, Apple } from 'lucide-react'
 import { Product } from '../types/product'
 import { useCart } from '../context/CartContext'
 import { useAuth } from '../context/AuthContext'
@@ -36,31 +36,22 @@ export function getProductSales(product: Product): number {
   return 25 + seed
 }
 
-/**
- * Resolves visual emoji illustration based on commodity name and category.
- *
- * @param name - Product title.
- * @param category - Agricultural category.
- * @returns Emoji character.
- */
-function getProductEmoji(name: string, category: string): string {
+function renderFallbackCategoryIcon(category: string, name: string): React.JSX.Element {
   const n = name.toLowerCase()
-  if (n.includes('beras') || n.includes('padi')) return '🌾'
-  if (n.includes('cabai') || n.includes('rawit')) return '🌶️'
-  if (n.includes('jagung')) return '🌽'
-  if (n.includes('tomat')) return '🍅'
-  if (n.includes('bawang')) return '🧅'
-  if (n.includes('kentang')) return '🥔'
-  if (n.includes('wortel')) return '🥕'
-  if (n.includes('brokoli')) return '🥦'
-  if (n.includes('kubis') || n.includes('kol')) return '🥬'
-  if (n.includes('kacang') || n.includes('kedelai')) return '🥜'
-  if (n.includes('ubi') || n.includes('singkong') || n.includes('talas')) return '🍠'
-  if (n.includes('jahe') || n.includes('kunyit') || n.includes('lengkuas')) return '🫚'
-  if (category === 'Sayur') return '🥬'
-  if (category === 'Buah') return '🍎'
-  if (category === 'Palawija') return '🌽'
-  return '🌱'
+  if (n.includes('wortel')) return <Carrot size={38} className="text-emerald-700" />
+  if (n.includes('cabai') || n.includes('rawit') || n.includes('bawang') || n.includes('jahe')) {
+    return <Flame size={38} className="text-rose-600" />
+  }
+  if (category === 'Pangan Pokok' || n.includes('beras') || n.includes('jagung')) {
+    return <Wheat size={38} className="text-amber-700" />
+  }
+  if (category === 'Sayur') {
+    return <Salad size={38} className="text-emerald-700" />
+  }
+  if (category === 'Buah') {
+    return <Apple size={38} className="text-rose-600" />
+  }
+  return <Sprout size={38} className="text-emerald-700" />
 }
 
 /**
@@ -75,6 +66,7 @@ export function ProductCard(props: ProductCardProps): React.JSX.Element {
   const { user } = useAuth()
   const [qty, setQty] = useState<number>(1)
   const [isAdded, setIsAdded] = useState<boolean>(false)
+  const [imageFailed, setImageFailed] = useState<boolean>(false)
 
   const handleAdd = (): void => {
     if (product.stock_kg <= 0) return
@@ -83,34 +75,52 @@ export function ProductCard(props: ProductCardProps): React.JSX.Element {
     setTimeout(() => setIsAdded(false), 1500)
   }
 
-  const emoji = getProductEmoji(product.name, product.category)
   const rating = getProductRating(product.id, product.name)
   const sales = getProductSales(product)
+  const hasImage = Boolean(product.image_url && !imageFailed)
 
   return (
     <div className="bg-white rounded-xl border border-slate-200/80 overflow-hidden shadow-xs hover:shadow-md transition-all flex flex-col justify-between group">
-      <div className="bg-slate-50 p-6 flex items-center justify-between border-b border-slate-100">
-        <span className="text-5xl group-hover:scale-110 transition-transform select-none">{emoji}</span>
-        <div className="flex flex-col gap-1.5 items-end">
-          <div className="flex items-center gap-1.5">
-            <span className="inline-flex items-center gap-1 text-[11px] font-bold text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">
-              <Star size={11} className="fill-amber-400 text-amber-500" />
-              <span>{rating}</span>
-            </span>
-            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-600 bg-white px-2.5 py-1 rounded-full border border-slate-200">
-              {product.category}
+      <div className="relative w-full h-48 bg-slate-100 overflow-hidden border-b border-slate-100">
+        {hasImage ? (
+          <img
+            src={product.image_url}
+            alt={product.name}
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+            onError={() => setImageFailed(true)}
+            loading="lazy"
+          />
+        ) : (
+          <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-emerald-50 via-slate-50 to-emerald-100/40 text-emerald-800 p-4 select-none">
+            <div className="w-14 h-14 rounded-2xl bg-white shadow-2xs border border-emerald-100 flex items-center justify-center mb-1.5 group-hover:scale-110 transition-transform">
+              {renderFallbackCategoryIcon(product.category, product.name)}
+            </div>
+            <span className="text-[11px] font-semibold text-slate-500 text-center">
+              Hasil Panen Petani
             </span>
           </div>
-          <div className="flex items-center gap-1.5">
-            <span className="text-[10px] text-slate-400 font-semibold">
-              Terjual {sales} kg
+        )}
+
+        <div className="absolute top-3 left-3 flex flex-col gap-1.5 z-10">
+          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-700 bg-white/95 backdrop-blur-xs px-2.5 py-1 rounded-full border border-slate-200/90 shadow-2xs">
+            {product.category}
+          </span>
+          {product.is_organic && (
+            <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-800 bg-emerald-50/95 backdrop-blur-xs px-2.5 py-0.5 rounded-full border border-emerald-300 shadow-2xs">
+              <Leaf size={11} className="text-emerald-700" />
+              <span>Organik</span>
             </span>
-            {product.is_organic && (
-              <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
-                🌱 Organik
-              </span>
-            )}
-          </div>
+          )}
+        </div>
+
+        <div className="absolute top-3 right-3 flex flex-col items-end gap-1.5 z-10">
+          <span className="inline-flex items-center gap-1 text-[11px] font-bold text-amber-700 bg-white/95 backdrop-blur-xs px-2.5 py-1 rounded-full border border-amber-200 shadow-2xs">
+            <Star size={11} className="fill-amber-400 text-amber-500" />
+            <span>{rating}</span>
+          </span>
+          <span className="text-[10px] text-slate-700 bg-white/90 backdrop-blur-xs px-2 py-0.5 rounded-md font-semibold border border-slate-200 shadow-2xs">
+            Terjual {sales} kg
+          </span>
         </div>
       </div>
 

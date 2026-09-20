@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { X, PlusCircle, Navigation } from 'lucide-react'
+import { X, PlusCircle, Navigation, Wheat, Salad, Flame, Sprout, Apple, Image as ImageIcon } from 'lucide-react'
 import { CreateProductInput } from '../types/product'
 import { createProduct } from '../services/api'
 import { useAuth } from '../context/AuthContext'
@@ -18,18 +18,18 @@ export interface AddProductModalProps {
 }
 
 const CATEGORY_OPTIONS: DropdownOption[] = [
-  { value: 'Pangan Pokok', label: 'Pangan Pokok', icon: '🌾' },
-  { value: 'Sayur', label: 'Sayur', icon: '🥬' },
-  { value: 'Bumbu', label: 'Bumbu', icon: '🌶️' },
-  { value: 'Palawija', label: 'Palawija', icon: '🌽' },
-  { value: 'Buah', label: 'Buah', icon: '🍎' }
+  { value: 'Pangan Pokok', label: 'Pangan Pokok', icon: <Wheat size={16} className="text-amber-700" /> },
+  { value: 'Sayur', label: 'Sayur', icon: <Salad size={16} className="text-emerald-700" /> },
+  { value: 'Bumbu', label: 'Bumbu', icon: <Flame size={16} className="text-rose-600" /> },
+  { value: 'Palawija', label: 'Palawija', icon: <Sprout size={16} className="text-orange-700" /> },
+  { value: 'Buah', label: 'Buah', icon: <Apple size={16} className="text-rose-600" /> }
 ]
 
 /**
  * AddProductModal presents commodity registration form for farmers and administrators.
  *
  * @param props - Modal controller and refresh triggers.
- * @returns JSX Element rendering product publication dialog.
+ * @returns JSX Element presenting product publication dialog.
  */
 export function AddProductModal(props: AddProductModalProps): React.JSX.Element {
   const { isOpen, onClose, onProductCreated } = props
@@ -41,6 +41,7 @@ export function AddProductModal(props: AddProductModalProps): React.JSX.Element 
   const [stock, setStock] = useState('')
   const [region, setRegion] = useState('Jawa Barat')
   const [farmerName, setFarmerName] = useState(user?.name || 'Kelompok Tani Makmur')
+  const [imageUrl, setImageUrl] = useState('')
   const [isOrganic, setIsOrganic] = useState(true)
   const [description, setDescription] = useState('')
   const [isLoading, setIsLoading] = useState(false)
@@ -78,6 +79,7 @@ export function AddProductModal(props: AddProductModalProps): React.JSX.Element 
         farmer_name: farmerName,
         is_organic: isOrganic,
         description,
+        image_url: imageUrl.trim() || undefined,
       }
 
       await createProduct(payload, token)
@@ -86,6 +88,7 @@ export function AddProductModal(props: AddProductModalProps): React.JSX.Element 
       setName('')
       setPrice('')
       setStock('')
+      setImageUrl('')
       setDescription('')
     } catch (err: unknown) {
       if (err instanceof Error) {
@@ -244,6 +247,26 @@ export function AddProductModal(props: AddProductModalProps): React.JSX.Element 
               onChange={(e) => setDescription(e.target.value)}
               className="w-full px-3.5 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white text-slate-900 transition-all placeholder:text-slate-400 resize-none"
             />
+          </div>
+
+          <div>
+            <label htmlFor="prod-image" className="block text-xs font-semibold text-slate-700 mb-1.5">
+              URL Foto Produk / Hasil Panen (Opsional)
+            </label>
+            <div className="relative flex items-center">
+              <ImageIcon size={16} className="absolute left-3.5 text-slate-400 pointer-events-none" />
+              <input
+                id="prod-image"
+                type="url"
+                placeholder="https://images.unsplash.com/... atau tautan foto panen"
+                value={imageUrl}
+                onChange={(e) => setImageUrl(e.target.value)}
+                className="w-full pl-10 pr-3.5 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white text-slate-900 transition-all placeholder:text-slate-400"
+              />
+            </div>
+            <p className="text-[10px] text-slate-400 mt-1">
+              Jika dikosongkan, sistem akan menampilkan ilustrasi ikon agrikultur fallback otomatis.
+            </p>
           </div>
 
           <div className="pt-4 border-t border-slate-100 flex items-center justify-end gap-3">

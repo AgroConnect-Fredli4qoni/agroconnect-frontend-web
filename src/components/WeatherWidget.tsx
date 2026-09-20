@@ -1,5 +1,5 @@
 import React from 'react'
-import { Thermometer, Droplets, Wind, CloudRain, CheckCircle2 } from 'lucide-react'
+import { Thermometer, Droplets, Wind, CloudRain, CheckCircle2, CloudSun } from 'lucide-react'
 import { WeatherResponse } from '../types/weather'
 
 /**
@@ -27,7 +27,10 @@ export function WeatherWidget(props: WeatherWidgetProps): React.JSX.Element {
     <section id="cuaca" className="bg-white rounded-2xl border border-slate-200/80 p-6 lg:p-8 shadow-xs my-8">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
         <div>
-          <h2 className="text-xl font-black text-slate-900 tracking-tight">🌤️ Parameter Cuaca Pertanian (BMKG)</h2>
+          <div className="flex items-center gap-2">
+            <CloudSun size={22} className="text-emerald-700" />
+            <h2 className="text-xl font-black text-slate-900 tracking-tight">Parameter Cuaca Pertanian (BMKG)</h2>
+          </div>
           <p className="text-xs text-slate-500 mt-0.5">Prakiraan cuaca spesifik sentra pertanian untuk efisiensi jadwal tanam & panen.</p>
         </div>
 

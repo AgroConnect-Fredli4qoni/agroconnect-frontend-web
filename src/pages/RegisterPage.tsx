@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
-import { User, Mail, Lock, ArrowRight, Eye, EyeOff } from 'lucide-react'
+import { User, Mail, Lock, ArrowRight, Eye, EyeOff, Sprout } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 
 /**
@@ -26,15 +26,22 @@ export function RegisterPage(): React.JSX.Element {
     setIsLoading(true)
 
     try {
-      await register({ name, email, password, role: 'farmer' })
+      await register({
+        name,
+        email,
+        password,
+        role: 'farmer'
+      })
       navigate('/login', {
-        state: { registeredSuccess: 'Pendaftaran akun berhasil! Silakan masuk dengan akun baru Anda.' }
+        state: {
+          registeredSuccess: 'Registrasi berhasil! Silakan masuk dengan akun baru Anda.'
+        }
       })
     } catch (err: unknown) {
       if (err instanceof Error) {
         setErrorMsg(err.message)
       } else {
-        setErrorMsg('Terjadi kesalahan saat memproses pendaftaran akun.')
+        setErrorMsg('Gagal melakukan pendaftaran akun baru.')
       }
     } finally {
       setIsLoading(false)
@@ -46,7 +53,9 @@ export function RegisterPage(): React.JSX.Element {
       <div className="w-full max-w-md bg-white rounded-2xl border border-slate-200/90 shadow-xl p-8 transition-all">
         <div className="text-center mb-6">
           <Link to="/" className="inline-flex items-center justify-center gap-2 mb-1.5 group">
-            <span className="text-3xl group-hover:scale-110 transition-transform">🌱</span>
+            <div className="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform">
+              <Sprout size={22} />
+            </div>
             <span className="text-2xl font-black text-emerald-900 tracking-tight">AgroConnect</span>
           </Link>
           <h1 className="text-xl font-black text-slate-900 mt-2">Daftar Akun Baru</h1>

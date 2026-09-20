@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Filter, RotateCcw, MapPin, DollarSign, Star, Check, Navigation } from 'lucide-react'
+import { Filter, RotateCcw, MapPin, DollarSign, Star, Check, Navigation, X } from 'lucide-react'
 import { CustomNumberInput } from './CustomNumberInput'
 import { LocationMapModal } from './LocationMapModal'
 
@@ -24,9 +24,9 @@ export interface CatalogSidebarProps {
 
 const RATING_OPTIONS = [
   { value: 0, label: 'Semua Penilaian' },
-  { value: 4.8, label: '⭐ 4.8 ke atas' },
-  { value: 4.5, label: '⭐ 4.5 ke atas' },
-  { value: 4.0, label: '⭐ 4.0 ke atas' }
+  { value: 4.8, label: '4.8 ke atas' },
+  { value: 4.5, label: '4.5 ke atas' },
+  { value: 4.0, label: '4.0 ke atas' }
 ]
 
 /**
@@ -147,13 +147,14 @@ export function CatalogSidebar(props: CatalogSidebarProps): React.JSX.Element {
               </span>
             </div>
             <span
-              className={`text-[10px] font-bold px-2 py-0.5 rounded-md border shrink-0 ${
+              className={`inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-md border shrink-0 ${
                 selectedLocation !== 'Semua'
                   ? 'bg-emerald-700 text-white border-emerald-500'
                   : 'bg-white text-emerald-800 border-emerald-200'
               }`}
             >
-              🗺️ Peta
+              <MapPin size={10} />
+              <span>Peta</span>
             </span>
           </button>
 
@@ -166,10 +167,10 @@ export function CatalogSidebar(props: CatalogSidebarProps): React.JSX.Element {
               <button
                 type="button"
                 onClick={() => onSelectLocation('Semua')}
-                className="text-[11px] text-slate-400 hover:text-rose-600 font-bold ml-2 shrink-0 cursor-pointer"
+                className="p-1 text-slate-400 hover:text-rose-600 rounded-md hover:bg-rose-50 transition-colors ml-2 shrink-0 cursor-pointer"
                 title="Hapus filter lokasi"
               >
-                ✕
+                <X size={12} />
               </button>
             </div>
           )}
@@ -227,7 +228,10 @@ export function CatalogSidebar(props: CatalogSidebarProps): React.JSX.Element {
                       : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
                   }`}
                 >
-                  <span>{opt.label}</span>
+                  <div className="flex items-center gap-1.5">
+                    {opt.value > 0 && <Star size={13} className="fill-amber-400 text-amber-500" />}
+                    <span>{opt.label}</span>
+                  </div>
                   {isSelected && <Check size={14} className="text-amber-600" />}
                 </button>
               )

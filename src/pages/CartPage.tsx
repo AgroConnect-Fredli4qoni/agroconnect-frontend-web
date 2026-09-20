@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Trash2, Plus, Minus, ArrowLeft, ShoppingBag, CheckCircle2, ShieldCheck, MapPin, User, CreditCard, Navigation } from 'lucide-react'
+import { Trash2, Plus, Minus, ArrowLeft, ShoppingBag, CheckCircle2, ShieldCheck, MapPin, User, CreditCard, Navigation, Smartphone, Building2, Landmark, Banknote } from 'lucide-react'
 import { useCart } from '../context/CartContext'
 import { useAuth } from '../context/AuthContext'
 import { createOrder } from '../services/api'
@@ -9,10 +9,10 @@ import { CustomDropdown, DropdownOption } from '../components/CustomDropdown'
 import { LocationMapModal } from '../components/LocationMapModal'
 
 const PAYMENT_OPTIONS: DropdownOption[] = [
-  { value: 'QRIS', label: 'QRIS Agrikultur Instan', icon: '📱', description: 'GoPay, OVO, Dana, ShopeePay' },
-  { value: 'Transfer Bank BCA', label: 'BCA Virtual Account', icon: '🏦', description: 'Verifikasi otomatis 24 jam' },
-  { value: 'Transfer Bank Mandiri', label: 'Mandiri Virtual Account', icon: '🏛️', description: 'Verifikasi instan' },
-  { value: 'Tunai saat Terima', label: 'Tunai saat Terima (COD Petani)', icon: '🤝', description: 'Bayar saat komoditas tiba' }
+  { value: 'QRIS', label: 'QRIS Agrikultur Instan', icon: <Smartphone size={16} className="text-emerald-600" />, description: 'GoPay, OVO, Dana, ShopeePay' },
+  { value: 'Transfer Bank BCA', label: 'BCA Virtual Account', icon: <Building2 size={16} className="text-blue-600" />, description: 'Verifikasi otomatis 24 jam' },
+  { value: 'Transfer Bank Mandiri', label: 'Mandiri Virtual Account', icon: <Landmark size={16} className="text-amber-600" />, description: 'Verifikasi instan' },
+  { value: 'Tunai saat Terima', label: 'Tunai saat Terima (COD Petani)', icon: <Banknote size={16} className="text-emerald-700" />, description: 'Bayar saat komoditas tiba' }
 ]
 
 /**
