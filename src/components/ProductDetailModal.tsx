@@ -27,6 +27,7 @@ import { Product } from '../types/product'
 import { useCart } from '../context/CartContext'
 import { useAuth } from '../context/AuthContext'
 import { getProductRating, getProductSales } from './ProductCard'
+import { slugifyFarmerName } from '../services/farmerService'
 
 /**
  * ProductDetailModalProps defines configuration for commodity detail dialog.
@@ -234,11 +235,21 @@ export function ProductDetailModal(props: ProductDetailModalProps): React.JSX.El
                     </div>
                   </div>
                 </div>
-                <div className="text-right">
-                  <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-700 bg-emerald-100/70 px-2.5 py-1 rounded-full border border-emerald-200">
+                <div className="text-right flex flex-col items-end gap-1.5">
+                  <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-700 bg-emerald-100/70 px-2.5 py-0.5 rounded-full border border-emerald-200">
                     <ShieldCheck size={12} />
                     <span>Terverifikasi</span>
                   </span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      onClose()
+                      navigate(`/petani/${slugifyFarmerName(product.farmer_name)}`)
+                    }}
+                    className="text-[11px] font-bold text-emerald-700 hover:text-emerald-800 hover:underline cursor-pointer"
+                  >
+                    Kunjungi Toko Petani &rarr;
+                  </button>
                 </div>
               </div>
 

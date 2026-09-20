@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate, useParams } from 'react-router-dom'
 import { Sprout } from 'lucide-react'
 import { AuthProvider } from './context/AuthContext'
 import { CartProvider } from './context/CartContext'
@@ -10,6 +10,12 @@ import { CartPage } from './pages/CartPage'
 import { LoginPage } from './pages/LoginPage'
 import { RegisterPage } from './pages/RegisterPage'
 import { OrdersPage } from './pages/OrdersPage'
+import { FarmerProfilePage } from './pages/FarmerProfilePage'
+
+function FarmerRouteRedirect(): React.JSX.Element {
+  const { slug } = useParams<{ slug: string }>()
+  return <Navigate to={`/petani/${slug || ''}`} replace />
+}
 
 /**
  * AppRoot wraps global providers, routing layers, and top-level navigation.
@@ -44,6 +50,8 @@ export function AppRoot(): React.JSX.Element {
                 <Route path="/register" element={<RegisterPage />} />
                 <Route path="/auth" element={<Navigate to="/login" replace />} />
                 <Route path="/orders" element={<OrdersPage />} />
+                <Route path="/petani/:slug" element={<FarmerProfilePage />} />
+                <Route path="/farmer/:slug" element={<FarmerRouteRedirect />} />
                 <Route path="*" element={<Navigate to="/" replace />} />
               </Routes>
             </main>

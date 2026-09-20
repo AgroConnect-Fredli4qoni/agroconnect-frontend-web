@@ -1,8 +1,10 @@
 import React, { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { MapPin, User, Check, Plus, Minus, Trash2, Star, Wheat, Salad, Carrot, Flame, Sprout, Leaf, Apple } from 'lucide-react'
 import { Product } from '../types/product'
 import { useCart } from '../context/CartContext'
 import { useAuth } from '../context/AuthContext'
+import { slugifyFarmerName } from '../services/farmerService'
 
 /**
  * ProductCardProps defines item specification and optional deletion callback.
@@ -141,7 +143,14 @@ export function ProductCard(props: ProductCardProps): React.JSX.Element {
           </div>
           <div className="flex items-center gap-1.5">
             <User size={13} className="text-slate-400" />
-            <span>{product.farmer_name}</span>
+            <Link
+              to={`/petani/${slugifyFarmerName(product.farmer_name)}`}
+              onClick={(e) => e.stopPropagation()}
+              className="hover:text-emerald-700 hover:underline transition-colors font-medium cursor-pointer truncate"
+              title={`Kunjungi profil toko ${product.farmer_name}`}
+            >
+              {product.farmer_name}
+            </Link>
           </div>
         </div>
 
