@@ -34,7 +34,7 @@ export function CatalogPage(props: CatalogPageProps): React.JSX.Element {
   const [rawProducts, setRawProducts] = useState<Product[]>([])
   const [isProductsLoading, setIsProductsLoading] = useState<boolean>(false)
 
-  const [search, setSearch] = useState<string>('')
+  const [search, setSearch] = useState<string>(searchParams.get('search') || '')
   const [category, setCategory] = useState<string>(searchParams.get('category') || 'Semua')
   const [selectedLocation, setSelectedLocation] = useState<string>('Semua')
   const [minPrice, setMinPrice] = useState<string>('')
@@ -48,17 +48,34 @@ export function CatalogPage(props: CatalogPageProps): React.JSX.Element {
     if (urlCat && urlCat !== category) {
       setCategory(urlCat)
     }
-  }, [searchParams, category])
+    const urlSearch = searchParams.get('search')
+    if (urlSearch !== null && urlSearch !== search) {
+      setSearch(urlSearch)
+    } else if (urlSearch === null && search !== '') {
+      setSearch('')
+    }
+  }, [searchParams, category, search])
+
+  const handleSearchChange = (newSearch: string): void => {
+    setSearch(newSearch)
+    const nextParams = new URLSearchParams(searchParams)
+    if (newSearch.trim()) {
+      nextParams.set('search', newSearch.trim())
+    } else {
+      nextParams.delete('search')
+    }
+    setSearchParams(nextParams, { replace: true })
+  }
 
   const handleCategoryChange = (newCat: string): void => {
     setCategory(newCat)
+    const nextParams = new URLSearchParams(searchParams)
     if (newCat === 'Semua') {
-      const nextParams = new URLSearchParams(searchParams)
       nextParams.delete('category')
-      setSearchParams(nextParams)
     } else {
-      setSearchParams({ category: newCat })
+      nextParams.set('category', newCat)
     }
+    setSearchParams(nextParams)
   }
 
   const loadProducts = useCallback(async (): Promise<void> => {
@@ -192,7 +209,7 @@ export function CatalogPage(props: CatalogPageProps): React.JSX.Element {
         <main className="flex-1 min-w-0 space-y-6 w-full">
           <CatalogSortBar
             search={search}
-            onSearchChange={setSearch}
+            onSearchChange={handleSearchChange}
             sortBy={sortBy}
             onSortByChange={setSortBy}
             totalCount={filteredAndSortedProducts.length}
