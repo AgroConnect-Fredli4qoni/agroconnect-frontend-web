@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom'
-import { ShoppingCart, PlusCircle, ClipboardList, User, LogOut, Sprout, Search, X } from 'lucide-react'
+import { ShoppingCart, ClipboardList, User, LogOut, Sprout, Search, X } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { useCart } from '../context/CartContext'
 
@@ -8,7 +8,7 @@ import { useCart } from '../context/CartContext'
  * NavbarProps defines callback for farmer product addition modal.
  */
 export interface NavbarProps {
-  onOpenAddProduct: () => void
+  onOpenAddProduct?: () => void
 }
 
 /**
@@ -17,8 +17,7 @@ export interface NavbarProps {
  * @param props - Trigger callback for farmer product addition modal.
  * @returns JSX Element rendering application navigation bar.
  */
-export function Navbar(props: NavbarProps): React.JSX.Element {
-  const { onOpenAddProduct } = props
+export function Navbar(_props?: NavbarProps): React.JSX.Element {
   const location = useLocation()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
@@ -63,19 +62,6 @@ export function Navbar(props: NavbarProps): React.JSX.Element {
               <span className="text-[10px] text-slate-400 font-medium hidden sm:block">Smart Agro-Commerce & Weather</span>
             </div>
           </Link>
-
-          {isAuthenticated && (
-            <nav className="hidden xl:flex items-center gap-1.5">
-              <button
-                type="button"
-                className="inline-flex items-center gap-2 px-3 py-2 text-xs font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 rounded-lg transition-all cursor-pointer"
-                onClick={onOpenAddProduct}
-              >
-                <PlusCircle size={18} />
-                <span>Tambah Komoditas</span>
-              </button>
-            </nav>
-          )}
         </div>
 
         <form

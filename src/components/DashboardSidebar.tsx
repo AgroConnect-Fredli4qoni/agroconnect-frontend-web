@@ -1,6 +1,5 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
-import { User, LogOut, ArrowLeft, BadgeCheck } from 'lucide-react'
+import { User, LogOut, BadgeCheck } from 'lucide-react'
 import { UserProfile } from '../types/auth'
 
 /**
@@ -58,18 +57,6 @@ export function DashboardSidebar(props: DashboardSidebarProps): React.JSX.Elemen
         </nav>
 
         <div className="pt-3 mt-3 border-t border-slate-100 space-y-1">
-          <div className="px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider text-slate-400">
-            Akses Cepat
-          </div>
-
-          <Link
-            to="/"
-            className="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-all cursor-pointer"
-          >
-            <ArrowLeft size={16} />
-            <span>Kembali ke Beranda</span>
-          </Link>
-
           <button
             type="button"
             onClick={onLogout}
