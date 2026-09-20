@@ -46,16 +46,19 @@ export function LoginPage(): React.JSX.Element {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center py-12 px-4 bg-slate-50">
+    <div className="min-h-screen flex flex-col items-center justify-center py-12 px-4 bg-slate-50">
+      <div className="mb-6 text-center">
+        <Link to="/" className="inline-flex items-center justify-center gap-2.5 group">
+          <div className="w-11 h-11 rounded-xl bg-emerald-600 text-white flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform">
+            <Sprout size={24} />
+          </div>
+          <span className="text-2xl sm:text-3xl font-black text-emerald-950 tracking-tight">AgroConnect</span>
+        </Link>
+      </div>
+
       <div className="w-full max-w-md bg-white rounded-2xl border border-slate-200/90 shadow-xl p-8 transition-all">
         <div className="text-center mb-6">
-          <Link to="/" className="inline-flex items-center justify-center gap-2 mb-1.5 group">
-            <div className="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform">
-              <Sprout size={22} />
-            </div>
-            <span className="text-2xl font-black text-emerald-900 tracking-tight">AgroConnect</span>
-          </Link>
-          <h1 className="text-xl font-black text-slate-900 mt-2">Masuk ke Akun Anda</h1>
+          <h1 className="text-xl font-black text-slate-900">Masuk ke Akun Anda</h1>
           <p className="text-xs text-slate-500 mt-1 leading-relaxed">
             Akses dasbor komoditas, riwayat pesanan, dan transaksi pasar tani.
           </p>
