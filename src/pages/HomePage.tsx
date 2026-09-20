@@ -4,6 +4,7 @@ import { ArrowRight, Sparkles } from 'lucide-react'
 import { HeroSlideshow } from '../components/HeroSlideshow'
 import { CategorySection } from '../components/CategorySection'
 import { ProductCard } from '../components/ProductCard'
+import { ProductDetailModal } from '../components/ProductDetailModal'
 import { Product } from '../types/product'
 import { WeatherResponse } from '../types/weather'
 import { fetchProducts, fetchWeather, deleteProduct } from '../services/api'
@@ -23,6 +24,7 @@ export function HomePage(): React.JSX.Element {
 
   const [products, setProducts] = useState<Product[]>([])
   const [isProductsLoading, setIsProductsLoading] = useState<boolean>(false)
+  const [selectedProductForDetail, setSelectedProductForDetail] = useState<Product | null>(null)
 
   const loadWeather = useCallback(async (region: string): Promise<void> => {
     setIsWeatherLoading(true)
@@ -119,6 +121,7 @@ export function HomePage(): React.JSX.Element {
                 key={product.id}
                 product={product}
                 onDelete={handleDeleteProduct}
+                onOpenDetail={setSelectedProductForDetail}
               />
             ))}
           </div>
@@ -134,6 +137,13 @@ export function HomePage(): React.JSX.Element {
           </Link>
         </div>
       </section>
+
+      <ProductDetailModal
+        product={selectedProductForDetail}
+        isOpen={Boolean(selectedProductForDetail)}
+        onClose={() => setSelectedProductForDetail(null)}
+        onDelete={handleDeleteProduct}
+      />
     </div>
   )
 }

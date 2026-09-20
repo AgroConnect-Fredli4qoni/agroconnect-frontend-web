@@ -10,6 +10,7 @@ import { useAuth } from '../context/AuthContext'
 export interface ProductCardProps {
   product: Product
   onDelete?: (id: string) => void
+  onOpenDetail?: (product: Product) => void
 }
 
 /**
@@ -61,7 +62,7 @@ function renderFallbackCategoryIcon(category: string, name: string): React.JSX.E
  * @returns JSX Element presenting commodity card.
  */
 export function ProductCard(props: ProductCardProps): React.JSX.Element {
-  const { product, onDelete } = props
+  const { product, onDelete, onOpenDetail } = props
   const { addItem } = useCart()
   const { user } = useAuth()
   const [qty, setQty] = useState<number>(1)
@@ -80,7 +81,10 @@ export function ProductCard(props: ProductCardProps): React.JSX.Element {
   const hasImage = Boolean(product.image_url && !imageFailed)
 
   return (
-    <div className="bg-white rounded-xl border border-slate-200/80 overflow-hidden shadow-xs hover:shadow-md transition-all flex flex-col justify-between group">
+    <div
+      className="bg-white rounded-xl border border-slate-200/80 hover:border-emerald-300 overflow-hidden shadow-xs hover:shadow-md transition-all flex flex-col justify-between group cursor-pointer"
+      onClick={() => onOpenDetail?.(product)}
+    >
       <div className="relative w-full h-48 bg-slate-100 overflow-hidden border-b border-slate-100">
         {hasImage ? (
           <img
@@ -155,7 +159,10 @@ export function ProductCard(props: ProductCardProps): React.JSX.Element {
         </div>
       </div>
 
-      <div className="p-4 bg-slate-50/70 border-t border-slate-100 flex items-center justify-between gap-2">
+      <div
+        className="p-4 bg-slate-50/70 border-t border-slate-100 flex items-center justify-between gap-2"
+        onClick={(e) => e.stopPropagation()}
+      >
         {product.stock_kg > 0 ? (
           <div className="flex items-center gap-2 flex-1">
             <div className="flex items-center gap-0.5 bg-white border border-slate-200 rounded-lg p-0.5 shadow-2xs">

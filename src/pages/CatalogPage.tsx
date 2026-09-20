@@ -5,6 +5,7 @@ import { CatalogSidebar } from '../components/CatalogSidebar'
 import { CatalogSortBar, SortOption } from '../components/CatalogSortBar'
 import { ProductCard, getProductRating, getProductSales } from '../components/ProductCard'
 import { AddProductModal } from '../components/AddProductModal'
+import { ProductDetailModal } from '../components/ProductDetailModal'
 import { Product } from '../types/product'
 import { fetchProducts, deleteProduct } from '../services/api'
 import { useAuth } from '../context/AuthContext'
@@ -42,6 +43,7 @@ export function CatalogPage(props: CatalogPageProps): React.JSX.Element {
   const [selectedRating, setSelectedRating] = useState<number>(0)
   const [sortBy, setSortBy] = useState<SortOption>('popular')
   const [currentPage, setCurrentPage] = useState<number>(1)
+  const [selectedProductForDetail, setSelectedProductForDetail] = useState<Product | null>(null)
 
   useEffect(() => {
     const urlCat = searchParams.get('category')
@@ -242,6 +244,7 @@ export function CatalogPage(props: CatalogPageProps): React.JSX.Element {
                     key={product.id}
                     product={product}
                     onDelete={handleDeleteProduct}
+                    onOpenDetail={setSelectedProductForDetail}
                   />
                 ))}
               </div>
@@ -308,6 +311,13 @@ export function CatalogPage(props: CatalogPageProps): React.JSX.Element {
         isOpen={isAddProductOpen}
         onClose={() => setIsAddProductOpen(false)}
         onProductCreated={loadProducts}
+      />
+
+      <ProductDetailModal
+        product={selectedProductForDetail}
+        isOpen={Boolean(selectedProductForDetail)}
+        onClose={() => setSelectedProductForDetail(null)}
+        onDelete={handleDeleteProduct}
       />
     </div>
   )
