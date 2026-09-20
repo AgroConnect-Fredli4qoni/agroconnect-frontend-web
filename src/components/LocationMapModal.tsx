@@ -2,11 +2,12 @@ import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { MapPin, Navigation, Search, X, Check, RotateCcw, Loader2 } from 'lucide-react'
 import L from 'leaflet'
 import {
-  AgriculturalRegion,
   AGRICULTURAL_REGIONS,
   calculateDistanceKm,
   findNearestRegion,
-  createCustomPinIcon
+  createCustomPinIcon,
+  LocationSearchResult,
+  searchIndonesianLocations
 } from '../utils/geo'
 
 /**
@@ -40,6 +41,8 @@ export function LocationMapModal(props: LocationMapModalProps): React.JSX.Elemen
   const markerRef = useRef<L.Marker | null>(null)
 
   const [searchQuery, setSearchQuery] = useState('')
+  const [searchResults, setSearchResults] = useState<LocationSearchResult[]>([])
+  const [isSearching, setIsSearching] = useState(false)
   const [selectedCoords, setSelectedCoords] = useState<[number, number]>([-6.8172, 107.1394])
   const [selectedLocationName, setSelectedLocationName] = useState(
     currentLocation === 'Semua' ? 'Cianjur, Jawa Barat' : currentLocation
@@ -49,15 +52,31 @@ export function LocationMapModal(props: LocationMapModalProps): React.JSX.Elemen
   const [isReverseGeocoding, setIsReverseGeocoding] = useState(false)
   const [statusMessage, setStatusMessage] = useState('')
 
-  const filteredRegions =
-    searchQuery.trim() === ''
-      ? []
-      : AGRICULTURAL_REGIONS.filter(
-          (reg) =>
-            reg.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            reg.province.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            reg.description.toLowerCase().includes(searchQuery.toLowerCase())
-        )
+  useEffect(() => {
+    if (!searchQuery || searchQuery.trim().length < 2) {
+      setSearchResults([])
+      setIsSearching(false)
+      return
+    }
+
+    setIsSearching(true)
+    const controller = new AbortController()
+    const timer = setTimeout(async () => {
+      try {
+        const results = await searchIndonesianLocations(searchQuery, controller.signal)
+        setSearchResults(results)
+      } catch {
+        setSearchResults([])
+      } finally {
+        setIsSearching(false)
+      }
+    }, 350)
+
+    return () => {
+      clearTimeout(timer)
+      controller.abort()
+    }
+  }, [searchQuery])
 
   const reverseGeocode = useCallback(async (lat: number, lng: number) => {
     setIsReverseGeocoding(true)
@@ -147,12 +166,13 @@ export function LocationMapModal(props: LocationMapModalProps): React.JSX.Elemen
     )
   }, [updateMarkerPosition])
 
-  const handleSelectRegionFromSearch = useCallback(
-    (reg: AgriculturalRegion) => {
+  const handleSelectSearchResult = useCallback(
+    (item: LocationSearchResult) => {
       setSearchQuery('')
-      setSelectedLocationName(reg.name)
-      setDetailedAddress(`${reg.name} - ${reg.description}`)
-      updateMarkerPosition(reg.lat, reg.lng, false)
+      setSearchResults([])
+      setSelectedLocationName(item.name)
+      setDetailedAddress(item.subtext)
+      updateMarkerPosition(item.lat, item.lng, false)
     },
     [updateMarkerPosition]
   )
@@ -273,18 +293,25 @@ export function LocationMapModal(props: LocationMapModalProps): React.JSX.Elemen
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Cari sentra tani (contoh: Lembang, Dieng, Cianjur, Kediri)..."
-                className="w-full pl-9 pr-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white text-slate-800 transition-all placeholder:text-slate-400"
+                placeholder="Cari desa, kecamatan, kabupaten, atau pelosok..."
+                className="w-full pl-9 pr-8 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white text-slate-800 transition-all placeholder:text-slate-400"
               />
-              {searchQuery && (
+              {isSearching ? (
+                <div className="absolute right-2.5 top-1/2 -translate-y-1/2 text-emerald-600">
+                  <Loader2 size={14} className="animate-spin" />
+                </div>
+              ) : searchQuery ? (
                 <button
                   type="button"
-                  onClick={() => setSearchQuery('')}
-                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                  onClick={() => {
+                    setSearchQuery('')
+                    setSearchResults([])
+                  }}
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 cursor-pointer"
                 >
                   <X size={14} />
                 </button>
-              )}
+              ) : null}
             </div>
 
             <button
@@ -302,28 +329,34 @@ export function LocationMapModal(props: LocationMapModalProps): React.JSX.Elemen
             </button>
           </div>
 
-          {filteredRegions.length > 0 && (
-            <div className="max-h-36 overflow-y-auto border border-slate-200 rounded-lg bg-white shadow-lg divide-y divide-slate-100">
-              {filteredRegions.map((reg) => (
+          {searchResults.length > 0 && (
+            <div className="max-h-48 overflow-y-auto border border-slate-200 rounded-lg bg-white shadow-lg divide-y divide-slate-100">
+              {searchResults.map((item) => (
                 <button
-                  key={reg.name}
+                  key={item.id}
                   type="button"
-                  onClick={() => handleSelectRegionFromSearch(reg)}
-                  className="w-full px-3 py-2 text-left hover:bg-emerald-50 flex items-center justify-between transition-colors cursor-pointer"
+                  onClick={() => handleSelectSearchResult(item)}
+                  className="w-full px-3 py-2 text-left hover:bg-emerald-50/80 flex items-center justify-between gap-2 transition-colors cursor-pointer"
                 >
-                  <div>
-                    <span className="text-xs font-bold text-slate-800 block">
-                      {reg.name}
+                  <div className="min-w-0 flex-1">
+                    <span className="text-xs font-bold text-slate-800 block truncate">
+                      {item.name}
                     </span>
-                    <span className="text-[10px] text-slate-500">
-                      {reg.description}
+                    <span className="text-[10px] text-slate-500 block truncate">
+                      {item.subtext}
                     </span>
                   </div>
-                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 font-medium">
-                    {reg.province}
+                  <span className="text-[9px] font-semibold px-2 py-0.5 rounded-md bg-emerald-100/70 text-emerald-800 shrink-0">
+                    {item.badge}
                   </span>
                 </button>
               ))}
+            </div>
+          )}
+
+          {!isSearching && searchQuery.trim().length >= 2 && searchResults.length === 0 && (
+            <div className="px-3 py-2 text-center text-xs text-slate-500 bg-slate-50 border border-slate-200 rounded-lg">
+              Tidak ada hasil spesifik untuk &ldquo;{searchQuery}&rdquo;. Coba sebutkan nama desa, kecamatan, atau kabupaten.
             </div>
           )}
 

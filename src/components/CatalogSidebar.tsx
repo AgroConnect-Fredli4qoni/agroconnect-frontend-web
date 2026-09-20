@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import { Filter, RotateCcw, MapPin, DollarSign, Star, Check, Navigation } from 'lucide-react'
-import { CustomDropdown } from './CustomDropdown'
 import { CustomNumberInput } from './CustomNumberInput'
 import { LocationMapModal } from './LocationMapModal'
 
@@ -11,7 +10,6 @@ export interface CatalogSidebarProps {
   categories: string[]
   selectedCategory: string
   onSelectCategory: (category: string) => void
-  availableLocations: string[]
   selectedLocation: string
   onSelectLocation: (location: string) => void
   minPrice: string
@@ -42,7 +40,6 @@ export function CatalogSidebar(props: CatalogSidebarProps): React.JSX.Element {
     categories,
     selectedCategory,
     onSelectCategory,
-    availableLocations,
     selectedLocation,
     onSelectLocation,
     minPrice,
@@ -132,29 +129,50 @@ export function CatalogSidebar(props: CatalogSidebarProps): React.JSX.Element {
           <button
             type="button"
             onClick={() => setIsMapOpen(true)}
-            className="w-full flex items-center justify-between gap-2 px-3.5 py-2.5 text-xs font-semibold bg-emerald-50 hover:bg-emerald-100 text-emerald-900 border border-emerald-200/80 rounded-lg transition-all cursor-pointer shadow-2xs group"
+            className={`w-full flex items-center justify-between gap-2 px-3.5 py-2.5 text-xs font-semibold rounded-lg transition-all cursor-pointer shadow-2xs group ${
+              selectedLocation !== 'Semua'
+                ? 'bg-emerald-600 hover:bg-emerald-700 text-white border border-emerald-700'
+                : 'bg-emerald-50 hover:bg-emerald-100 text-emerald-900 border border-emerald-200/80'
+            }`}
           >
             <div className="flex items-center gap-2 truncate">
-              <Navigation size={14} className="text-emerald-700 shrink-0 group-hover:scale-110 transition-transform" />
+              <Navigation
+                size={14}
+                className={`shrink-0 group-hover:scale-110 transition-transform ${
+                  selectedLocation !== 'Semua' ? 'text-white' : 'text-emerald-700'
+                }`}
+              />
               <span className="truncate">
                 {selectedLocation === 'Semua' ? 'Pilih di Peta / GPS' : selectedLocation}
               </span>
             </div>
-            <span className="text-[10px] font-bold text-emerald-800 bg-white px-2 py-0.5 rounded-md border border-emerald-200 shrink-0">
+            <span
+              className={`text-[10px] font-bold px-2 py-0.5 rounded-md border shrink-0 ${
+                selectedLocation !== 'Semua'
+                  ? 'bg-emerald-700 text-white border-emerald-500'
+                  : 'bg-white text-emerald-800 border-emerald-200'
+              }`}
+            >
               🗺️ Peta
             </span>
           </button>
 
-          <CustomDropdown
-            id="catalog-location-filter"
-            value={selectedLocation}
-            onChange={onSelectLocation}
-            options={[
-              { value: 'Semua', label: 'Semua Wilayah' },
-              ...availableLocations.map((loc) => ({ value: loc, label: loc }))
-            ]}
-            placeholder="Pilih Wilayah Cepat"
-          />
+          {selectedLocation !== 'Semua' && (
+            <div className="flex items-center justify-between bg-emerald-50/80 border border-emerald-200/80 px-3 py-2 rounded-lg text-xs">
+              <div className="flex items-center gap-1.5 text-emerald-950 truncate">
+                <MapPin size={13} className="text-emerald-600 shrink-0" />
+                <span className="truncate font-semibold">{selectedLocation}</span>
+              </div>
+              <button
+                type="button"
+                onClick={() => onSelectLocation('Semua')}
+                className="text-[11px] text-slate-400 hover:text-rose-600 font-bold ml-2 shrink-0 cursor-pointer"
+                title="Hapus filter lokasi"
+              >
+                ✕
+              </button>
+            </div>
+          )}
         </div>
 
         <div className="pt-4 border-t border-slate-100 space-y-3">

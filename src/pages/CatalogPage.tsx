@@ -81,14 +81,6 @@ export function CatalogPage(props: CatalogPageProps): React.JSX.Element {
     setCurrentPage(1)
   }, [search, category, selectedLocation, minPrice, maxPrice, selectedRating, sortBy])
 
-  const availableLocations = useMemo(() => {
-    const set = new Set<string>()
-    rawProducts.forEach((p) => {
-      if (p.origin_region) set.add(p.origin_region)
-    })
-    return Array.from(set).sort()
-  }, [rawProducts])
-
   const filteredAndSortedProducts = useMemo(() => {
     return rawProducts
       .filter((p) => {
@@ -185,7 +177,6 @@ export function CatalogPage(props: CatalogPageProps): React.JSX.Element {
           categories={CATEGORIES}
           selectedCategory={category}
           onSelectCategory={handleCategoryChange}
-          availableLocations={availableLocations}
           selectedLocation={selectedLocation}
           onSelectLocation={setSelectedLocation}
           minPrice={minPrice}

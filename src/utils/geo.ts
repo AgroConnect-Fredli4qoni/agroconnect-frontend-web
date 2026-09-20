@@ -206,3 +206,122 @@ export function createCustomPinIcon(isGps: boolean = false): L.DivIcon {
     iconAnchor: [17, 34]
   })
 }
+
+/**
+ * LocationSearchResult specifies unified search results across local sentras and OpenStreetMap.
+ */
+export interface LocationSearchResult {
+  id: string
+  name: string
+  subtext: string
+  badge: string
+  lat: number
+  lng: number
+}
+
+/**
+ * Searches Indonesian locations, including specific remote villages and subdistricts.
+ *
+ * @param query - Search term entered by user.
+ * @param signal - AbortSignal for canceling in-flight fetch requests.
+ * @returns Promise resolving to an array of LocationSearchResult items.
+ */
+export async function searchIndonesianLocations(
+  query: string,
+  signal?: AbortSignal
+): Promise<LocationSearchResult[]> {
+  const trimmed = query.trim().toLowerCase()
+  if (trimmed.length < 2) {
+    return []
+  }
+
+  const results: LocationSearchResult[] = []
+  const seenCoordinates = new Set<string>()
+
+  for (const reg of AGRICULTURAL_REGIONS) {
+    if (
+      reg.name.toLowerCase().includes(trimmed) ||
+      reg.province.toLowerCase().includes(trimmed) ||
+      reg.description.toLowerCase().includes(trimmed)
+    ) {
+      const coordKey = `${reg.lat.toFixed(3)},${reg.lng.toFixed(3)}`
+      seenCoordinates.add(coordKey)
+      results.push({
+        id: `sentra-${reg.name}`,
+        name: reg.name,
+        subtext: reg.description,
+        badge: 'Sentra Tani',
+        lat: reg.lat,
+        lng: reg.lng
+      })
+    }
+  }
+
+  try {
+    const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
+      query
+    )}&countrycodes=id&limit=8&addressdetails=1`
+
+    const resp = await fetch(url, {
+      signal,
+      headers: {
+        'Accept-Language': 'id'
+      }
+    })
+
+    if (resp.ok) {
+      const data = await resp.json()
+      for (const item of data) {
+        const lat = parseFloat(item.lat)
+        const lng = parseFloat(item.lon)
+        const coordKey = `${lat.toFixed(3)},${lng.toFixed(3)}`
+
+        if (seenCoordinates.has(coordKey)) {
+          continue
+        }
+        seenCoordinates.add(coordKey)
+
+        let badge = 'Wilayah'
+        const addr = item.address || {}
+        if (addr.village || item.type === 'village') {
+          badge = 'Desa / Pelosok'
+        } else if (addr.subdistrict || item.type === 'administrative') {
+          badge = 'Kecamatan'
+        } else if (addr.hamlet) {
+          badge = 'Dusun'
+        } else if (addr.county) {
+          badge = 'Kabupaten'
+        } else if (addr.city) {
+          badge = 'Kota'
+        }
+
+        const primaryName =
+          addr.village ||
+          addr.subdistrict ||
+          addr.county ||
+          item.name ||
+          item.display_name.split(',')[0]
+
+        const province = addr.state || ''
+        const cityOrCounty = addr.city || addr.county || ''
+        const formattedTitle =
+          cityOrCounty && province
+            ? `${primaryName}, ${cityOrCounty}`
+            : item.display_name.split(',').slice(0, 2).join(',')
+
+        results.push({
+          id: `osm-${item.place_id}`,
+          name: formattedTitle,
+          subtext: item.display_name,
+          badge,
+          lat,
+          lng
+        })
+      }
+    }
+  } catch {
+    return results
+  }
+
+  return results
+}
