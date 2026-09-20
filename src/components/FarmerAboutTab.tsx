@@ -5,8 +5,7 @@ import {
   Sprout,
   CheckCircle2,
   MapPin,
-  Clock,
-  HeartHandshake
+  Clock
 } from 'lucide-react'
 import { FarmerProfile } from '../types/farmer'
 
@@ -96,25 +95,6 @@ export function FarmerAboutTab(props: FarmerAboutTabProps): React.JSX.Element {
               </div>
             ))}
           </div>
-        </div>
-      </div>
-
-      <div className="p-6 bg-gradient-to-r from-emerald-800 to-teal-900 rounded-2xl text-white flex flex-col sm:flex-row items-center justify-between gap-4 shadow-md">
-        <div className="flex items-center gap-3 text-center sm:text-left">
-          <div className="w-12 h-12 rounded-xl bg-white/10 backdrop-blur-xs flex items-center justify-center shrink-0 border border-white/20">
-            <HeartHandshake size={24} className="text-emerald-300" />
-          </div>
-          <div>
-            <h4 className="font-black text-sm sm:text-base">Mendukung Kesejahteraan Petani Lokal</h4>
-            <p className="text-xs text-emerald-100/80 mt-0.5">
-              100% pembayaran komoditas disalurkan langsung tanpa perantara tengkulak berlebih.
-            </p>
-          </div>
-        </div>
-
-        <div className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-white/10 backdrop-blur-xs text-xs font-bold border border-white/20">
-          <ShieldCheck size={14} className="text-emerald-300" />
-          <span>Mitra Terverifikasi BNSP</span>
         </div>
       </div>
     </div>
