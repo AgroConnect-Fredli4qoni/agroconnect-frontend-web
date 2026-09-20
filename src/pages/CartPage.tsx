@@ -5,6 +5,14 @@ import { useCart } from '../context/CartContext'
 import { useAuth } from '../context/AuthContext'
 import { createOrder } from '../services/api'
 import { CartItem, Order } from '../types/order'
+import { CustomDropdown, DropdownOption } from '../components/CustomDropdown'
+
+const PAYMENT_OPTIONS: DropdownOption[] = [
+  { value: 'QRIS', label: 'QRIS Agrikultur Instan', icon: '📱', description: 'GoPay, OVO, Dana, ShopeePay' },
+  { value: 'Transfer Bank BCA', label: 'BCA Virtual Account', icon: '🏦', description: 'Verifikasi otomatis 24 jam' },
+  { value: 'Transfer Bank Mandiri', label: 'Mandiri Virtual Account', icon: '🏛️', description: 'Verifikasi instan' },
+  { value: 'Tunai saat Terima', label: 'Tunai saat Terima (COD Petani)', icon: '🤝', description: 'Bayar saat komoditas tiba' }
+]
 
 /**
  * CartPage provides dedicated full-page shopping cart review, shipping details, and ACID checkout.
@@ -262,20 +270,13 @@ export function CartPage(): React.JSX.Element {
 
             <div className="space-y-1.5">
               <label htmlFor="pay-method" className="block text-xs font-semibold text-slate-700">Metode Pembayaran</label>
-              <div className="relative flex items-center">
-                <CreditCard size={16} className="absolute left-3 text-slate-400 pointer-events-none" />
-                <select
-                  id="pay-method"
-                  value={paymentMethod}
-                  onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setPaymentMethod(e.target.value)}
-                  className="w-full pl-9 pr-3 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white text-slate-900 transition-all cursor-pointer"
-                >
-                  <option value="QRIS">QRIS Agrikultur Instan</option>
-                  <option value="Transfer Bank BCA">Transfer Bank BCA Virtual Account</option>
-                  <option value="Transfer Bank Mandiri">Transfer Bank Mandiri</option>
-                  <option value="Tunai saat Terima">Tunai saat Terima (COD Petani)</option>
-                </select>
-              </div>
+              <CustomDropdown
+                id="pay-method"
+                value={paymentMethod}
+                onChange={setPaymentMethod}
+                options={PAYMENT_OPTIONS}
+                leadingIcon={<CreditCard size={15} />}
+              />
             </div>
 
             <div className="space-y-2 pt-3 border-t border-slate-100 text-xs">

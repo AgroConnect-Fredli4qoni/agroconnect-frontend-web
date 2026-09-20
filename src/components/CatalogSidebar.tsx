@@ -1,5 +1,7 @@
 import React from 'react'
 import { Filter, RotateCcw, MapPin, DollarSign, Star, Check } from 'lucide-react'
+import { CustomDropdown } from './CustomDropdown'
+import { CustomNumberInput } from './CustomNumberInput'
 
 /**
  * CatalogSidebarProps defines filtering attributes, options, and callbacks.
@@ -112,18 +114,16 @@ export function CatalogSidebar(props: CatalogSidebarProps): React.JSX.Element {
             <MapPin size={15} className="text-emerald-700" />
             <span>Lokasi Sentra Tani</span>
           </div>
-          <select
+          <CustomDropdown
+            id="catalog-location-filter"
             value={selectedLocation}
-            onChange={(e) => onSelectLocation(e.target.value)}
-            className="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 font-medium text-slate-700 cursor-pointer"
-          >
-            <option value="Semua">Semua Wilayah</option>
-            {availableLocations.map((loc) => (
-              <option key={loc} value={loc}>
-                {loc}
-              </option>
-            ))}
-          </select>
+            onChange={onSelectLocation}
+            options={[
+              { value: 'Semua', label: 'Semua Wilayah' },
+              ...availableLocations.map((loc) => ({ value: loc, label: loc }))
+            ]}
+            placeholder="Pilih Wilayah"
+          />
         </div>
 
         <div className="pt-4 border-t border-slate-100 space-y-3">
@@ -136,26 +136,24 @@ export function CatalogSidebar(props: CatalogSidebarProps): React.JSX.Element {
               <label htmlFor="catalog-min-price" className="text-[10px] text-slate-400 font-semibold uppercase block mb-1">
                 Minimum
               </label>
-              <input
+              <CustomNumberInput
                 id="catalog-min-price"
-                type="number"
+                prefix="Rp"
                 placeholder="0"
                 value={minPrice}
-                onChange={(e) => onMinPriceChange(e.target.value)}
-                className="w-full px-2.5 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 text-slate-800"
+                onChange={onMinPriceChange}
               />
             </div>
             <div>
               <label htmlFor="catalog-max-price" className="text-[10px] text-slate-400 font-semibold uppercase block mb-1">
                 Maksimum
               </label>
-              <input
+              <CustomNumberInput
                 id="catalog-max-price"
-                type="number"
+                prefix="Rp"
                 placeholder="Maks"
                 value={maxPrice}
-                onChange={(e) => onMaxPriceChange(e.target.value)}
-                className="w-full px-2.5 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 text-slate-800"
+                onChange={onMaxPriceChange}
               />
             </div>
           </div>

@@ -3,6 +3,9 @@ import { X, PlusCircle } from 'lucide-react'
 import { CreateProductInput } from '../types/product'
 import { createProduct } from '../services/api'
 import { useAuth } from '../context/AuthContext'
+import { CustomDropdown, DropdownOption } from './CustomDropdown'
+import { CustomCheckbox } from './CustomCheckbox'
+import { CustomNumberInput } from './CustomNumberInput'
 
 /**
  * AddProductModalProps defines modal visibility and completion callbacks.
@@ -12,6 +15,14 @@ export interface AddProductModalProps {
   onClose: () => void
   onProductCreated: () => void
 }
+
+const CATEGORY_OPTIONS: DropdownOption[] = [
+  { value: 'Pangan Pokok', label: 'Pangan Pokok', icon: '🌾' },
+  { value: 'Sayur', label: 'Sayur', icon: '🥬' },
+  { value: 'Bumbu', label: 'Bumbu', icon: '🌶️' },
+  { value: 'Palawija', label: 'Palawija', icon: '🌽' },
+  { value: 'Buah', label: 'Buah', icon: '🍎' }
+]
 
 /**
  * AddProductModal presents commodity registration form for farmers and administrators.
@@ -129,17 +140,12 @@ export function AddProductModal(props: AddProductModalProps): React.JSX.Element 
               <label htmlFor="prod-cat" className="block text-xs font-semibold text-slate-700 mb-1.5">
                 Kategori Pertanian *
               </label>
-              <select
+              <CustomDropdown
                 id="prod-cat"
                 value={category}
-                onChange={(e) => setCategory(e.target.value)}
-                className="w-full px-3.5 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white text-slate-900 transition-all cursor-pointer"
-              >
-                <option value="Pangan Pokok">Pangan Pokok</option>
-                <option value="Sayur">Sayur</option>
-                <option value="Bumbu">Bumbu</option>
-                <option value="Buah">Buah</option>
-              </select>
+                onChange={setCategory}
+                options={CATEGORY_OPTIONS}
+              />
             </div>
 
             <div>
@@ -153,7 +159,7 @@ export function AddProductModal(props: AddProductModalProps): React.JSX.Element 
                 placeholder="Contoh: Cianjur, Jawa Barat"
                 value={region}
                 onChange={(e) => setRegion(e.target.value)}
-                className="w-full px-3.5 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white text-slate-900 transition-all placeholder:text-slate-400"
+                className="w-full px-3.5 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white text-slate-900 transition-all placeholder:text-slate-400"
               />
             </div>
           </div>
@@ -163,15 +169,14 @@ export function AddProductModal(props: AddProductModalProps): React.JSX.Element 
               <label htmlFor="prod-price" className="block text-xs font-semibold text-slate-700 mb-1.5">
                 Harga per Kg (Rp) *
               </label>
-              <input
+              <CustomNumberInput
                 id="prod-price"
-                type="number"
+                prefix="Rp"
                 required
-                min="500"
+                min={500}
                 placeholder="16500"
                 value={price}
-                onChange={(e) => setPrice(e.target.value)}
-                className="w-full px-3.5 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white text-slate-900 transition-all placeholder:text-slate-400"
+                onChange={setPrice}
               />
             </div>
 
@@ -179,15 +184,14 @@ export function AddProductModal(props: AddProductModalProps): React.JSX.Element 
               <label htmlFor="prod-stock" className="block text-xs font-semibold text-slate-700 mb-1.5">
                 Jumlah Stok Panen (Kg) *
               </label>
-              <input
+              <CustomNumberInput
                 id="prod-stock"
-                type="number"
+                suffix="Kg"
                 required
-                min="1"
+                min={1}
                 placeholder="500"
                 value={stock}
-                onChange={(e) => setStock(e.target.value)}
-                className="w-full px-3.5 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white text-slate-900 transition-all placeholder:text-slate-400"
+                onChange={setStock}
               />
             </div>
           </div>
@@ -202,20 +206,18 @@ export function AddProductModal(props: AddProductModalProps): React.JSX.Element 
               required
               value={farmerName}
               onChange={(e) => setFarmerName(e.target.value)}
-              className="w-full px-3.5 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white text-slate-900 transition-all placeholder:text-slate-400"
+              className="w-full px-3.5 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white text-slate-900 transition-all placeholder:text-slate-400"
             />
           </div>
 
           <div>
-            <label className="inline-flex items-center gap-2 text-xs font-semibold text-slate-700 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={isOrganic}
-                onChange={(e) => setIsOrganic(e.target.checked)}
-                className="rounded border-slate-300 text-emerald-600 focus:ring-emerald-500 w-4 h-4 cursor-pointer"
-              />
-              <span>Kultivasi Organik (Bebas Pestisida Kimia)</span>
-            </label>
+            <CustomCheckbox
+              id="prod-organic"
+              checked={isOrganic}
+              onChange={setIsOrganic}
+              label="Kultivasi Organik (Bebas Pestisida Kimia)"
+              description="Sertifikasi bebas pupuk & pestisida sintetis"
+            />
           </div>
 
           <div>
