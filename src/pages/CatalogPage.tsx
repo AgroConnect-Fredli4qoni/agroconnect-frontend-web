@@ -11,7 +11,6 @@ import { fetchProducts, deleteProduct } from '../services/api'
 import { useAuth } from '../context/AuthContext'
 
 const ITEMS_PER_PAGE = 9
-const CATEGORIES = ['Semua', 'Pangan Pokok', 'Sayur', 'Bumbu', 'Palawija']
 
 /**
  * CatalogPageProps defines modal controllers for farmer product publication.
@@ -43,6 +42,16 @@ export function CatalogPage(props: CatalogPageProps): React.JSX.Element {
   const [sortBy, setSortBy] = useState<SortOption>('latest')
   const [currentPage, setCurrentPage] = useState<number>(1)
   const [selectedProductForDetail, setSelectedProductForDetail] = useState<Product | null>(null)
+
+  const categories = useMemo(() => {
+    const dynamicCats = Array.from(new Set(rawProducts.map((p) => p.category))).filter(Boolean).sort()
+    return ['Semua', ...dynamicCats]
+  }, [rawProducts])
+
+  const locations = useMemo(() => {
+    const dynamicLocs = Array.from(new Set(rawProducts.map((p) => p.origin_region))).filter(Boolean).sort()
+    return ['Semua', ...dynamicLocs]
+  }, [rawProducts])
 
   useEffect(() => {
     const urlCat = searchParams.get('category')
@@ -190,9 +199,10 @@ export function CatalogPage(props: CatalogPageProps): React.JSX.Element {
 
       <div className="flex flex-col lg:flex-row items-start gap-8">
         <CatalogSidebar
-          categories={CATEGORIES}
+          categories={categories}
           selectedCategory={category}
           onSelectCategory={handleCategoryChange}
+          locations={locations}
           selectedLocation={selectedLocation}
           onSelectLocation={setSelectedLocation}
           minPrice={minPrice}

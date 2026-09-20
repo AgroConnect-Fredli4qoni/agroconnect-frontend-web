@@ -1,18 +1,25 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Trash2, Plus, Minus, ArrowLeft, ShoppingBag, CheckCircle2, ShieldCheck, MapPin, User, CreditCard, Navigation, Smartphone, Building2, Landmark, Banknote } from 'lucide-react'
+import { Trash2, Plus, Minus, ArrowLeft, ShoppingBag, CheckCircle2, ShieldCheck, MapPin, User, CreditCard, Building2, Banknote } from 'lucide-react'
 import { useCart } from '../context/CartContext'
 import { useAuth } from '../context/AuthContext'
 import { createOrder } from '../services/api'
 import { CartItem, Order } from '../types/order'
 import { CustomDropdown, DropdownOption } from '../components/CustomDropdown'
-import { LocationMapModal } from '../components/LocationMapModal'
 
 const PAYMENT_OPTIONS: DropdownOption[] = [
-  { value: 'QRIS', label: 'QRIS Agrikultur Instan', icon: <Smartphone size={16} className="text-emerald-600" />, description: 'GoPay, OVO, Dana, ShopeePay' },
-  { value: 'Transfer Bank BCA', label: 'BCA Virtual Account', icon: <Building2 size={16} className="text-blue-600" />, description: 'Verifikasi otomatis 24 jam' },
-  { value: 'Transfer Bank Mandiri', label: 'Mandiri Virtual Account', icon: <Landmark size={16} className="text-amber-600" />, description: 'Verifikasi instan' },
-  { value: 'Tunai saat Terima', label: 'Tunai saat Terima (COD Petani)', icon: <Banknote size={16} className="text-emerald-700" />, description: 'Bayar saat komoditas tiba' }
+  {
+    value: 'Tunai saat Terima (COD Petani)',
+    label: 'Tunai saat Terima (COD Petani)',
+    icon: <Banknote size={16} className="text-emerald-700" />,
+    description: 'Pembayaran tunai langsung saat komoditas tiba di alamat tujuan'
+  },
+  {
+    value: 'Transfer Langsung Rekening Tani',
+    label: 'Transfer Bank Langsung ke Petani',
+    icon: <Building2 size={16} className="text-emerald-700" />,
+    description: 'Transfer manual langsung ke rekening resmi kelompok tani'
+  }
 ]
 
 /**
@@ -27,11 +34,10 @@ export function CartPage(): React.JSX.Element {
 
   const [customerName, setCustomerName] = useState<string>(user?.name || '')
   const [shippingAddress, setShippingAddress] = useState<string>('')
-  const [paymentMethod, setPaymentMethod] = useState<string>('QRIS')
+  const [paymentMethod, setPaymentMethod] = useState<string>('Tunai saat Terima (COD Petani)')
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
   const [errorMsg, setErrorMsg] = useState<string>('')
   const [completedOrder, setCompletedOrder] = useState<Order | null>(null)
-  const [isMapOpen, setIsMapOpen] = useState<boolean>(false)
 
   const handleCheckout = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault()
@@ -255,19 +261,9 @@ export function CartPage(): React.JSX.Element {
             </div>
 
             <div className="space-y-1.5">
-              <div className="flex items-center justify-between">
-                <label htmlFor="ship-address" className="block text-xs font-semibold text-slate-700">
-                  Alamat Pengiriman Lengkap
-                </label>
-                <button
-                  type="button"
-                  onClick={() => setIsMapOpen(true)}
-                  className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-700 hover:text-emerald-800 hover:underline cursor-pointer"
-                >
-                  <Navigation size={12} />
-                  <span>Pilih di Peta / GPS</span>
-                </button>
-              </div>
+              <label htmlFor="ship-address" className="block text-xs font-semibold text-slate-700">
+                Alamat Pengiriman Lengkap
+              </label>
               <div className="relative flex items-start">
                 <MapPin size={16} className="absolute left-3 top-3 text-slate-400 pointer-events-none" />
                 <textarea
@@ -329,19 +325,6 @@ export function CartPage(): React.JSX.Element {
           </form>
         </div>
       </div>
-
-      <LocationMapModal
-        isOpen={isMapOpen}
-        onClose={() => setIsMapOpen(false)}
-        onSelectLocation={(_loc, _coords, fullAddress) => {
-          if (fullAddress) {
-            setShippingAddress(fullAddress)
-          } else {
-            setShippingAddress(_loc)
-          }
-        }}
-        title="Tentukan Titik Alamat Pengiriman"
-      />
     </div>
   )
 }
