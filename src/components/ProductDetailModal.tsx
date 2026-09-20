@@ -204,36 +204,35 @@ export function ProductDetailModal(props: ProductDetailModalProps): React.JSX.El
               </div>
 
               <div className="p-3 bg-slate-50/90 rounded-xl border border-slate-200/80 flex flex-col gap-2.5">
-                <div className="flex items-center justify-between gap-2">
-                  <div className="flex items-center gap-2.5 min-w-0">
-                    <div className="relative w-9 h-9 rounded-full overflow-hidden bg-white border border-slate-200 shrink-0 shadow-2xs">
-                      {product.farmer_avatar_url && !farmerAvatarFailed ? (
-                        <img
-                          src={product.farmer_avatar_url}
-                          alt={product.farmer_name}
-                          className="w-full h-full object-cover"
-                          onError={() => setFarmerAvatarFailed(true)}
-                        />
-                      ) : (
-                        <div className="w-full h-full bg-emerald-100 text-emerald-800 flex items-center justify-center font-black text-xs">
-                          {product.farmer_name.slice(0, 2).toUpperCase()}
-                        </div>
-                      )}
-                    </div>
-                    <div className="min-w-0">
-                      <span className="text-[10px] uppercase font-bold text-slate-400 block tracking-wider leading-none">
+                <div className="flex items-start gap-2.5">
+                  <div className="relative w-9 h-9 rounded-full overflow-hidden bg-white border border-slate-200 shrink-0 shadow-2xs mt-0.5">
+                    {product.farmer_avatar_url && !farmerAvatarFailed ? (
+                      <img
+                        src={product.farmer_avatar_url}
+                        alt={product.farmer_name}
+                        className="w-full h-full object-cover"
+                        onError={() => setFarmerAvatarFailed(true)}
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-emerald-100 text-emerald-800 flex items-center justify-center font-black text-xs">
+                        {product.farmer_name.slice(0, 2).toUpperCase()}
+                      </div>
+                    )}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                      <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider leading-none">
                         Mitra Petani
                       </span>
-                      <span className="text-xs font-black text-slate-900 block truncate mt-0.5">
-                        {product.farmer_name}
+                      <span className="inline-flex items-center gap-0.5 text-[9px] font-bold text-emerald-700 bg-emerald-100/80 px-1.5 py-0.5 rounded-full border border-emerald-200 leading-none">
+                        <ShieldCheck size={10} />
+                        <span>Terverifikasi</span>
                       </span>
                     </div>
+                    <span className="text-xs font-black text-slate-900 block mt-1 leading-snug break-words">
+                      {product.farmer_name}
+                    </span>
                   </div>
-
-                  <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-700 bg-emerald-100/70 px-2 py-0.5 rounded-full border border-emerald-200 shrink-0">
-                    <ShieldCheck size={11} />
-                    <span>Terverifikasi</span>
-                  </span>
                 </div>
 
                 <div className="pt-2 border-t border-slate-200/60 flex items-center justify-between gap-2 text-[11px]">
