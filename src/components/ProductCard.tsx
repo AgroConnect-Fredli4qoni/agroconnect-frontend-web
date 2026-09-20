@@ -51,8 +51,15 @@ function getProductEmoji(name: string, category: string): string {
   if (n.includes('tomat')) return '🍅'
   if (n.includes('bawang')) return '🧅'
   if (n.includes('kentang')) return '🥔'
+  if (n.includes('wortel')) return '🥕'
+  if (n.includes('brokoli')) return '🥦'
+  if (n.includes('kubis') || n.includes('kol')) return '🥬'
+  if (n.includes('kacang') || n.includes('kedelai')) return '🥜'
+  if (n.includes('ubi') || n.includes('singkong') || n.includes('talas')) return '🍠'
+  if (n.includes('jahe') || n.includes('kunyit') || n.includes('lengkuas')) return '🫚'
   if (category === 'Sayur') return '🥬'
   if (category === 'Buah') return '🍎'
+  if (category === 'Palawija') return '🌽'
   return '🌱'
 }
 
