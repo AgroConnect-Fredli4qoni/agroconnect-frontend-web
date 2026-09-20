@@ -9,7 +9,7 @@ import { Product } from '../types/product'
 import { fetchProducts, deleteProduct } from '../services/api'
 import { useAuth } from '../context/AuthContext'
 
-const ITEMS_PER_PAGE = 20
+const ITEMS_PER_PAGE = 9
 const CATEGORIES = ['Semua', 'Pangan Pokok', 'Sayur', 'Bumbu', 'Palawija']
 
 /**

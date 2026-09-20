@@ -100,7 +100,7 @@ export function CatalogSortBar(props: CatalogSortBarProps): React.JSX.Element {
             : 'Tidak ada komoditas yang ditemukan'}
         </span>
         <span className="font-semibold text-emerald-800">
-          Maks. 20 produk per halaman
+          Maks. 9 produk per halaman
         </span>
       </div>
     </div>
