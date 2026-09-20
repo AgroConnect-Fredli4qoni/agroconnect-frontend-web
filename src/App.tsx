@@ -11,7 +11,7 @@ import { LoginPage } from './pages/LoginPage'
 import { RegisterPage } from './pages/RegisterPage'
 import { OrdersPage } from './pages/OrdersPage'
 import { FarmerProfilePage } from './pages/FarmerProfilePage'
-import { ProfilePage } from './pages/ProfilePage'
+import { DashboardPage } from './pages/DashboardPage'
 
 function FarmerRouteRedirect(): React.JSX.Element {
   const { slug } = useParams<{ slug: string }>()
@@ -45,8 +45,9 @@ function AppContent(): React.JSX.Element {
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/auth" element={<Navigate to="/login" replace />} />
           <Route path="/orders" element={<OrdersPage />} />
-          <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/profil" element={<Navigate to="/profile" replace />} />
+          <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/profile" element={<Navigate to="/dashboard" replace />} />
+          <Route path="/profil" element={<Navigate to="/dashboard" replace />} />
           <Route path="/petani/:slug" element={<FarmerProfilePage />} />
           <Route path="/farmer/:slug" element={<FarmerRouteRedirect />} />
           <Route path="*" element={<Navigate to="/" replace />} />
