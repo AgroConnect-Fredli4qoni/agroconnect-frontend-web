@@ -137,13 +137,28 @@ export function Navbar(props: NavbarProps): React.JSX.Element {
         </Link>
 
         {isAuthenticated && user ? (
-          <div className="flex items-center gap-3 pl-3 border-l border-slate-200">
-            <div className="flex flex-col text-right">
-              <span className="text-xs font-bold text-slate-800 leading-tight">{user.name}</span>
-              <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded mt-0.5 self-end">
-                {user.role === 'admin' ? 'Admin' : 'Mitra Tani'}
-              </span>
-            </div>
+          <div className="flex items-center gap-2 sm:gap-3 pl-3 border-l border-slate-200">
+            <Link
+              to="/profile"
+              className={`flex items-center gap-2.5 p-1 rounded-xl transition-all cursor-pointer group ${
+                location.pathname === '/profile'
+                  ? 'bg-emerald-50 ring-1 ring-emerald-300'
+                  : 'hover:bg-slate-100'
+              }`}
+              title="Kelola Profil Akun"
+            >
+              <div className="w-8 h-8 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-xs group-hover:bg-emerald-600 group-hover:text-white transition-colors shadow-2xs">
+                {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
+              </div>
+              <div className="flex flex-col text-left hidden sm:flex">
+                <span className="text-xs font-bold text-slate-800 leading-tight group-hover:text-emerald-700 transition-colors max-w-[130px] truncate">
+                  {user.name}
+                </span>
+                <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded mt-0.5 self-start">
+                  {user.role === 'admin' ? 'Admin' : user.role === 'farmer' ? 'Mitra Tani' : 'Pembeli'}
+                </span>
+              </div>
+            </Link>
             <button
               type="button"
               className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer"

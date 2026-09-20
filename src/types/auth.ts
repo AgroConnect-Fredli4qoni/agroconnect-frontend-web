@@ -38,3 +38,12 @@ export interface RegisterPayload {
   password: string
   role: UserRole
 }
+
+/**
+ * UpdateProfilePayload represents the payload to update user profile information or password.
+ */
+export interface UpdateProfilePayload {
+  name?: string
+  old_password?: string
+  new_password?: string
+}

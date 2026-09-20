@@ -12,6 +12,7 @@ export interface AuthContextType {
   login: (credentials: LoginCredentials) => Promise<void>
   register: (payload: RegisterPayload) => Promise<void>
   logout: () => void
+  updateUserSession: (user: UserProfile, token?: string) => void
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -58,6 +59,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }): React
     setToken(null)
   }
 
+  const updateUserSession = (updatedUser: UserProfile, updatedToken?: string): void => {
+    setUser(updatedUser)
+    if (updatedToken) {
+      setToken(updatedToken)
+    }
+  }
+
   return (
     <AuthContext.Provider
       value={{
@@ -67,6 +75,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }): React
         login,
         register,
         logout,
+        updateUserSession,
       }}
     >
       {children}

@@ -1,4 +1,4 @@
-import { AuthResponse, LoginCredentials, RegisterPayload, UserProfile } from '../types/auth'
+import { AuthResponse, LoginCredentials, RegisterPayload, UpdateProfilePayload, UserProfile } from '../types/auth'
 import { CreateProductInput, Product } from '../types/product'
 import { CheckoutPayload, Order } from '../types/order'
 import { WeatherResponse } from '../types/weather'
@@ -204,6 +204,50 @@ export async function fetchFarmerBySlug(slug: string): Promise<FarmerApiRecord> 
   const response = await fetch(`${API_BASE_URL}/api/farmers/${encodeURIComponent(slug)}`)
   if (!response.ok) {
     throw new ApiError(`Farmer profile not found for slug: ${slug}`, response.status)
+  }
+  return response.json()
+}
+
+/**
+ * Fetch profile data for the authenticated user (Requires JWT Bearer Token).
+ *
+ * @param token - Bearer JWT string.
+ * @returns Authenticated UserProfile.
+ */
+export async function fetchUserProfile(token: string): Promise<UserProfile> {
+  const response = await fetch(`${API_BASE_URL}/api/auth/profile`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+
+  if (!response.ok) {
+    const errData = await response.json().catch(() => ({}))
+    throw new ApiError(errData.error || 'Failed to fetch user profile', response.status)
+  }
+  return response.json()
+}
+
+/**
+ * Update profile data or password for authenticated user (Requires JWT Bearer Token).
+ *
+ * @param payload - Profile name or password update data.
+ * @param token - Bearer JWT string.
+ * @returns AuthResponse with refreshed token and updated UserProfile.
+ */
+export async function updateUserProfile(payload: UpdateProfilePayload, token: string): Promise<AuthResponse> {
+  const response = await fetch(`${API_BASE_URL}/api/auth/profile`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(payload),
+  })
+
+  if (!response.ok) {
+    const errData = await response.json().catch(() => ({}))
+    throw new ApiError(errData.error || 'Failed to update user profile', response.status)
   }
   return response.json()
 }
