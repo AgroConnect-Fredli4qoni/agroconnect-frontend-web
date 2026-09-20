@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import {
   User,
-  Shield,
   KeyRound,
   Mail,
   BadgeCheck,
@@ -206,10 +205,6 @@ export function ProfilePage(): React.JSX.Element {
               <Mail size={13} className="text-slate-400" />
               {user.email}
             </span>
-            <span className="inline-flex items-center gap-1">
-              <Shield size={13} className="text-slate-400" />
-              ID Akun: #{user.id}
-            </span>
           </div>
         </div>
       </div>
@@ -302,21 +297,11 @@ export function ProfilePage(): React.JSX.Element {
                 <p className="text-[10px] text-slate-400">Email akun bersifat permanen sebagai identitas login unik.</p>
               </div>
 
-              <div className="space-y-1.5">
+              <div className="space-y-1.5 sm:col-span-2">
                 <label className="text-xs font-semibold text-slate-700">Peran Sistem (Role)</label>
                 <input
                   type="text"
                   value={user.role === 'admin' ? 'Administrator' : user.role === 'farmer' ? 'Mitra Petani' : 'Pembeli'}
-                  disabled
-                  className="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl text-slate-500 cursor-not-allowed font-medium"
-                />
-              </div>
-
-              <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-slate-700">Nomor Registrasi Akun</label>
-                <input
-                  type="text"
-                  value={`AGRO-USR-00${user.id}`}
                   disabled
                   className="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl text-slate-500 cursor-not-allowed font-medium"
                 />
