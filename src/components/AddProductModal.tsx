@@ -1,11 +1,12 @@
 import React, { useState } from 'react'
-import { X, PlusCircle } from 'lucide-react'
+import { X, PlusCircle, Navigation } from 'lucide-react'
 import { CreateProductInput } from '../types/product'
 import { createProduct } from '../services/api'
 import { useAuth } from '../context/AuthContext'
 import { CustomDropdown, DropdownOption } from './CustomDropdown'
 import { CustomCheckbox } from './CustomCheckbox'
 import { CustomNumberInput } from './CustomNumberInput'
+import { LocationMapModal } from './LocationMapModal'
 
 /**
  * AddProductModalProps defines modal visibility and completion callbacks.
@@ -44,6 +45,7 @@ export function AddProductModal(props: AddProductModalProps): React.JSX.Element 
   const [description, setDescription] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [errorMsg, setErrorMsg] = useState('')
+  const [isMapOpen, setIsMapOpen] = useState(false)
 
   if (!isOpen) return <></>
 
@@ -149,9 +151,19 @@ export function AddProductModal(props: AddProductModalProps): React.JSX.Element 
             </div>
 
             <div>
-              <label htmlFor="prod-region" className="block text-xs font-semibold text-slate-700 mb-1.5">
-                Asal Daerah Sentra *
-              </label>
+              <div className="flex items-center justify-between mb-1.5">
+                <label htmlFor="prod-region" className="block text-xs font-semibold text-slate-700">
+                  Asal Daerah Sentra *
+                </label>
+                <button
+                  type="button"
+                  onClick={() => setIsMapOpen(true)}
+                  className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-700 hover:text-emerald-800 hover:underline cursor-pointer"
+                >
+                  <Navigation size={12} />
+                  <span>Pilih di Peta</span>
+                </button>
+              </div>
               <input
                 id="prod-region"
                 type="text"
@@ -253,6 +265,16 @@ export function AddProductModal(props: AddProductModalProps): React.JSX.Element 
           </div>
         </form>
       </div>
+
+      <LocationMapModal
+        isOpen={isMapOpen}
+        onClose={() => setIsMapOpen(false)}
+        currentLocation={region}
+        onSelectLocation={(loc) => {
+          setRegion(loc)
+        }}
+        title="Tentukan Lokasi Sentra Kebun / Lahan"
+      />
     </div>
   )
 }

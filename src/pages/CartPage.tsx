@@ -1,11 +1,12 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Trash2, Plus, Minus, ArrowLeft, ShoppingBag, CheckCircle2, ShieldCheck, MapPin, User, CreditCard } from 'lucide-react'
+import { Trash2, Plus, Minus, ArrowLeft, ShoppingBag, CheckCircle2, ShieldCheck, MapPin, User, CreditCard, Navigation } from 'lucide-react'
 import { useCart } from '../context/CartContext'
 import { useAuth } from '../context/AuthContext'
 import { createOrder } from '../services/api'
 import { CartItem, Order } from '../types/order'
 import { CustomDropdown, DropdownOption } from '../components/CustomDropdown'
+import { LocationMapModal } from '../components/LocationMapModal'
 
 const PAYMENT_OPTIONS: DropdownOption[] = [
   { value: 'QRIS', label: 'QRIS Agrikultur Instan', icon: '📱', description: 'GoPay, OVO, Dana, ShopeePay' },
@@ -30,6 +31,7 @@ export function CartPage(): React.JSX.Element {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
   const [errorMsg, setErrorMsg] = useState<string>('')
   const [completedOrder, setCompletedOrder] = useState<Order | null>(null)
+  const [isMapOpen, setIsMapOpen] = useState<boolean>(false)
 
   const handleCheckout = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault()
@@ -253,7 +255,19 @@ export function CartPage(): React.JSX.Element {
             </div>
 
             <div className="space-y-1.5">
-              <label htmlFor="ship-address" className="block text-xs font-semibold text-slate-700">Alamat Pengiriman Lengkap</label>
+              <div className="flex items-center justify-between">
+                <label htmlFor="ship-address" className="block text-xs font-semibold text-slate-700">
+                  Alamat Pengiriman Lengkap
+                </label>
+                <button
+                  type="button"
+                  onClick={() => setIsMapOpen(true)}
+                  className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-700 hover:text-emerald-800 hover:underline cursor-pointer"
+                >
+                  <Navigation size={12} />
+                  <span>Pilih di Peta / GPS</span>
+                </button>
+              </div>
               <div className="relative flex items-start">
                 <MapPin size={16} className="absolute left-3 top-3 text-slate-400 pointer-events-none" />
                 <textarea
@@ -315,6 +329,19 @@ export function CartPage(): React.JSX.Element {
           </form>
         </div>
       </div>
+
+      <LocationMapModal
+        isOpen={isMapOpen}
+        onClose={() => setIsMapOpen(false)}
+        onSelectLocation={(_loc, _coords, fullAddress) => {
+          if (fullAddress) {
+            setShippingAddress(fullAddress)
+          } else {
+            setShippingAddress(_loc)
+          }
+        }}
+        title="Tentukan Titik Alamat Pengiriman"
+      />
     </div>
   )
 }

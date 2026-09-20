@@ -1,7 +1,8 @@
-import React from 'react'
-import { Filter, RotateCcw, MapPin, DollarSign, Star, Check } from 'lucide-react'
+import React, { useState } from 'react'
+import { Filter, RotateCcw, MapPin, DollarSign, Star, Check, Navigation } from 'lucide-react'
 import { CustomDropdown } from './CustomDropdown'
 import { CustomNumberInput } from './CustomNumberInput'
+import { LocationMapModal } from './LocationMapModal'
 
 /**
  * CatalogSidebarProps defines filtering attributes, options, and callbacks.
@@ -53,6 +54,8 @@ export function CatalogSidebar(props: CatalogSidebarProps): React.JSX.Element {
     onResetFilters,
     totalFiltered
   } = props
+
+  const [isMapOpen, setIsMapOpen] = useState(false)
 
   const hasActiveFilters =
     selectedCategory !== 'Semua' ||
@@ -110,10 +113,38 @@ export function CatalogSidebar(props: CatalogSidebarProps): React.JSX.Element {
         </div>
 
         <div className="pt-4 border-t border-slate-100 space-y-3">
-          <div className="flex items-center gap-1.5 text-slate-800 font-bold text-xs">
-            <MapPin size={15} className="text-emerald-700" />
-            <span>Lokasi Sentra Tani</span>
+          <div className="flex items-center justify-between text-slate-800 font-bold text-xs">
+            <div className="flex items-center gap-1.5">
+              <MapPin size={15} className="text-emerald-700" />
+              <span>Lokasi Sentra Tani</span>
+            </div>
+            {selectedLocation !== 'Semua' && (
+              <button
+                type="button"
+                onClick={() => onSelectLocation('Semua')}
+                className="text-[11px] text-rose-600 hover:underline font-semibold cursor-pointer"
+              >
+                Reset
+              </button>
+            )}
           </div>
+
+          <button
+            type="button"
+            onClick={() => setIsMapOpen(true)}
+            className="w-full flex items-center justify-between gap-2 px-3.5 py-2.5 text-xs font-semibold bg-emerald-50 hover:bg-emerald-100 text-emerald-900 border border-emerald-200/80 rounded-lg transition-all cursor-pointer shadow-2xs group"
+          >
+            <div className="flex items-center gap-2 truncate">
+              <Navigation size={14} className="text-emerald-700 shrink-0 group-hover:scale-110 transition-transform" />
+              <span className="truncate">
+                {selectedLocation === 'Semua' ? 'Pilih di Peta / GPS' : selectedLocation}
+              </span>
+            </div>
+            <span className="text-[10px] font-bold text-emerald-800 bg-white px-2 py-0.5 rounded-md border border-emerald-200 shrink-0">
+              🗺️ Peta
+            </span>
+          </button>
+
           <CustomDropdown
             id="catalog-location-filter"
             value={selectedLocation}
@@ -122,7 +153,7 @@ export function CatalogSidebar(props: CatalogSidebarProps): React.JSX.Element {
               { value: 'Semua', label: 'Semua Wilayah' },
               ...availableLocations.map((loc) => ({ value: loc, label: loc }))
             ]}
-            placeholder="Pilih Wilayah"
+            placeholder="Pilih Wilayah Cepat"
           />
         </div>
 
@@ -204,6 +235,16 @@ export function CatalogSidebar(props: CatalogSidebarProps): React.JSX.Element {
           </button>
         )}
       </div>
+
+      <LocationMapModal
+        isOpen={isMapOpen}
+        onClose={() => setIsMapOpen(false)}
+        currentLocation={selectedLocation}
+        onSelectLocation={(loc) => {
+          onSelectLocation(loc)
+        }}
+        title="Pilih Lokasi Sentra Tani"
+      />
     </aside>
   )
 }
