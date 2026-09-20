@@ -6,7 +6,6 @@ import {
   Star,
   Leaf,
   ShieldCheck,
-  Award,
   Sprout,
   Wheat,
   Salad,
@@ -162,7 +161,7 @@ export function ProductDetailModal(props: ProductDetailModalProps): React.JSX.El
 
         <div className="overflow-y-auto p-5 sm:p-7">
           <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
-            <div className="md:col-span-5 space-y-3.5">
+            <div className="md:col-span-5">
               <div className="relative w-full aspect-square rounded-xl overflow-hidden bg-slate-100 border border-slate-200/80 shadow-2xs">
                 {hasImage ? (
                   <img
@@ -201,23 +200,6 @@ export function ProductDetailModal(props: ProductDetailModalProps): React.JSX.El
                   <span className="text-[10px] font-semibold text-slate-700 bg-white/95 backdrop-blur-xs px-2 py-0.5 rounded-md border border-slate-200 shadow-2xs">
                     Terjual {sales} {product.unit}
                   </span>
-                </div>
-              </div>
-
-              <div className="p-3 bg-emerald-50/60 rounded-xl border border-emerald-100/80 space-y-2">
-                <div className="flex items-center gap-1.5 text-xs font-bold text-emerald-900">
-                  <ShieldCheck size={15} className="text-emerald-700 shrink-0" />
-                  <span>Jaminan Mutu AgroConnect</span>
-                </div>
-                <div className="grid grid-cols-2 gap-2 text-[11px] text-emerald-800 font-medium">
-                  <div className="flex items-center gap-1.5">
-                    <Award size={13} className="text-emerald-600 shrink-0" />
-                    <span>Grade Panen A</span>
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <Sprout size={13} className="text-emerald-600 shrink-0" />
-                    <span>Dipanen Langsung</span>
-                  </div>
                 </div>
               </div>
             </div>
