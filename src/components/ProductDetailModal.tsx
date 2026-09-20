@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom'
 import {
   X,
   MapPin,
-  User,
   Star,
   Leaf,
   ShieldCheck,
@@ -86,6 +85,7 @@ export function ProductDetailModal(props: ProductDetailModalProps): React.JSX.El
   const [qty, setQty] = useState<number>(1)
   const [isAdded, setIsAdded] = useState<boolean>(false)
   const [imageFailed, setImageFailed] = useState<boolean>(false)
+  const [farmerAvatarFailed, setFarmerAvatarFailed] = useState<boolean>(false)
 
   useEffect(() => {
     if (product) {
@@ -223,8 +223,19 @@ export function ProductDetailModal(props: ProductDetailModalProps): React.JSX.El
 
               <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200/80 flex items-center justify-between gap-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-emerald-100 border border-emerald-200 text-emerald-700 flex items-center justify-center font-bold">
-                    <User size={18} />
+                  <div className="relative w-11 h-11 rounded-full overflow-hidden bg-slate-100 border border-slate-200 shrink-0 shadow-2xs">
+                    {product.farmer_avatar_url && !farmerAvatarFailed ? (
+                      <img
+                        src={product.farmer_avatar_url}
+                        alt={product.farmer_name}
+                        className="w-full h-full object-cover"
+                        onError={() => setFarmerAvatarFailed(true)}
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-emerald-100 text-emerald-800 flex items-center justify-center font-black text-sm">
+                        {product.farmer_name.slice(0, 2).toUpperCase()}
+                      </div>
+                    )}
                   </div>
                   <div>
                     <span className="text-[10px] uppercase font-bold text-slate-400 block tracking-wider">Mitra Petani</span>

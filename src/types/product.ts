@@ -10,6 +10,7 @@ export interface Product {
   unit: string
   origin_region: string
   farmer_name: string
+  farmer_avatar_url?: string
   is_organic: boolean
   description: string
   image_url?: string
@@ -27,6 +28,7 @@ export interface CreateProductInput {
   unit: string
   origin_region: string
   farmer_name: string
+  farmer_avatar_url?: string
   is_organic: boolean
   description: string
   image_url?: string

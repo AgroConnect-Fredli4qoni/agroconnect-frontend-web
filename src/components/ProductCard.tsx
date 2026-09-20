@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { MapPin, User, Check, Plus, Minus, Trash2, Star, Wheat, Salad, Carrot, Flame, Sprout, Leaf, Apple } from 'lucide-react'
+import { MapPin, Check, Plus, Minus, Trash2, Star, Wheat, Salad, Carrot, Flame, Sprout, Leaf, Apple } from 'lucide-react'
 import { Product } from '../types/product'
 import { useCart } from '../context/CartContext'
 import { useAuth } from '../context/AuthContext'
@@ -70,6 +70,7 @@ export function ProductCard(props: ProductCardProps): React.JSX.Element {
   const [qty, setQty] = useState<number>(1)
   const [isAdded, setIsAdded] = useState<boolean>(false)
   const [imageFailed, setImageFailed] = useState<boolean>(false)
+  const [avatarFailed, setAvatarFailed] = useState<boolean>(false)
 
   const handleAdd = (): void => {
     if (product.stock_kg <= 0) return
@@ -138,18 +139,34 @@ export function ProductCard(props: ProductCardProps): React.JSX.Element {
 
         <div className="space-y-1 text-xs text-slate-500">
           <div className="flex items-center gap-1.5">
-            <MapPin size={13} className="text-slate-400" />
-            <span>{product.origin_region}</span>
+            <MapPin size={13} className="text-slate-400 shrink-0" />
+            <span className="truncate">{product.origin_region}</span>
           </div>
-          <div className="flex items-center gap-1.5">
-            <User size={13} className="text-slate-400" />
+          <div className="flex items-center gap-2 pt-0.5">
             <Link
               to={`/petani/${slugifyFarmerName(product.farmer_name)}`}
               onClick={(e) => e.stopPropagation()}
-              className="hover:text-emerald-700 hover:underline transition-colors font-medium cursor-pointer truncate"
+              className="flex items-center gap-2 group/farmer min-w-0"
               title={`Kunjungi profil toko ${product.farmer_name}`}
             >
-              {product.farmer_name}
+              <div className="relative w-5 h-5 rounded-full overflow-hidden bg-slate-100 border border-slate-200 shrink-0 shadow-2xs group-hover/farmer:border-emerald-500 transition-colors">
+                {product.farmer_avatar_url && !avatarFailed ? (
+                  <img
+                    src={product.farmer_avatar_url}
+                    alt={product.farmer_name}
+                    className="w-full h-full object-cover"
+                    onError={() => setAvatarFailed(true)}
+                    loading="lazy"
+                  />
+                ) : (
+                  <div className="w-full h-full bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-[10px]">
+                    {product.farmer_name.charAt(0).toUpperCase()}
+                  </div>
+                )}
+              </div>
+              <span className="text-xs font-semibold text-slate-700 group-hover/farmer:text-emerald-700 group-hover/farmer:underline transition-colors truncate">
+                {product.farmer_name}
+              </span>
             </Link>
           </div>
         </div>
