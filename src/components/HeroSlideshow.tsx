@@ -64,7 +64,7 @@ export function HeroSlideshow(props: HeroSlideshowProps): React.JSX.Element {
 
   return (
     <div
-      className="relative rounded-3xl overflow-hidden bg-emerald-900 text-white shadow-lg border border-emerald-800/60"
+      className="relative rounded-2xl overflow-hidden bg-emerald-900 text-white shadow-lg border border-emerald-800/60"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
@@ -89,7 +89,7 @@ export function HeroSlideshow(props: HeroSlideshowProps): React.JSX.Element {
               <div className="flex flex-wrap items-center gap-3 pt-1">
                 <Link
                   to="/catalog"
-                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-emerald-900 hover:bg-emerald-50 text-xs sm:text-sm font-bold rounded-xl shadow-xs transition-all cursor-pointer"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-emerald-900 hover:bg-emerald-50 text-xs sm:text-sm font-bold rounded-lg shadow-xs transition-all cursor-pointer"
                 >
                   <Store size={17} />
                   <span>Jelajahi Katalog Lengkap</span>
@@ -97,7 +97,7 @@ export function HeroSlideshow(props: HeroSlideshowProps): React.JSX.Element {
                 <button
                   type="button"
                   onClick={() => setCurrentSlide(1)}
-                  className="inline-flex items-center gap-2 px-4 py-2.5 bg-emerald-800/80 hover:bg-emerald-800 text-white border border-emerald-700/60 text-xs sm:text-sm font-semibold rounded-xl transition-all cursor-pointer"
+                  className="inline-flex items-center gap-2 px-4 py-2.5 bg-emerald-800/80 hover:bg-emerald-800 text-white border border-emerald-700/60 text-xs sm:text-sm font-semibold rounded-lg transition-all cursor-pointer"
                 >
                   <CalendarCheck size={17} />
                   <span>Rekomendasi Tani</span>
@@ -105,7 +105,7 @@ export function HeroSlideshow(props: HeroSlideshowProps): React.JSX.Element {
                 <button
                   type="button"
                   onClick={() => setCurrentSlide(2)}
-                  className="inline-flex items-center gap-2 px-4 py-2.5 bg-emerald-800/80 hover:bg-emerald-800 text-white border border-emerald-700/60 text-xs sm:text-sm font-semibold rounded-xl transition-all cursor-pointer"
+                  className="inline-flex items-center gap-2 px-4 py-2.5 bg-emerald-800/80 hover:bg-emerald-800 text-white border border-emerald-700/60 text-xs sm:text-sm font-semibold rounded-lg transition-all cursor-pointer"
                 >
                   <CloudSun size={17} />
                   <span>Cek Cuaca BMKG</span>
@@ -131,7 +131,7 @@ export function HeroSlideshow(props: HeroSlideshowProps): React.JSX.Element {
             <div className="space-y-4">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-emerald-800/80">
                 <div className="flex items-center gap-2.5">
-                  <div className={`p-2 rounded-xl ${isAlert ? 'bg-amber-400/20 text-amber-300' : 'bg-emerald-400/20 text-emerald-300'}`}>
+                  <div className={`p-2 rounded-lg ${isAlert ? 'bg-amber-400/20 text-amber-300' : 'bg-emerald-400/20 text-emerald-300'}`}>
                     {isAlert ? <ShieldAlert size={20} /> : <Sparkles size={20} />}
                   </div>
                   <div>
@@ -159,7 +159,7 @@ export function HeroSlideshow(props: HeroSlideshowProps): React.JSX.Element {
 
               {recommendation ? (
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-1">
-                  <div className="bg-emerald-800/60 border border-emerald-700/60 rounded-2xl p-4.5 space-y-2 hover:bg-emerald-800/80 transition-all">
+                  <div className="bg-emerald-800/60 border border-emerald-700/60 rounded-xl p-4.5 space-y-2 hover:bg-emerald-800/80 transition-all">
                     <div className="flex items-center gap-2 text-emerald-300">
                       <div className="p-1.5 rounded-lg bg-emerald-700/50">
                         <Sprout size={18} />
@@ -169,7 +169,7 @@ export function HeroSlideshow(props: HeroSlideshowProps): React.JSX.Element {
                     <p className="text-xs text-emerald-100/90 leading-relaxed">{recommendation.fertilizing_advice}</p>
                   </div>
 
-                  <div className="bg-emerald-800/60 border border-emerald-700/60 rounded-2xl p-4.5 space-y-2 hover:bg-emerald-800/80 transition-all">
+                  <div className="bg-emerald-800/60 border border-emerald-700/60 rounded-xl p-4.5 space-y-2 hover:bg-emerald-800/80 transition-all">
                     <div className="flex items-center gap-2 text-sky-300">
                       <div className="p-1.5 rounded-lg bg-emerald-700/50">
                         <Droplet size={18} />
@@ -179,7 +179,7 @@ export function HeroSlideshow(props: HeroSlideshowProps): React.JSX.Element {
                     <p className="text-xs text-emerald-100/90 leading-relaxed">{recommendation.irrigation_advice}</p>
                   </div>
 
-                  <div className="bg-emerald-800/60 border border-emerald-700/60 rounded-2xl p-4.5 space-y-2 hover:bg-emerald-800/80 transition-all">
+                  <div className="bg-emerald-800/60 border border-emerald-700/60 rounded-xl p-4.5 space-y-2 hover:bg-emerald-800/80 transition-all">
                     <div className="flex items-center gap-2 text-amber-300">
                       <div className="p-1.5 rounded-lg bg-emerald-700/50">
                         <Scissors size={18} />
@@ -244,7 +244,7 @@ export function HeroSlideshow(props: HeroSlideshowProps): React.JSX.Element {
                 </div>
               ) : weather ? (
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 pt-1">
-                  <div className="bg-emerald-800/60 border border-emerald-700/60 rounded-2xl p-5 flex flex-col justify-between">
+                  <div className="bg-emerald-800/60 border border-emerald-700/60 rounded-xl p-5 flex flex-col justify-between">
                     <div>
                       <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-300 block">{weather.region}</span>
                       <div className="my-2">
@@ -265,7 +265,7 @@ export function HeroSlideshow(props: HeroSlideshowProps): React.JSX.Element {
                     </div>
                   </div>
 
-                  <div className="bg-emerald-800/60 border border-emerald-700/60 rounded-2xl p-5 flex flex-col justify-between hover:bg-emerald-800/80 transition-all">
+                  <div className="bg-emerald-800/60 border border-emerald-700/60 rounded-xl p-5 flex flex-col justify-between hover:bg-emerald-800/80 transition-all">
                     <div className="w-8 h-8 rounded-lg bg-emerald-700/50 text-amber-300 flex items-center justify-center mb-2">
                       <Thermometer size={18} />
                     </div>
@@ -277,7 +277,7 @@ export function HeroSlideshow(props: HeroSlideshowProps): React.JSX.Element {
                     </div>
                   </div>
 
-                  <div className="bg-emerald-800/60 border border-emerald-700/60 rounded-2xl p-5 flex flex-col justify-between hover:bg-emerald-800/80 transition-all">
+                  <div className="bg-emerald-800/60 border border-emerald-700/60 rounded-xl p-5 flex flex-col justify-between hover:bg-emerald-800/80 transition-all">
                     <div className="w-8 h-8 rounded-lg bg-emerald-700/50 text-sky-300 flex items-center justify-center mb-2">
                       <Droplets size={18} />
                     </div>
@@ -289,7 +289,7 @@ export function HeroSlideshow(props: HeroSlideshowProps): React.JSX.Element {
                     </div>
                   </div>
 
-                  <div className="bg-emerald-800/60 border border-emerald-700/60 rounded-2xl p-5 flex flex-col justify-between hover:bg-emerald-800/80 transition-all">
+                  <div className="bg-emerald-800/60 border border-emerald-700/60 rounded-xl p-5 flex flex-col justify-between hover:bg-emerald-800/80 transition-all">
                     <div className="w-8 h-8 rounded-lg bg-emerald-700/50 text-teal-300 flex items-center justify-center mb-2">
                       <Wind size={18} />
                     </div>

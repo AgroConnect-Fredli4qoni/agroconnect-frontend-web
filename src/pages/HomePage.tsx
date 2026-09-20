@@ -106,7 +106,7 @@ export function HomePage(): React.JSX.Element {
             <p className="text-xs text-slate-500 font-medium">Memuat komoditas pilihan...</p>
           </div>
         ) : featuredProducts.length === 0 ? (
-          <div className="text-center py-12 bg-white rounded-3xl border border-slate-200/80 p-8 shadow-xs">
+          <div className="text-center py-12 bg-white rounded-xl border border-slate-200/80 p-8 shadow-xs">
             <p className="text-xs text-slate-500">Belum ada komoditas pilihan yang tersedia.</p>
           </div>
         ) : (
@@ -124,7 +124,7 @@ export function HomePage(): React.JSX.Element {
         <div className="flex justify-center pt-4 pb-2">
           <Link
             to="/catalog"
-            className="inline-flex items-center gap-2.5 px-8 py-3.5 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white font-extrabold rounded-2xl shadow-md hover:shadow-lg transition-all text-sm cursor-pointer"
+            className="inline-flex items-center gap-2.5 px-8 py-3.5 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white font-extrabold rounded-lg shadow-md hover:shadow-lg transition-all text-sm cursor-pointer"
           >
             <span>Lihat Semua Katalog Hasil Tani</span>
             <ArrowRight size={18} />

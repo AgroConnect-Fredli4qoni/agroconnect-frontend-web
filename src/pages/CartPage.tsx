@@ -72,7 +72,7 @@ export function CartPage(): React.JSX.Element {
   if (completedOrder) {
     return (
       <div className="max-w-4xl mx-auto px-4 py-12">
-        <div className="bg-white border border-emerald-200 rounded-3xl p-8 shadow-xl text-center space-y-6">
+        <div className="bg-white border border-emerald-200 rounded-2xl p-8 shadow-xl text-center space-y-6">
           <div className="flex flex-col items-center gap-3">
             <CheckCircle2 size={56} className="text-emerald-600" />
             <h2 className="text-2xl font-black text-slate-900 tracking-tight">Pesanan Berhasil Dikonfirmasi!</h2>
@@ -81,7 +81,7 @@ export function CartPage(): React.JSX.Element {
             </p>
           </div>
 
-          <div className="bg-slate-50 rounded-2xl p-5 border border-slate-200/80 space-y-3 text-left text-xs max-w-md mx-auto">
+          <div className="bg-slate-50 rounded-xl p-5 border border-slate-200/80 space-y-3 text-left text-xs max-w-md mx-auto">
             <div className="flex items-center justify-between">
               <span className="text-slate-500">Nomor Pesanan</span>
               <span className="font-mono font-bold text-slate-800 bg-slate-200 px-2 py-0.5 rounded">{completedOrder.order_code}</span>
@@ -107,14 +107,14 @@ export function CartPage(): React.JSX.Element {
           <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
             <button
               type="button"
-              className="py-3 px-6 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs shadow-md transition-all cursor-pointer"
+              className="py-3 px-6 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg text-xs shadow-md transition-all cursor-pointer"
               onClick={() => navigate('/orders')}
             >
               Lihat Riwayat Pesanan
             </button>
             <Link
               to="/"
-              className="py-3 px-6 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs transition-all inline-block"
+              className="py-3 px-6 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-lg text-xs transition-all inline-block"
             >
               Kembali ke Katalog
             </Link>
@@ -127,7 +127,7 @@ export function CartPage(): React.JSX.Element {
   if (items.length === 0) {
     return (
       <div className="max-w-4xl mx-auto px-4 py-16">
-        <div className="max-w-md mx-auto bg-white border border-slate-200 rounded-3xl p-10 shadow-lg text-center space-y-4">
+        <div className="max-w-md mx-auto bg-white border border-slate-200 rounded-2xl p-10 shadow-lg text-center space-y-4">
           <div className="w-20 h-20 mx-auto rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center">
             <ShoppingBag size={48} />
           </div>
@@ -135,7 +135,7 @@ export function CartPage(): React.JSX.Element {
           <p className="text-xs text-slate-500">Anda belum menambahkan komoditas hasil panen petani ke keranjang.</p>
           <Link
             to="/"
-            className="inline-flex items-center justify-center gap-2 py-2.5 px-5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow transition-all"
+            className="inline-flex items-center justify-center gap-2 py-2.5 px-5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-lg shadow transition-all"
           >
             <ArrowLeft size={16} />
             <span>Jelajahi Hasil Panen Petani</span>
@@ -157,7 +157,7 @@ export function CartPage(): React.JSX.Element {
       </div>
 
       {errorMsg && (
-        <div className="p-3.5 rounded-xl text-xs font-medium bg-rose-50 text-rose-700 border border-rose-200 mb-6">
+        <div className="p-3.5 rounded-lg text-xs font-medium bg-rose-50 text-rose-700 border border-rose-200 mb-6">
           {errorMsg}
         </div>
       )}
@@ -179,7 +179,7 @@ export function CartPage(): React.JSX.Element {
             {items.map((item: CartItem) => (
               <div
                 key={item.product_id}
-                className="bg-white rounded-2xl border border-slate-200/80 p-4 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-all hover:shadow-md"
+                className="bg-white rounded-xl border border-slate-200/80 p-4 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-all hover:shadow-md"
               >
                 <div className="flex-1 min-w-0">
                   <h3 className="font-bold text-slate-900 text-sm truncate">{item.product_name}</h3>
@@ -187,10 +187,10 @@ export function CartPage(): React.JSX.Element {
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl">
+                  <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-lg">
                     <button
                       type="button"
-                      className="w-7 h-7 flex items-center justify-center rounded-lg bg-white text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 shadow-xs text-xs cursor-pointer"
+                      className="w-7 h-7 flex items-center justify-center rounded-md bg-white text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 shadow-xs text-xs cursor-pointer"
                       onClick={() => updateQuantity(item.product_id, item.quantity - 1)}
                     >
                       <Minus size={14} />
@@ -198,7 +198,7 @@ export function CartPage(): React.JSX.Element {
                     <span className="w-8 text-center text-xs font-bold text-slate-800">{item.quantity}</span>
                     <button
                       type="button"
-                      className="w-7 h-7 flex items-center justify-center rounded-lg bg-white text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 shadow-xs text-xs disabled:opacity-40 cursor-pointer"
+                      className="w-7 h-7 flex items-center justify-center rounded-md bg-white text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 shadow-xs text-xs disabled:opacity-40 cursor-pointer"
                       onClick={() => updateQuantity(item.product_id, item.quantity + 1)}
                       disabled={item.quantity >= item.stock_available}
                     >
@@ -225,7 +225,7 @@ export function CartPage(): React.JSX.Element {
         </div>
 
         <div className="lg:col-span-1">
-          <form onSubmit={handleCheckout} className="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-md space-y-4 sticky top-6">
+          <form onSubmit={handleCheckout} className="bg-white rounded-xl border border-slate-200/80 p-6 shadow-md space-y-4 sticky top-6">
             <h2 className="text-base font-black text-slate-900 pb-3 border-b border-slate-100">Ringkasan & Pembayaran</h2>
 
             <div className="space-y-1.5">
@@ -239,7 +239,7 @@ export function CartPage(): React.JSX.Element {
                   placeholder="Nama lengkap pemesan"
                   value={customerName}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCustomerName(e.target.value)}
-                  className="w-full pl-9 pr-3 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white text-slate-900 transition-all placeholder:text-slate-400"
+                  className="w-full pl-9 pr-3 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white text-slate-900 transition-all placeholder:text-slate-400"
                 />
               </div>
             </div>
@@ -255,7 +255,7 @@ export function CartPage(): React.JSX.Element {
                   placeholder="Jalan, Nomor, RT/RW, Kelurahan, Kecamatan, Kota/Kabupaten"
                   value={shippingAddress}
                   onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setShippingAddress(e.target.value)}
-                  className="w-full pl-9 pr-3 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white text-slate-900 transition-all placeholder:text-slate-400 resize-none"
+                  className="w-full pl-9 pr-3 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white text-slate-900 transition-all placeholder:text-slate-400 resize-none"
                 />
               </div>
             </div>
@@ -268,7 +268,7 @@ export function CartPage(): React.JSX.Element {
                   id="pay-method"
                   value={paymentMethod}
                   onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setPaymentMethod(e.target.value)}
-                  className="w-full pl-9 pr-3 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white text-slate-900 transition-all cursor-pointer"
+                  className="w-full pl-9 pr-3 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white text-slate-900 transition-all cursor-pointer"
                 >
                   <option value="QRIS">QRIS Agrikultur Instan</option>
                   <option value="Transfer Bank BCA">Transfer Bank BCA Virtual Account</option>
@@ -296,7 +296,7 @@ export function CartPage(): React.JSX.Element {
             {!isAuthenticated ? (
               <button
                 type="button"
-                className="w-full mt-2 py-3 px-4 bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold rounded-xl shadow transition-all cursor-pointer"
+                className="w-full mt-2 py-3 px-4 bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold rounded-lg shadow transition-all cursor-pointer"
                 onClick={() => navigate('/login', { state: { from: { pathname: '/cart' } } })}
               >
                 <span>Masuk untuk Melanjutkan Pembayaran</span>
@@ -304,7 +304,7 @@ export function CartPage(): React.JSX.Element {
             ) : (
               <button
                 type="submit"
-                className="w-full mt-2 flex items-center justify-center gap-2 py-3 px-4 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white text-xs font-bold rounded-xl shadow-md hover:shadow-lg transition-all disabled:opacity-50 cursor-pointer"
+                className="w-full mt-2 flex items-center justify-center gap-2 py-3 px-4 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white text-xs font-bold rounded-lg shadow-md hover:shadow-lg transition-all disabled:opacity-50 cursor-pointer"
                 disabled={isSubmitting}
               >
                 <ShieldCheck size={18} />

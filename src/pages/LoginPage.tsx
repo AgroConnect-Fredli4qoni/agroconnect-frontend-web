@@ -45,7 +45,7 @@ export function LoginPage(): React.JSX.Element {
 
   return (
     <div className="min-h-[calc(100vh-140px)] flex items-center justify-center py-12 px-4 bg-slate-50">
-      <div className="w-full max-w-md bg-white rounded-3xl border border-slate-200/90 shadow-xl p-8 transition-all">
+      <div className="w-full max-w-md bg-white rounded-2xl border border-slate-200/90 shadow-xl p-8 transition-all">
         <div className="text-center mb-6">
           <Link to="/" className="inline-flex items-center justify-center gap-2 mb-1.5 group">
             <span className="text-3xl group-hover:scale-110 transition-transform">🌱</span>
@@ -58,12 +58,12 @@ export function LoginPage(): React.JSX.Element {
         </div>
 
         {errorMsg && (
-          <div className="p-3.5 rounded-xl text-xs font-medium bg-rose-50 text-rose-700 border border-rose-200 mb-4">
+          <div className="p-3.5 rounded-lg text-xs font-medium bg-rose-50 text-rose-700 border border-rose-200 mb-4">
             {errorMsg}
           </div>
         )}
         {successMsg && (
-          <div className="p-3.5 rounded-xl text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200 mb-4">
+          <div className="p-3.5 rounded-lg text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200 mb-4">
             {successMsg}
           </div>
         )}
@@ -82,7 +82,7 @@ export function LoginPage(): React.JSX.Element {
                 placeholder="nama@email.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full pl-10 pr-3.5 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white text-slate-900 transition-all placeholder:text-slate-400"
+                className="w-full pl-10 pr-3.5 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white text-slate-900 transition-all placeholder:text-slate-400"
               />
             </div>
           </div>
@@ -100,7 +100,7 @@ export function LoginPage(): React.JSX.Element {
                 placeholder="Masukkan kata sandi Anda"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full pl-10 pr-10 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white text-slate-900 transition-all placeholder:text-slate-400"
+                className="w-full pl-10 pr-10 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white text-slate-900 transition-all placeholder:text-slate-400"
               />
               <button
                 type="button"
@@ -116,7 +116,7 @@ export function LoginPage(): React.JSX.Element {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full mt-2 flex items-center justify-center gap-2 py-3 px-4 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white text-xs font-bold rounded-xl shadow-md hover:shadow-lg transition-all disabled:opacity-50 cursor-pointer"
+            className="w-full mt-2 flex items-center justify-center gap-2 py-3 px-4 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white text-xs font-bold rounded-lg shadow-md hover:shadow-lg transition-all disabled:opacity-50 cursor-pointer"
           >
             <span>{isLoading ? 'Memproses Masuk...' : 'Masuk Sekarang'}</span>
             <ArrowRight size={16} />

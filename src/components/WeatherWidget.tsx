@@ -24,7 +24,7 @@ export function WeatherWidget(props: WeatherWidgetProps): React.JSX.Element {
   const { weather, isLoading, selectedRegion, onSelectRegion } = props
 
   return (
-    <section id="cuaca" className="bg-white rounded-3xl border border-slate-200/80 p-6 lg:p-8 shadow-xs my-8">
+    <section id="cuaca" className="bg-white rounded-2xl border border-slate-200/80 p-6 lg:p-8 shadow-xs my-8">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
         <div>
           <h2 className="text-xl font-black text-slate-900 tracking-tight">🌤️ Parameter Cuaca Pertanian (BMKG)</h2>
@@ -56,7 +56,7 @@ export function WeatherWidget(props: WeatherWidgetProps): React.JSX.Element {
         </div>
       ) : weather ? (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-1 bg-gradient-to-br from-emerald-600 to-teal-800 rounded-2xl p-6 text-white shadow-md flex flex-col justify-between">
+          <div className="lg:col-span-1 bg-gradient-to-br from-emerald-600 to-teal-800 rounded-xl p-6 text-white shadow-md flex flex-col justify-between">
             <div>
               <span className="text-xs font-bold uppercase tracking-wider text-emerald-200">{weather.region}</span>
               <div className="my-4">
@@ -80,8 +80,8 @@ export function WeatherWidget(props: WeatherWidgetProps): React.JSX.Element {
           </div>
 
           <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div className="bg-slate-50 border border-slate-200/80 rounded-2xl p-5 flex flex-col justify-between hover:shadow-xs transition-all">
-              <div className="w-10 h-10 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center mb-3">
+            <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-5 flex flex-col justify-between hover:shadow-xs transition-all">
+              <div className="w-10 h-10 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center mb-3">
                 <Thermometer size={22} />
               </div>
               <div>
@@ -92,8 +92,8 @@ export function WeatherWidget(props: WeatherWidgetProps): React.JSX.Element {
               </div>
             </div>
 
-            <div className="bg-slate-50 border border-slate-200/80 rounded-2xl p-5 flex flex-col justify-between hover:shadow-xs transition-all">
-              <div className="w-10 h-10 rounded-xl bg-sky-100 text-sky-600 flex items-center justify-center mb-3">
+            <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-5 flex flex-col justify-between hover:shadow-xs transition-all">
+              <div className="w-10 h-10 rounded-lg bg-sky-100 text-sky-600 flex items-center justify-center mb-3">
                 <Droplets size={22} />
               </div>
               <div>
@@ -104,8 +104,8 @@ export function WeatherWidget(props: WeatherWidgetProps): React.JSX.Element {
               </div>
             </div>
 
-            <div className="bg-slate-50 border border-slate-200/80 rounded-2xl p-5 flex flex-col justify-between hover:shadow-xs transition-all">
-              <div className="w-10 h-10 rounded-xl bg-teal-100 text-teal-600 flex items-center justify-center mb-3">
+            <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-5 flex flex-col justify-between hover:shadow-xs transition-all">
+              <div className="w-10 h-10 rounded-lg bg-teal-100 text-teal-600 flex items-center justify-center mb-3">
                 <Wind size={22} />
               </div>
               <div>

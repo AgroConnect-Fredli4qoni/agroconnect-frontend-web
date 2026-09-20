@@ -39,7 +39,7 @@ export function Navbar(props: NavbarProps): React.JSX.Element {
           <nav className="hidden md:flex items-center gap-1.5">
             <button
               type="button"
-              className="inline-flex items-center gap-2 px-3 py-2 text-xs font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 rounded-xl transition-all cursor-pointer"
+              className="inline-flex items-center gap-2 px-3 py-2 text-xs font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 rounded-lg transition-all cursor-pointer"
               onClick={onOpenAddProduct}
             >
               <PlusCircle size={18} />
@@ -53,7 +53,7 @@ export function Navbar(props: NavbarProps): React.JSX.Element {
         {isAuthenticated && (
           <Link
             to="/orders"
-            className={`relative inline-flex items-center gap-1.5 p-2 sm:px-3 sm:py-2 text-xs font-semibold rounded-xl transition-all cursor-pointer ${
+            className={`relative inline-flex items-center gap-1.5 p-2 sm:px-3 sm:py-2 text-xs font-semibold rounded-lg transition-all cursor-pointer ${
               location.pathname === '/orders' ? 'bg-emerald-50 text-emerald-700 font-bold' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
             }`}
             title="Riwayat Transaksi Pesanan"
@@ -65,7 +65,7 @@ export function Navbar(props: NavbarProps): React.JSX.Element {
 
         <Link
           to="/cart"
-          className={`relative p-2.5 rounded-xl transition-all cursor-pointer ${
+          className={`relative p-2.5 rounded-lg transition-all cursor-pointer ${
             location.pathname === '/cart' ? 'bg-emerald-50 text-emerald-700' : 'text-slate-700 hover:text-emerald-700 hover:bg-emerald-50'
           }`}
           title="Keranjang Belanja"
@@ -99,7 +99,7 @@ export function Navbar(props: NavbarProps): React.JSX.Element {
           <div className="flex items-center gap-2">
             <Link
               to="/login"
-              className={`inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold rounded-xl border border-slate-200 text-slate-700 hover:text-emerald-700 hover:bg-emerald-50/60 hover:border-emerald-200 transition-all cursor-pointer ${
+              className={`inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold rounded-lg border border-slate-200 text-slate-700 hover:text-emerald-700 hover:bg-emerald-50/60 hover:border-emerald-200 transition-all cursor-pointer ${
                 location.pathname === '/login'
                   ? 'bg-slate-100 text-slate-900 border-slate-300'
                   : ''
@@ -111,7 +111,7 @@ export function Navbar(props: NavbarProps): React.JSX.Element {
             </Link>
             <Link
               to="/register"
-              className={`inline-flex items-center gap-1.5 px-4 py-2 text-xs font-bold rounded-xl shadow-xs transition-all cursor-pointer ${
+              className={`inline-flex items-center gap-1.5 px-4 py-2 text-xs font-bold rounded-lg shadow-xs transition-all cursor-pointer ${
                 location.pathname === '/register'
                   ? 'bg-emerald-800 text-white'
                   : 'bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white hover:shadow-sm'

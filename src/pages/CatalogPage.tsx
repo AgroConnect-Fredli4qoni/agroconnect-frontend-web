@@ -171,7 +171,7 @@ export function CatalogPage(props: CatalogPageProps): React.JSX.Element {
         {isAuthenticated && (
           <button
             type="button"
-            className="self-start md:self-auto inline-flex items-center gap-2 px-4 py-2.5 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 rounded-xl shadow-xs transition-all cursor-pointer"
+            className="self-start md:self-auto inline-flex items-center gap-2 px-4 py-2.5 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 rounded-lg shadow-xs transition-all cursor-pointer"
             onClick={() => setIsAddProductOpen(true)}
           >
             <PlusCircle size={18} />
@@ -215,13 +215,13 @@ export function CatalogPage(props: CatalogPageProps): React.JSX.Element {
               <p className="text-xs text-slate-500 font-medium">Memuat komoditas panen dari database MongoDB...</p>
             </div>
           ) : filteredAndSortedProducts.length === 0 ? (
-            <div className="text-center py-16 bg-white rounded-3xl border border-slate-200/80 p-8 shadow-xs space-y-3">
+            <div className="text-center py-16 bg-white rounded-xl border border-slate-200/80 p-8 shadow-xs space-y-3">
               <p className="text-sm font-semibold text-slate-700">Tidak ada komoditas hasil panen yang sesuai dengan kriteria filter.</p>
               <p className="text-xs text-slate-400">Silakan sesuaikan batas harga, lokasi, atau tekan tombol reset filter.</p>
               <button
                 type="button"
                 onClick={handleResetFilters}
-                className="inline-flex items-center gap-1.5 px-4 py-2 bg-emerald-600 text-white rounded-xl text-xs font-bold hover:bg-emerald-700 transition-all cursor-pointer mt-2"
+                className="inline-flex items-center gap-1.5 px-4 py-2 bg-emerald-600 text-white rounded-lg text-xs font-bold hover:bg-emerald-700 transition-all cursor-pointer mt-2"
               >
                 <span>Hapus Semua Filter</span>
               </button>
@@ -252,7 +252,7 @@ export function CatalogPage(props: CatalogPageProps): React.JSX.Element {
                         setCurrentPage((prev) => Math.max(1, prev - 1))
                         window.scrollTo({ top: 0, behavior: 'smooth' })
                       }}
-                      className="inline-flex items-center gap-1 px-3.5 py-2 text-xs font-semibold rounded-xl border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition-all cursor-pointer shadow-2xs"
+                      className="inline-flex items-center gap-1 px-3.5 py-2 text-xs font-semibold rounded-lg border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition-all cursor-pointer shadow-2xs"
                     >
                       <ChevronLeft size={16} />
                       <span>Sebelumnya</span>
@@ -266,7 +266,7 @@ export function CatalogPage(props: CatalogPageProps): React.JSX.Element {
                           setCurrentPage(pageNum)
                           window.scrollTo({ top: 0, behavior: 'smooth' })
                         }}
-                        className={`w-9 h-9 flex items-center justify-center text-xs font-bold rounded-xl transition-all cursor-pointer ${
+                        className={`w-9 h-9 flex items-center justify-center text-xs font-bold rounded-lg transition-all cursor-pointer ${
                           currentPage === pageNum
                             ? 'bg-emerald-600 text-white shadow-xs'
                             : 'border border-slate-200 bg-white text-slate-700 hover:bg-slate-50'
@@ -283,7 +283,7 @@ export function CatalogPage(props: CatalogPageProps): React.JSX.Element {
                         setCurrentPage((prev) => Math.min(totalPages, prev + 1))
                         window.scrollTo({ top: 0, behavior: 'smooth' })
                       }}
-                      className="inline-flex items-center gap-1 px-3.5 py-2 text-xs font-semibold rounded-xl border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition-all cursor-pointer shadow-2xs"
+                      className="inline-flex items-center gap-1 px-3.5 py-2 text-xs font-semibold rounded-lg border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition-all cursor-pointer shadow-2xs"
                     >
                       <span>Berikutnya</span>
                       <ChevronRight size={16} />

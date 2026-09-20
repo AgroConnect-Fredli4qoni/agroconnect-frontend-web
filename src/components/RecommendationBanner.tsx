@@ -32,7 +32,7 @@ export function RecommendationBanner(props: RecommendationBannerProps): React.JS
     : 'bg-sky-50 border-sky-200 text-sky-900'
 
   return (
-    <div className={`rounded-3xl border p-6 shadow-xs mb-6 ${bannerClass}`}>
+    <div className={`rounded-2xl border p-6 shadow-xs mb-6 ${bannerClass}`}>
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-black/5 mb-4">
         <div className="flex items-center gap-2.5">
           {isAlert ? <ShieldAlert size={22} className="text-amber-700" /> : isOptimal ? <CheckCircle size={22} className="text-emerald-700" /> : <Sparkles size={22} className="text-sky-700" />}
@@ -48,8 +48,8 @@ export function RecommendationBanner(props: RecommendationBannerProps): React.JS
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-white/80 rounded-2xl p-4 border border-black/5 flex items-start gap-3">
-          <div className="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0 mt-0.5">
+        <div className="bg-white/80 rounded-xl p-4 border border-black/5 flex items-start gap-3">
+          <div className="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0 mt-0.5">
             <Sprout size={18} />
           </div>
           <div>
@@ -58,8 +58,8 @@ export function RecommendationBanner(props: RecommendationBannerProps): React.JS
           </div>
         </div>
 
-        <div className="bg-white/80 rounded-2xl p-4 border border-black/5 flex items-start gap-3">
-          <div className="w-8 h-8 rounded-xl bg-sky-100 text-sky-700 flex items-center justify-center shrink-0 mt-0.5">
+        <div className="bg-white/80 rounded-xl p-4 border border-black/5 flex items-start gap-3">
+          <div className="w-8 h-8 rounded-lg bg-sky-100 text-sky-700 flex items-center justify-center shrink-0 mt-0.5">
             <Droplet size={18} />
           </div>
           <div>
@@ -68,8 +68,8 @@ export function RecommendationBanner(props: RecommendationBannerProps): React.JS
           </div>
         </div>
 
-        <div className="bg-white/80 rounded-2xl p-4 border border-black/5 flex items-start gap-3">
-          <div className="w-8 h-8 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center shrink-0 mt-0.5">
+        <div className="bg-white/80 rounded-xl p-4 border border-black/5 flex items-start gap-3">
+          <div className="w-8 h-8 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center shrink-0 mt-0.5">
             <Scissors size={18} />
           </div>
           <div>

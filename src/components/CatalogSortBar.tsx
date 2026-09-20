@@ -43,7 +43,7 @@ export function CatalogSortBar(props: CatalogSortBarProps): React.JSX.Element {
   } = props
 
   return (
-    <div className="bg-white rounded-3xl border border-slate-200/90 p-4 shadow-xs space-y-4">
+    <div className="bg-white rounded-xl border border-slate-200/90 p-4 shadow-xs space-y-4">
       <div className="flex flex-col sm:flex-row gap-3 items-center justify-between">
         <div className="relative flex-1 w-full">
           <Search size={17} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
@@ -52,7 +52,7 @@ export function CatalogSortBar(props: CatalogSortBarProps): React.JSX.Element {
             placeholder="Cari nama komoditas tani (contoh: Beras Pandan Wangi, Cabai Rawit)..."
             value={search}
             onChange={(e) => onSearchChange(e.target.value)}
-            className="w-full pl-10 pr-10 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white text-slate-900 transition-all placeholder:text-slate-400 font-medium"
+            className="w-full pl-10 pr-10 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white text-slate-900 transition-all placeholder:text-slate-400 font-medium"
           />
           {search && (
             <button
@@ -79,7 +79,7 @@ export function CatalogSortBar(props: CatalogSortBarProps): React.JSX.Element {
                 key={btn.id}
                 type="button"
                 onClick={() => onSortByChange(btn.id)}
-                className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer shrink-0 ${
+                className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer shrink-0 ${
                   isActive
                     ? 'bg-emerald-600 text-white shadow-2xs'
                     : 'bg-slate-100 text-slate-600 hover:bg-slate-200'

@@ -87,7 +87,7 @@ export function AddProductModal(props: AddProductModalProps): React.JSX.Element 
 
   return (
     <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
-      <div className="bg-white rounded-3xl border border-slate-200 shadow-2xl max-w-lg w-full p-6 sm:p-8 space-y-6 my-8 transition-all">
+      <div className="bg-white rounded-2xl border border-slate-200 shadow-2xl max-w-lg w-full p-6 sm:p-8 space-y-6 my-8 transition-all">
         <div className="flex items-center justify-between pb-4 border-b border-slate-100">
           <div className="flex items-center gap-2.5">
             <PlusCircle size={22} className="text-emerald-600" />
@@ -95,7 +95,7 @@ export function AddProductModal(props: AddProductModalProps): React.JSX.Element 
           </div>
           <button
             type="button"
-            className="p-2 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-xl transition-colors cursor-pointer"
+            className="p-2 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer"
             onClick={onClose}
           >
             <X size={18} />
@@ -103,7 +103,7 @@ export function AddProductModal(props: AddProductModalProps): React.JSX.Element 
         </div>
 
         {errorMsg && (
-          <div className="p-3.5 rounded-xl text-xs font-medium bg-rose-50 text-rose-700 border border-rose-200">
+          <div className="p-3.5 rounded-lg text-xs font-medium bg-rose-50 text-rose-700 border border-rose-200">
             {errorMsg}
           </div>
         )}
@@ -120,7 +120,7 @@ export function AddProductModal(props: AddProductModalProps): React.JSX.Element 
               placeholder="Contoh: Beras Rojolele Super"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full px-3.5 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white text-slate-900 transition-all placeholder:text-slate-400"
+              className="w-full px-3.5 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white text-slate-900 transition-all placeholder:text-slate-400"
             />
           </div>
 
@@ -133,7 +133,7 @@ export function AddProductModal(props: AddProductModalProps): React.JSX.Element 
                 id="prod-cat"
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
-                className="w-full px-3.5 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white text-slate-900 transition-all cursor-pointer"
+                className="w-full px-3.5 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white text-slate-900 transition-all cursor-pointer"
               >
                 <option value="Pangan Pokok">Pangan Pokok</option>
                 <option value="Sayur">Sayur</option>
@@ -153,7 +153,7 @@ export function AddProductModal(props: AddProductModalProps): React.JSX.Element 
                 placeholder="Contoh: Cianjur, Jawa Barat"
                 value={region}
                 onChange={(e) => setRegion(e.target.value)}
-                className="w-full px-3.5 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white text-slate-900 transition-all placeholder:text-slate-400"
+                className="w-full px-3.5 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white text-slate-900 transition-all placeholder:text-slate-400"
               />
             </div>
           </div>
@@ -171,7 +171,7 @@ export function AddProductModal(props: AddProductModalProps): React.JSX.Element 
                 placeholder="16500"
                 value={price}
                 onChange={(e) => setPrice(e.target.value)}
-                className="w-full px-3.5 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white text-slate-900 transition-all placeholder:text-slate-400"
+                className="w-full px-3.5 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white text-slate-900 transition-all placeholder:text-slate-400"
               />
             </div>
 
@@ -187,7 +187,7 @@ export function AddProductModal(props: AddProductModalProps): React.JSX.Element 
                 placeholder="500"
                 value={stock}
                 onChange={(e) => setStock(e.target.value)}
-                className="w-full px-3.5 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white text-slate-900 transition-all placeholder:text-slate-400"
+                className="w-full px-3.5 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white text-slate-900 transition-all placeholder:text-slate-400"
               />
             </div>
           </div>
@@ -202,7 +202,7 @@ export function AddProductModal(props: AddProductModalProps): React.JSX.Element 
               required
               value={farmerName}
               onChange={(e) => setFarmerName(e.target.value)}
-              className="w-full px-3.5 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white text-slate-900 transition-all placeholder:text-slate-400"
+              className="w-full px-3.5 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white text-slate-900 transition-all placeholder:text-slate-400"
             />
           </div>
 
@@ -228,14 +228,14 @@ export function AddProductModal(props: AddProductModalProps): React.JSX.Element 
               placeholder="Jelaskan kualitas hasil panen, varietas benih, dan jadwal pemetikan..."
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="w-full px-3.5 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white text-slate-900 transition-all placeholder:text-slate-400 resize-none"
+              className="w-full px-3.5 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white text-slate-900 transition-all placeholder:text-slate-400 resize-none"
             />
           </div>
 
           <div className="pt-4 border-t border-slate-100 flex items-center justify-end gap-3">
             <button
               type="button"
-              className="py-2.5 px-5 text-xs font-bold text-slate-600 hover:bg-slate-100 rounded-xl transition-all cursor-pointer"
+              className="py-2.5 px-5 text-xs font-bold text-slate-600 hover:bg-slate-100 rounded-lg transition-all cursor-pointer"
               onClick={onClose}
               disabled={isLoading}
             >
@@ -243,7 +243,7 @@ export function AddProductModal(props: AddProductModalProps): React.JSX.Element 
             </button>
             <button
               type="submit"
-              className="py-2.5 px-5 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white text-xs font-bold rounded-xl shadow-xs transition-all disabled:opacity-50 cursor-pointer"
+              className="py-2.5 px-5 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white text-xs font-bold rounded-lg shadow-xs transition-all disabled:opacity-50 cursor-pointer"
               disabled={isLoading}
             >
               {isLoading ? 'Menyimpan...' : 'Simpan ke Katalog'}

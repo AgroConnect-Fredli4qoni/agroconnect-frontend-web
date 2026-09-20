@@ -81,7 +81,7 @@ export function ProductCard(props: ProductCardProps): React.JSX.Element {
   const sales = getProductSales(product)
 
   return (
-    <div className="bg-white rounded-3xl border border-slate-200/80 overflow-hidden shadow-xs hover:shadow-md transition-all flex flex-col justify-between group">
+    <div className="bg-white rounded-xl border border-slate-200/80 overflow-hidden shadow-xs hover:shadow-md transition-all flex flex-col justify-between group">
       <div className="bg-slate-50 p-6 flex items-center justify-between border-b border-slate-100">
         <span className="text-5xl group-hover:scale-110 transition-transform select-none">{emoji}</span>
         <div className="flex flex-col gap-1.5 items-end">
@@ -141,10 +141,10 @@ export function ProductCard(props: ProductCardProps): React.JSX.Element {
       <div className="p-4 bg-slate-50/70 border-t border-slate-100 flex items-center justify-between gap-2">
         {product.stock_kg > 0 ? (
           <div className="flex items-center gap-2 flex-1">
-            <div className="flex items-center gap-0.5 bg-white border border-slate-200 rounded-xl p-0.5 shadow-2xs">
+            <div className="flex items-center gap-0.5 bg-white border border-slate-200 rounded-lg p-0.5 shadow-2xs">
               <button
                 type="button"
-                className="w-6 h-6 flex items-center justify-center rounded-lg text-slate-600 hover:bg-slate-100 disabled:opacity-30 cursor-pointer"
+                className="w-6 h-6 flex items-center justify-center rounded-md text-slate-600 hover:bg-slate-100 disabled:opacity-30 cursor-pointer"
                 onClick={() => setQty((prev: number): number => Math.max(1, prev - 1))}
                 disabled={qty <= 1}
               >
@@ -153,7 +153,7 @@ export function ProductCard(props: ProductCardProps): React.JSX.Element {
               <span className="w-6 text-center text-xs font-bold text-slate-800">{qty}</span>
               <button
                 type="button"
-                className="w-6 h-6 flex items-center justify-center rounded-lg text-slate-600 hover:bg-slate-100 disabled:opacity-30 cursor-pointer"
+                className="w-6 h-6 flex items-center justify-center rounded-md text-slate-600 hover:bg-slate-100 disabled:opacity-30 cursor-pointer"
                 onClick={() => setQty((prev: number): number => Math.min(product.stock_kg, prev + 1))}
                 disabled={qty >= product.stock_kg}
               >
@@ -163,7 +163,7 @@ export function ProductCard(props: ProductCardProps): React.JSX.Element {
 
             <button
               type="button"
-              className={`flex-1 py-2 px-3 text-xs font-bold rounded-xl shadow-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+              className={`flex-1 py-2 px-3 text-xs font-bold rounded-lg shadow-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
                 isAdded ? 'bg-emerald-700 text-white' : 'bg-emerald-600 hover:bg-emerald-700 text-white'
               }`}
               onClick={handleAdd}
@@ -179,7 +179,7 @@ export function ProductCard(props: ProductCardProps): React.JSX.Element {
             </button>
           </div>
         ) : (
-          <span className="text-xs font-bold text-rose-500 py-1.5 px-3 bg-rose-50 rounded-xl border border-rose-100 w-full text-center">
+          <span className="text-xs font-bold text-rose-500 py-1.5 px-3 bg-rose-50 rounded-lg border border-rose-100 w-full text-center">
             Stok Habis
           </span>
         )}
@@ -187,7 +187,7 @@ export function ProductCard(props: ProductCardProps): React.JSX.Element {
         {user?.role === 'admin' && onDelete && (
           <button
             type="button"
-            className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-colors cursor-pointer"
+            className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer"
             onClick={() => onDelete(product.id)}
             title="Hapus komoditas dari katalog"
           >

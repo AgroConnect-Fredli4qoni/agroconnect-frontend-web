@@ -93,7 +93,7 @@ export function CategorySection(): React.JSX.Element {
                 handleCategoryClick(cat.name)
               }
             }}
-            className="group relative bg-white border border-slate-200/90 hover:border-emerald-500/60 rounded-2xl p-4.5 shadow-2xs hover:shadow-md transition-all duration-200 cursor-pointer flex flex-col justify-between overflow-hidden"
+            className="group relative bg-white border border-slate-200/90 hover:border-emerald-500/60 rounded-xl p-4.5 shadow-2xs hover:shadow-md transition-all duration-200 cursor-pointer flex flex-col justify-between overflow-hidden"
           >
             <div className="space-y-3">
               <div className="flex items-center justify-between">

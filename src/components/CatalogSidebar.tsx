@@ -61,7 +61,7 @@ export function CatalogSidebar(props: CatalogSidebarProps): React.JSX.Element {
 
   return (
     <aside className="w-full lg:w-72 shrink-0 space-y-6">
-      <div className="bg-white rounded-3xl border border-slate-200/90 p-5 shadow-xs space-y-6">
+      <div className="bg-white rounded-xl border border-slate-200/90 p-5 shadow-xs space-y-6">
         <div className="flex items-center justify-between pb-4 border-b border-slate-100">
           <div className="flex items-center gap-2 text-slate-900 font-black text-sm">
             <Filter size={18} className="text-emerald-700" />
@@ -93,7 +93,7 @@ export function CatalogSidebar(props: CatalogSidebarProps): React.JSX.Element {
                   key={cat}
                   type="button"
                   onClick={() => onSelectCategory(cat)}
-                  className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all text-left cursor-pointer ${
+                  className={`flex items-center justify-between px-3.5 py-2.5 rounded-lg text-xs font-semibold transition-all text-left cursor-pointer ${
                     isSelected
                       ? 'bg-emerald-600 text-white font-bold shadow-2xs'
                       : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
@@ -115,7 +115,7 @@ export function CatalogSidebar(props: CatalogSidebarProps): React.JSX.Element {
           <select
             value={selectedLocation}
             onChange={(e) => onSelectLocation(e.target.value)}
-            className="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 font-medium text-slate-700 cursor-pointer"
+            className="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 font-medium text-slate-700 cursor-pointer"
           >
             <option value="Semua">Semua Wilayah</option>
             {availableLocations.map((loc) => (
@@ -142,7 +142,7 @@ export function CatalogSidebar(props: CatalogSidebarProps): React.JSX.Element {
                 placeholder="0"
                 value={minPrice}
                 onChange={(e) => onMinPriceChange(e.target.value)}
-                className="w-full px-2.5 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 text-slate-800"
+                className="w-full px-2.5 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 text-slate-800"
               />
             </div>
             <div>
@@ -155,7 +155,7 @@ export function CatalogSidebar(props: CatalogSidebarProps): React.JSX.Element {
                 placeholder="Maks"
                 value={maxPrice}
                 onChange={(e) => onMaxPriceChange(e.target.value)}
-                className="w-full px-2.5 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 text-slate-800"
+                className="w-full px-2.5 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 text-slate-800"
               />
             </div>
           </div>
@@ -174,7 +174,7 @@ export function CatalogSidebar(props: CatalogSidebarProps): React.JSX.Element {
                   key={opt.value}
                   type="button"
                   onClick={() => onSelectRating(opt.value)}
-                  className={`flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold transition-all text-left cursor-pointer ${
+                  className={`flex items-center justify-between px-3 py-2 rounded-lg text-xs font-semibold transition-all text-left cursor-pointer ${
                     isSelected
                       ? 'bg-amber-50 text-amber-900 border border-amber-200 font-bold'
                       : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
@@ -190,7 +190,7 @@ export function CatalogSidebar(props: CatalogSidebarProps): React.JSX.Element {
 
         <div className="pt-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
           <span>Hasil Ditemukan:</span>
-          <span className="font-black text-emerald-800 bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-100">
+          <span className="font-black text-emerald-800 bg-emerald-50 px-2.5 py-1 rounded-md border border-emerald-100">
             {totalFiltered} Komoditas
           </span>
         </div>
@@ -199,7 +199,7 @@ export function CatalogSidebar(props: CatalogSidebarProps): React.JSX.Element {
           <button
             type="button"
             onClick={onResetFilters}
-            className="w-full py-2.5 text-xs font-bold text-slate-700 bg-slate-100 hover:bg-rose-50 hover:text-rose-700 border border-slate-200 hover:border-rose-200 rounded-xl transition-all cursor-pointer flex items-center justify-center gap-2"
+            className="w-full py-2.5 text-xs font-bold text-slate-700 bg-slate-100 hover:bg-rose-50 hover:text-rose-700 border border-slate-200 hover:border-rose-200 rounded-lg transition-all cursor-pointer flex items-center justify-center gap-2"
           >
             <RotateCcw size={14} />
             <span>Hapus Semua Filter</span>

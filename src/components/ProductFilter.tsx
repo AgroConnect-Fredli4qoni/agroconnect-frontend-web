@@ -23,7 +23,7 @@ export function ProductFilter(props: ProductFilterProps): React.JSX.Element {
   const { search, onSearchChange, selectedCategory, onCategoryChange } = props
 
   return (
-    <div className="bg-white rounded-2xl border border-slate-200/80 p-4 shadow-xs mb-6 flex flex-col sm:flex-row gap-4 items-center justify-between">
+    <div className="bg-white rounded-xl border border-slate-200/80 p-4 shadow-xs mb-6 flex flex-col sm:flex-row gap-4 items-center justify-between">
       <div className="relative flex-1 w-full flex items-center">
         <Search size={18} className="absolute left-3.5 text-slate-400 pointer-events-none" />
         <input
@@ -31,7 +31,7 @@ export function ProductFilter(props: ProductFilterProps): React.JSX.Element {
           placeholder="Cari komoditas tani (contoh: Beras, Cabai, Jagung)..."
           value={search}
           onChange={(e) => onSearchChange(e.target.value)}
-          className="w-full pl-10 pr-4 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white text-slate-900 transition-all placeholder:text-slate-400"
+          className="w-full pl-10 pr-4 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white text-slate-900 transition-all placeholder:text-slate-400"
         />
       </div>
 
@@ -40,7 +40,7 @@ export function ProductFilter(props: ProductFilterProps): React.JSX.Element {
           <button
             key={cat}
             type="button"
-            className={`px-3.5 py-2 text-xs font-semibold rounded-xl transition-all cursor-pointer ${
+            className={`px-3.5 py-2 text-xs font-semibold rounded-lg transition-all cursor-pointer ${
               selectedCategory === cat
                 ? 'bg-emerald-600 text-white shadow-xs font-bold'
                 : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
