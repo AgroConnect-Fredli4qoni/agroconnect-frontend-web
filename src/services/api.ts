@@ -22,10 +22,10 @@ export class ApiError extends Error {
 /**
  * Fetch agricultural weather analytics from BMKG service via Gateway.
  *
- * @param region - Sentra pertanian name (e.g. Jawa Barat, Jawa Tengah, Jawa Timur).
+ * @param region - Sentra pertanian name (e.g. Indonesia, Jawa Barat).
  * @returns WeatherResponse containing climate data and farming recommendations.
  */
-export async function fetchWeather(region: string = 'Jawa Barat'): Promise<WeatherResponse> {
+export async function fetchWeather(region: string = 'Indonesia'): Promise<WeatherResponse> {
   const url = `${API_BASE_URL}/api/weather?region=${encodeURIComponent(region)}`
   const response = await fetch(url)
   if (!response.ok) {

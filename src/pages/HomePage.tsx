@@ -18,7 +18,7 @@ import { useAuth } from '../context/AuthContext'
 export function HomePage(): React.JSX.Element {
   const { token } = useAuth()
 
-  const [selectedRegion, setSelectedRegion] = useState<string>('Jawa Barat')
+  const [selectedRegion, setSelectedRegion] = useState<string>('Indonesia')
   const [weather, setWeather] = useState<WeatherResponse | null>(null)
   const [isWeatherLoading, setIsWeatherLoading] = useState<boolean>(false)
 

@@ -24,11 +24,10 @@ import { WeatherResponse } from '../types/weather'
 export interface HeroSlideshowProps {
   weather: WeatherResponse | null
   isWeatherLoading: boolean
-  selectedRegion: string
-  onSelectRegion: (region: string) => void
+  selectedRegion?: string
+  onSelectRegion?: (region: string) => void
 }
 
-const regions = ['Jawa Barat', 'Jawa Tengah', 'Jawa Timur', 'Nasional']
 const TOTAL_SLIDES = 3
 const AUTO_PLAY_INTERVAL = 7000
 
@@ -39,7 +38,7 @@ const AUTO_PLAY_INTERVAL = 7000
  * @returns JSX Element rendering hero banner slideshow.
  */
 export function HeroSlideshow(props: HeroSlideshowProps): React.JSX.Element {
-  const { weather, isWeatherLoading, selectedRegion, onSelectRegion } = props
+  const { weather, isWeatherLoading, selectedRegion = 'Indonesia' } = props
   const [currentSlide, setCurrentSlide] = useState<number>(0)
   const [isPaused, setIsPaused] = useState<boolean>(false)
   const timerRef = useRef<NodeJS.Timeout | null>(null)
@@ -218,22 +217,9 @@ export function HeroSlideshow(props: HeroSlideshowProps): React.JSX.Element {
                   <h2 className="text-xl sm:text-2xl font-black tracking-tight text-white">Parameter Cuaca Pertanian</h2>
                 </div>
 
-                <div className="flex flex-wrap items-center gap-1.5">
-                  <span className="text-xs text-emerald-200/80 mr-1 hidden sm:inline">Wilayah:</span>
-                  {regions.map((reg) => (
-                    <button
-                      key={reg}
-                      type="button"
-                      className={`px-3 py-1 text-xs font-semibold rounded-lg transition-all cursor-pointer ${
-                        selectedRegion === reg
-                          ? 'bg-emerald-500 text-emerald-950 font-bold'
-                          : 'bg-emerald-800/70 text-emerald-200 hover:bg-emerald-800 border border-emerald-700/50'
-                      }`}
-                      onClick={() => onSelectRegion(reg)}
-                    >
-                      {reg}
-                    </button>
-                  ))}
+                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-emerald-800/90 border border-emerald-700/70 text-emerald-100 text-xs font-bold shadow-2xs">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                  <span>Wilayah: Indonesia</span>
                 </div>
               </div>
 
