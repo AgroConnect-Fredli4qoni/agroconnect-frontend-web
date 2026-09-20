@@ -1,10 +1,10 @@
 import React from 'react'
-import { Search, X, Flame, Clock, TrendingUp, ArrowUpDown } from 'lucide-react'
+import { Search, X, Clock, TrendingUp, ArrowUpDown } from 'lucide-react'
 
 /**
- * SortOption defines available sorting mechanisms for commodity marketplace.
+ * SortOption defines available sorting mechanisms for commodity marketplace based on real database attributes.
  */
-export type SortOption = 'popular' | 'latest' | 'best_seller'
+export type SortOption = 'latest' | 'price_asc' | 'price_desc' | 'stock'
 
 /**
  * CatalogSortBarProps defines search input, sort options, and count indicators.
@@ -20,9 +20,10 @@ export interface CatalogSortBarProps {
 }
 
 const SORT_BUTTONS: { id: SortOption; label: string; icon: React.ReactNode }[] = [
-  { id: 'popular', label: 'Populer', icon: <Flame size={14} /> },
   { id: 'latest', label: 'Terbaru', icon: <Clock size={14} /> },
-  { id: 'best_seller', label: 'Terlaris', icon: <TrendingUp size={14} /> }
+  { id: 'price_asc', label: 'Harga Terendah', icon: <ArrowUpDown size={14} /> },
+  { id: 'price_desc', label: 'Harga Tertinggi', icon: <ArrowUpDown size={14} /> },
+  { id: 'stock', label: 'Stok Terbanyak', icon: <TrendingUp size={14} /> }
 ]
 
 /**

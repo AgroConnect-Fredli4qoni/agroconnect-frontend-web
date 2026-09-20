@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { MapPin, Check, Plus, Minus, Trash2, Star, Wheat, Salad, Carrot, Flame, Sprout, Leaf, Apple } from 'lucide-react'
+import { MapPin, Check, Plus, Minus, Trash2, Wheat, Salad, Carrot, Flame, Sprout, Leaf, Apple } from 'lucide-react'
 import { Product } from '../types/product'
 import { useCart } from '../context/CartContext'
 import { useAuth } from '../context/AuthContext'
@@ -13,30 +13,6 @@ export interface ProductCardProps {
   product: Product
   onDelete?: (id: string) => void
   onOpenDetail?: (product: Product) => void
-}
-
-/**
- * Resolves deterministic star rating based on product identity.
- *
- * @param id - Commodity identifier.
- * @param name - Commodity title.
- * @returns Rating number between 4.5 and 5.0.
- */
-export function getProductRating(id: string, name: string): number {
-  const seed = (id.charCodeAt(0) || 0) + name.length
-  const step = seed % 6
-  return Number((4.5 + step * 0.1).toFixed(1))
-}
-
-/**
- * Resolves estimated sold count for sales popularity.
- *
- * @param product - Commodity item.
- * @returns Estimated quantity sold.
- */
-export function getProductSales(product: Product): number {
-  const seed = (product.name.length * 17 + (product.price_per_kg % 100)) % 180
-  return 25 + seed
 }
 
 function renderFallbackCategoryIcon(category: string, name: string): React.JSX.Element {
@@ -79,8 +55,6 @@ export function ProductCard(props: ProductCardProps): React.JSX.Element {
     setTimeout(() => setIsAdded(false), 1500)
   }
 
-  const rating = getProductRating(product.id, product.name)
-  const sales = getProductSales(product)
   const hasImage = Boolean(product.image_url && !imageFailed)
 
   return (
@@ -118,16 +92,6 @@ export function ProductCard(props: ProductCardProps): React.JSX.Element {
               <span>Organik</span>
             </span>
           )}
-        </div>
-
-        <div className="absolute top-3 right-3 flex flex-col items-end gap-1.5 z-10">
-          <span className="inline-flex items-center gap-1 text-[11px] font-bold text-amber-700 bg-white/95 backdrop-blur-xs px-2.5 py-1 rounded-full border border-amber-200 shadow-2xs">
-            <Star size={11} className="fill-amber-400 text-amber-500" />
-            <span>{rating}</span>
-          </span>
-          <span className="text-[10px] text-slate-700 bg-white/90 backdrop-blur-xs px-2 py-0.5 rounded-md font-semibold border border-slate-200 shadow-2xs">
-            Terjual {sales} kg
-          </span>
         </div>
       </div>
 

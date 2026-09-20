@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Filter, RotateCcw, MapPin, DollarSign, Star, Check, Navigation, X } from 'lucide-react'
+import { Filter, RotateCcw, MapPin, DollarSign, Check, Navigation, X } from 'lucide-react'
 import { CustomNumberInput } from './CustomNumberInput'
 import { LocationMapModal } from './LocationMapModal'
 
@@ -16,21 +16,12 @@ export interface CatalogSidebarProps {
   maxPrice: string
   onMinPriceChange: (val: string) => void
   onMaxPriceChange: (val: string) => void
-  selectedRating: number
-  onSelectRating: (rating: number) => void
   onResetFilters: () => void
   totalFiltered: number
 }
 
-const RATING_OPTIONS = [
-  { value: 0, label: 'Semua Penilaian' },
-  { value: 4.8, label: '4.8 ke atas' },
-  { value: 4.5, label: '4.5 ke atas' },
-  { value: 4.0, label: '4.0 ke atas' }
-]
-
 /**
- * CatalogSidebar provides left-hand multi-attribute filtering for commodity categories, origin locations, price limits, and star ratings.
+ * CatalogSidebar provides left-hand multi-attribute filtering for commodity categories, origin locations, and price limits.
  *
  * @param props - Filter configuration and event dispatchers.
  * @returns JSX Element presenting catalog filter sidebar.
@@ -46,8 +37,6 @@ export function CatalogSidebar(props: CatalogSidebarProps): React.JSX.Element {
     maxPrice,
     onMinPriceChange,
     onMaxPriceChange,
-    selectedRating,
-    onSelectRating,
     onResetFilters,
     totalFiltered
   } = props
@@ -58,8 +47,7 @@ export function CatalogSidebar(props: CatalogSidebarProps): React.JSX.Element {
     selectedCategory !== 'Semua' ||
     selectedLocation !== 'Semua' ||
     minPrice !== '' ||
-    maxPrice !== '' ||
-    selectedRating > 0
+    maxPrice !== ''
 
   return (
     <aside className="w-full lg:w-72 shrink-0 space-y-6">
@@ -206,36 +194,6 @@ export function CatalogSidebar(props: CatalogSidebarProps): React.JSX.Element {
                 onChange={onMaxPriceChange}
               />
             </div>
-          </div>
-        </div>
-
-        <div className="pt-4 border-t border-slate-100 space-y-3">
-          <div className="flex items-center gap-1.5 text-slate-800 font-bold text-xs">
-            <Star size={15} className="text-amber-500 fill-amber-500" />
-            <span>Penilaian Mutu Komoditas</span>
-          </div>
-          <div className="flex flex-col gap-1">
-            {RATING_OPTIONS.map((opt) => {
-              const isSelected = selectedRating === opt.value
-              return (
-                <button
-                  key={opt.value}
-                  type="button"
-                  onClick={() => onSelectRating(opt.value)}
-                  className={`flex items-center justify-between px-3 py-2 rounded-lg text-xs font-semibold transition-all text-left cursor-pointer ${
-                    isSelected
-                      ? 'bg-amber-50 text-amber-900 border border-amber-200 font-bold'
-                      : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
-                  }`}
-                >
-                  <div className="flex items-center gap-1.5">
-                    {opt.value > 0 && <Star size={13} className="fill-amber-400 text-amber-500" />}
-                    <span>{opt.label}</span>
-                  </div>
-                  {isSelected && <Check size={14} className="text-amber-600" />}
-                </button>
-              )
-            })}
           </div>
         </div>
 

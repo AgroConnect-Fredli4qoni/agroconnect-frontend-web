@@ -3,7 +3,7 @@ import { useSearchParams } from 'react-router-dom'
 import { PlusCircle, Store, ChevronLeft, ChevronRight } from 'lucide-react'
 import { CatalogSidebar } from '../components/CatalogSidebar'
 import { CatalogSortBar, SortOption } from '../components/CatalogSortBar'
-import { ProductCard, getProductRating, getProductSales } from '../components/ProductCard'
+import { ProductCard } from '../components/ProductCard'
 import { AddProductModal } from '../components/AddProductModal'
 import { ProductDetailModal } from '../components/ProductDetailModal'
 import { Product } from '../types/product'
@@ -40,8 +40,7 @@ export function CatalogPage(props: CatalogPageProps): React.JSX.Element {
   const [selectedLocation, setSelectedLocation] = useState<string>('Semua')
   const [minPrice, setMinPrice] = useState<string>('')
   const [maxPrice, setMaxPrice] = useState<string>('')
-  const [selectedRating, setSelectedRating] = useState<number>(0)
-  const [sortBy, setSortBy] = useState<SortOption>('popular')
+  const [sortBy, setSortBy] = useState<SortOption>('latest')
   const [currentPage, setCurrentPage] = useState<number>(1)
   const [selectedProductForDetail, setSelectedProductForDetail] = useState<Product | null>(null)
 
@@ -98,7 +97,7 @@ export function CatalogPage(props: CatalogPageProps): React.JSX.Element {
 
   useEffect(() => {
     setCurrentPage(1)
-  }, [search, category, selectedLocation, minPrice, maxPrice, selectedRating, sortBy])
+  }, [search, category, selectedLocation, minPrice, maxPrice, sortBy])
 
   const filteredAndSortedProducts = useMemo(() => {
     return rawProducts
@@ -109,7 +108,6 @@ export function CatalogPage(props: CatalogPageProps): React.JSX.Element {
         }
         if (minPrice && p.price_per_kg < Number(minPrice)) return false
         if (maxPrice && p.price_per_kg > Number(maxPrice)) return false
-        if (selectedRating > 0 && getProductRating(p.id, p.name) < selectedRating) return false
         if (search) {
           const q = search.toLowerCase()
           const matchesName = p.name.toLowerCase().includes(q)
@@ -120,27 +118,26 @@ export function CatalogPage(props: CatalogPageProps): React.JSX.Element {
         return true
       })
       .sort((a, b) => {
-        if (sortBy === 'popular') {
-          return getProductRating(b.id, b.name) - getProductRating(a.id, a.name)
+        if (sortBy === 'price_asc') {
+          return a.price_per_kg - b.price_per_kg
         }
-        if (sortBy === 'latest') {
-          const dateA = new Date(a.created_at).getTime() || 0
-          const dateB = new Date(b.created_at).getTime() || 0
-          return dateB - dateA || b.id.localeCompare(a.id)
+        if (sortBy === 'price_desc') {
+          return b.price_per_kg - a.price_per_kg
         }
-        if (sortBy === 'best_seller') {
-          return getProductSales(b) - getProductSales(a)
+        if (sortBy === 'stock') {
+          return b.stock_kg - a.stock_kg
         }
-        return 0
+        const dateA = new Date(a.created_at).getTime() || 0
+        const dateB = new Date(b.created_at).getTime() || 0
+        return dateB - dateA || b.id.localeCompare(a.id)
       })
-  }, [rawProducts, category, selectedLocation, minPrice, maxPrice, selectedRating, search, sortBy])
+  }, [rawProducts, category, selectedLocation, minPrice, maxPrice, search, sortBy])
 
   const handleResetFilters = (): void => {
     setCategory('Semua')
     setSelectedLocation('Semua')
     setMinPrice('')
     setMaxPrice('')
-    setSelectedRating(0)
     setSearch('')
     const nextParams = new URLSearchParams(searchParams)
     nextParams.delete('category')
@@ -202,8 +199,6 @@ export function CatalogPage(props: CatalogPageProps): React.JSX.Element {
           maxPrice={maxPrice}
           onMinPriceChange={setMinPrice}
           onMaxPriceChange={setMaxPrice}
-          selectedRating={selectedRating}
-          onSelectRating={setSelectedRating}
           onResetFilters={handleResetFilters}
           totalFiltered={filteredAndSortedProducts.length}
         />

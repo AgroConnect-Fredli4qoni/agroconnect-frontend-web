@@ -8,11 +8,11 @@ import { useAuth } from '../context/AuthContext'
 import { slugifyFarmerName, buildFarmerProfile } from '../services/farmerService'
 import { FarmerProfileHeader } from '../components/FarmerProfileHeader'
 import { FarmerAboutTab } from '../components/FarmerAboutTab'
-import { ProductCard, getProductRating, getProductSales } from '../components/ProductCard'
+import { ProductCard } from '../components/ProductCard'
 import { ProductDetailModal } from '../components/ProductDetailModal'
 
 type TabType = 'catalog' | 'about'
-type SortType = 'popular' | 'latest' | 'price_asc' | 'price_desc'
+type SortType = 'latest' | 'price_asc' | 'price_desc' | 'stock'
 
 const CATEGORY_TABS = ['Semua', 'Pangan Pokok', 'Sayur', 'Bumbu', 'Palawija']
 
@@ -31,7 +31,7 @@ export function FarmerProfilePage(): React.JSX.Element {
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [activeTab, setActiveTab] = useState<TabType>('catalog')
   const [selectedCategory, setSelectedCategory] = useState<string>('Semua')
-  const [sortBy, setSortBy] = useState<SortType>('popular')
+  const [sortBy, setSortBy] = useState<SortType>('latest')
   const [selectedProductForDetail, setSelectedProductForDetail] = useState<Product | null>(null)
 
   const targetSlug = slug || 'kelompok-tani-makmur'
@@ -77,21 +77,18 @@ export function FarmerProfilePage(): React.JSX.Element {
         return true
       })
       .sort((a, b) => {
-        if (sortBy === 'popular') {
-          return getProductRating(b.id, b.name) - getProductRating(a.id, a.name)
-        }
-        if (sortBy === 'latest') {
-          const dateA = new Date(a.created_at).getTime() || 0
-          const dateB = new Date(b.created_at).getTime() || 0
-          return dateB - dateA
-        }
         if (sortBy === 'price_asc') {
           return a.price_per_kg - b.price_per_kg
         }
         if (sortBy === 'price_desc') {
           return b.price_per_kg - a.price_per_kg
         }
-        return getProductSales(b) - getProductSales(a)
+        if (sortBy === 'stock') {
+          return b.stock_kg - a.stock_kg
+        }
+        const dateA = new Date(a.created_at).getTime() || 0
+        const dateB = new Date(b.created_at).getTime() || 0
+        return dateB - dateA
       })
   }, [farmerProducts, selectedCategory, sortBy])
 
@@ -215,10 +212,10 @@ export function FarmerProfilePage(): React.JSX.Element {
                   onChange={(e) => setSortBy(e.target.value as SortType)}
                   className="text-xs font-bold bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 text-slate-800 focus:outline-none focus:ring-1 focus:ring-emerald-500 cursor-pointer"
                 >
-                  <option value="popular">Paling Populer</option>
                   <option value="latest">Panen Terbaru</option>
                   <option value="price_asc">Harga Terendah</option>
                   <option value="price_desc">Harga Tertinggi</option>
+                  <option value="stock">Stok Terbanyak</option>
                 </select>
               </div>
             </div>

@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom'
 import {
   X,
   MapPin,
-  Star,
   Leaf,
   ShieldCheck,
   Sprout,
@@ -25,7 +24,6 @@ import {
 import { Product } from '../types/product'
 import { useCart } from '../context/CartContext'
 import { useAuth } from '../context/AuthContext'
-import { getProductRating, getProductSales } from './ProductCard'
 import { slugifyFarmerName } from '../services/farmerService'
 
 /**
@@ -114,8 +112,6 @@ export function ProductDetailModal(props: ProductDetailModalProps): React.JSX.El
     return null
   }
 
-  const rating = getProductRating(product.id, product.name)
-  const sales = getProductSales(product)
   const hasImage = Boolean(product.image_url && !imageFailed)
   const subtotal = product.price_per_kg * qty
 
@@ -190,16 +186,6 @@ export function ProductDetailModal(props: ProductDetailModalProps): React.JSX.El
                       <span>100% Organik</span>
                     </span>
                   )}
-                </div>
-
-                <div className="absolute top-3 right-3 flex flex-col items-end gap-1.5 z-10">
-                  <span className="inline-flex items-center gap-1 text-xs font-bold text-amber-700 bg-white/95 backdrop-blur-xs px-2.5 py-1 rounded-full border border-amber-200 shadow-2xs">
-                    <Star size={12} className="fill-amber-400 text-amber-500" />
-                    <span>{rating}</span>
-                  </span>
-                  <span className="text-[10px] font-semibold text-slate-700 bg-white/95 backdrop-blur-xs px-2 py-0.5 rounded-md border border-slate-200 shadow-2xs">
-                    Terjual {sales} {product.unit}
-                  </span>
                 </div>
               </div>
 
