@@ -1,5 +1,5 @@
 import React from 'react'
-import { User, LogOut, BadgeCheck } from 'lucide-react'
+import { User, LogOut, BadgeCheck, Sprout } from 'lucide-react'
 import { UserProfile } from '../types/auth'
 
 /**
@@ -8,6 +8,7 @@ import { UserProfile } from '../types/auth'
 export interface DashboardSidebarProps {
   user: UserProfile
   activeMenu: string
+  onSelectMenu: (menu: string) => void
   onLogout: () => void
 }
 
@@ -18,7 +19,7 @@ export interface DashboardSidebarProps {
  * @returns JSX Element rendering sidebar panel.
  */
 export function DashboardSidebar(props: DashboardSidebarProps): React.JSX.Element {
-  const { user, activeMenu, onLogout } = props
+  const { user, activeMenu, onSelectMenu, onLogout } = props
 
   return (
     <aside className="w-full lg:w-64 xl:w-72 shrink-0 space-y-4">
@@ -45,6 +46,7 @@ export function DashboardSidebar(props: DashboardSidebarProps): React.JSX.Elemen
         <nav className="space-y-1">
           <button
             type="button"
+            onClick={() => onSelectMenu('profile')}
             className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all text-left cursor-pointer ${
               activeMenu === 'profile'
                 ? 'bg-emerald-600 text-white shadow-xs'
@@ -54,6 +56,21 @@ export function DashboardSidebar(props: DashboardSidebarProps): React.JSX.Elemen
             <User size={16} />
             <span>Profil Pengguna</span>
           </button>
+
+          {(user.role === 'farmer' || user.role === 'admin') && (
+            <button
+              type="button"
+              onClick={() => onSelectMenu('products')}
+              className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all text-left cursor-pointer ${
+                activeMenu === 'products'
+                  ? 'bg-emerald-600 text-white shadow-xs'
+                  : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+              }`}
+            >
+              <Sprout size={16} />
+              <span>Kelola Komoditas</span>
+            </button>
+          )}
         </nav>
 
         <div className="pt-3 mt-3 border-t border-slate-100 space-y-1">

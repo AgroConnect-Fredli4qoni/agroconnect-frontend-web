@@ -14,6 +14,7 @@ import {
 import { useAuth } from '../context/AuthContext'
 import { fetchUserProfile, updateUserProfile } from '../services/api'
 import { DashboardSidebar } from '../components/DashboardSidebar'
+import { FarmerProductsManager } from '../components/FarmerProductsManager'
 
 /**
  * DashboardPage provides the two-column authenticated dashboard layout hosting the user profile manager.
@@ -24,6 +25,7 @@ export function DashboardPage(): React.JSX.Element {
   const navigate = useNavigate()
   const { user, token, isAuthenticated, logout, updateUserSession } = useAuth()
 
+  const [activeMenu, setActiveMenu] = useState<'profile' | 'products'>('profile')
   const [activeTab, setActiveTab] = useState<'info' | 'security'>('info')
   const [name, setName] = useState<string>('')
   const [oldPassword, setOldPassword] = useState<string>('')
@@ -156,15 +158,20 @@ export function DashboardPage(): React.JSX.Element {
       <div className="flex flex-col lg:flex-row items-start gap-8">
         <DashboardSidebar
           user={user}
-          activeMenu="profile"
+          activeMenu={activeMenu}
+          onSelectMenu={(menu) => setActiveMenu(menu as 'profile' | 'products')}
           onLogout={logout}
         />
 
         <section className="flex-1 min-w-0 w-full space-y-6">
-          <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-xs flex flex-col sm:flex-row items-center sm:items-start gap-5">
-            <div className="w-20 h-20 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-500 text-white flex items-center justify-center text-3xl font-black shadow-md shrink-0">
-              {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
-            </div>
+          {activeMenu === 'products' ? (
+            <FarmerProductsManager />
+          ) : (
+            <>
+              <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-xs flex flex-col sm:flex-row items-center sm:items-start gap-5">
+                <div className="w-20 h-20 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-500 text-white flex items-center justify-center text-3xl font-black shadow-md shrink-0">
+                  {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
+                </div>
             <div className="flex-1 text-center sm:text-left space-y-1">
               <div className="flex flex-col sm:flex-row sm:items-center gap-2">
                 <h1 className="text-xl font-bold text-slate-900">{user.name}</h1>
@@ -360,6 +367,8 @@ export function DashboardPage(): React.JSX.Element {
                 </div>
               </form>
             </div>
+          )}
+          </>
           )}
         </section>
       </div>

@@ -1,5 +1,5 @@
 import { AuthResponse, LoginCredentials, RegisterPayload, UpdateProfilePayload, UserProfile } from '../types/auth'
-import { CreateProductInput, Product } from '../types/product'
+import { CreateProductInput, Product, UpdateProductInput } from '../types/product'
 import { CheckoutPayload, Order } from '../types/order'
 import { WeatherResponse } from '../types/weather'
 import { FarmerApiRecord } from '../types/farmer'
@@ -92,8 +92,34 @@ export async function deleteProduct(id: string, token: string): Promise<void> {
   })
 
   if (!response.ok) {
-    throw new ApiError('Failed to delete commodity', response.status)
+    const errData = await response.json().catch(() => ({}))
+    throw new ApiError(errData.error || 'Failed to delete commodity', response.status)
   }
+}
+
+/**
+ * Update an existing agricultural product in MongoDB catalog (Requires JWT Bearer Token).
+ *
+ * @param id - Product ObjectId hex string.
+ * @param payload - Updated commodity specification input.
+ * @param token - Bearer JWT string.
+ * @returns Updated Product item.
+ */
+export async function updateProduct(id: string, payload: UpdateProductInput, token: string): Promise<Product> {
+  const response = await fetch(`${API_BASE_URL}/api/products/${id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(payload),
+  })
+
+  if (!response.ok) {
+    const errData = await response.json().catch(() => ({}))
+    throw new ApiError(errData.error || 'Failed to update commodity', response.status)
+  }
+  return response.json()
 }
 
 /**
