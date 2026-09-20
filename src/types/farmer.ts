@@ -9,7 +9,28 @@ export interface FarmerContactInfo {
 }
 
 /**
- * FarmerProfile models agricultural producer details and real commodity metrics.
+ * FarmerApiRecord models agricultural producer document stored in MongoDB.
+ */
+export interface FarmerApiRecord {
+  id: string
+  slug: string
+  name: string
+  origin_region: string
+  avatar_url: string
+  banner_url: string
+  description: string
+  phone: string
+  address: string
+  operating_hours: string
+  land_area: string
+  is_verified: boolean
+  farming_methods: string[]
+  certifications: string[]
+  created_at: string
+}
+
+/**
+ * FarmerProfile models agricultural producer details, contact, and live commodity metrics.
  */
 export interface FarmerProfile {
   id: string

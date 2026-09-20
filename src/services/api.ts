@@ -2,6 +2,7 @@ import { AuthResponse, LoginCredentials, RegisterPayload, UserProfile } from '..
 import { CreateProductInput, Product } from '../types/product'
 import { CheckoutPayload, Order } from '../types/order'
 import { WeatherResponse } from '../types/weather'
+import { FarmerApiRecord } from '../types/farmer'
 
 const API_BASE_URL = 'http://localhost:8080'
 
@@ -176,6 +177,33 @@ export async function fetchUserOrders(userId: number, token: string): Promise<Or
 
   if (!response.ok) {
     throw new ApiError('Failed to load transaction history', response.status)
+  }
+  return response.json()
+}
+
+/**
+ * Fetch all registered farmer producer profiles from MongoDB Catalog via Gateway.
+ *
+ * @returns Array of FarmerApiRecord items.
+ */
+export async function fetchFarmers(): Promise<FarmerApiRecord[]> {
+  const response = await fetch(`${API_BASE_URL}/api/farmers`)
+  if (!response.ok) {
+    throw new ApiError('Failed to fetch farmers list', response.status)
+  }
+  return response.json()
+}
+
+/**
+ * Fetch specific farmer producer profile by URL slug from MongoDB Catalog via Gateway.
+ *
+ * @param slug - Hyphenated identifier of the farmer.
+ * @returns Detailed FarmerApiRecord object.
+ */
+export async function fetchFarmerBySlug(slug: string): Promise<FarmerApiRecord> {
+  const response = await fetch(`${API_BASE_URL}/api/farmers/${encodeURIComponent(slug)}`)
+  if (!response.ok) {
+    throw new ApiError(`Farmer profile not found for slug: ${slug}`, response.status)
   }
   return response.json()
 }

@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react'
-import { useParams } from 'react-router-dom'
-import { Store, Info, SlidersHorizontal, ArrowUpDown } from 'lucide-react'
+import { useParams, Link } from 'react-router-dom'
+import { Store, Info, SlidersHorizontal, ArrowUpDown, AlertCircle, ArrowLeft } from 'lucide-react'
 import { Product } from '../types/product'
-import { fetchProducts, deleteProduct } from '../services/api'
+import { FarmerApiRecord } from '../types/farmer'
+import { fetchProducts, fetchFarmerBySlug, deleteProduct } from '../services/api'
 import { useAuth } from '../context/AuthContext'
-import { slugifyFarmerName, getFarmerProfile } from '../services/farmerService'
+import { slugifyFarmerName, buildFarmerProfile } from '../services/farmerService'
 import { FarmerProfileHeader } from '../components/FarmerProfileHeader'
 import { FarmerAboutTab } from '../components/FarmerAboutTab'
 import { ProductCard, getProductRating, getProductSales } from '../components/ProductCard'
@@ -25,39 +26,49 @@ export function FarmerProfilePage(): React.JSX.Element {
   const { token } = useAuth()
 
   const [allProducts, setAllProducts] = useState<Product[]>([])
+  const [farmerRecord, setFarmerRecord] = useState<FarmerApiRecord | null>(null)
   const [isLoading, setIsLoading] = useState<boolean>(true)
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [activeTab, setActiveTab] = useState<TabType>('catalog')
   const [selectedCategory, setSelectedCategory] = useState<string>('Semua')
   const [sortBy, setSortBy] = useState<SortType>('popular')
   const [selectedProductForDetail, setSelectedProductForDetail] = useState<Product | null>(null)
 
-  const loadProducts = useCallback(async (): Promise<void> => {
+  const targetSlug = slug || 'kelompok-tani-makmur'
+
+  const loadData = useCallback(async (): Promise<void> => {
     setIsLoading(true)
+    setErrorMessage(null)
     try {
-      const data = await fetchProducts()
-      setAllProducts(data)
+      const [productsData, farmerData] = await Promise.all([
+        fetchProducts(),
+        fetchFarmerBySlug(targetSlug)
+      ])
+      setAllProducts(productsData)
+      setFarmerRecord(farmerData)
     } catch {
-      setAllProducts([])
+      setErrorMessage(`Profil kelompok tani "${targetSlug}" tidak ditemukan di database katalog.`)
     } finally {
       setIsLoading(false)
     }
-  }, [])
+  }, [targetSlug])
 
   useEffect(() => {
-    loadProducts()
-  }, [loadProducts])
-
-  const targetSlug = slug || 'kelompok-tani-makmur'
-  const farmer = useMemo(() => {
-    return getFarmerProfile(targetSlug, allProducts)
-  }, [targetSlug, allProducts])
+    loadData()
+  }, [loadData])
 
   const farmerProducts = useMemo(() => {
+    if (!farmerRecord) return []
     return allProducts.filter((p) => {
       const pSlug = slugifyFarmerName(p.farmer_name)
-      return pSlug === targetSlug || p.farmer_name.toLowerCase() === farmer.name.toLowerCase()
+      return pSlug === targetSlug || p.farmer_name.toLowerCase() === farmerRecord.name.toLowerCase()
     })
-  }, [allProducts, targetSlug, farmer.name])
+  }, [allProducts, targetSlug, farmerRecord])
+
+  const farmer = useMemo(() => {
+    if (!farmerRecord) return null
+    return buildFarmerProfile(farmerRecord, farmerProducts)
+  }, [farmerRecord, farmerProducts])
 
   const filteredAndSortedProducts = useMemo(() => {
     return farmerProducts
@@ -90,7 +101,7 @@ export function FarmerProfilePage(): React.JSX.Element {
 
     try {
       await deleteProduct(id, token)
-      loadProducts()
+      loadData()
     } catch (err: unknown) {
       if (err instanceof Error) {
         alert(err.message)
@@ -102,7 +113,32 @@ export function FarmerProfilePage(): React.JSX.Element {
     return (
       <div className="max-w-[1680px] mx-auto px-4 sm:px-8 lg:px-12 py-16 flex flex-col items-center justify-center space-y-3">
         <div className="w-9 h-9 border-3 border-emerald-600 border-t-transparent rounded-full animate-spin" />
-        <p className="text-xs text-slate-500 font-medium">Memuat profil dan etalase komoditas mitra petani...</p>
+        <p className="text-xs text-slate-500 font-medium">Memuat profil dan etalase komoditas mitra petani dari database...</p>
+      </div>
+    )
+  }
+
+  if (errorMessage || !farmer) {
+    return (
+      <div className="max-w-[1680px] mx-auto px-4 sm:px-8 lg:px-12 py-16">
+        <div className="max-w-md mx-auto bg-white rounded-2xl border border-slate-200/80 p-8 shadow-xs text-center space-y-4">
+          <div className="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center mx-auto">
+            <AlertCircle size={24} />
+          </div>
+          <div className="space-y-1">
+            <h3 className="text-base font-black text-slate-900">Profil Mitra Tani Tidak Ditemukan</h3>
+            <p className="text-xs text-slate-500 leading-relaxed">
+              {errorMessage || 'Data profil petani belum terdaftar dalam basis data katalog.'}
+            </p>
+          </div>
+          <Link
+            to="/catalog"
+            className="inline-flex items-center gap-2 px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold transition-colors cursor-pointer"
+          >
+            <ArrowLeft size={14} />
+            <span>Kembali ke Katalog Komoditas</span>
+          </Link>
+        </div>
       </div>
     )
   }
