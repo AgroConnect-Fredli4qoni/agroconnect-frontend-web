@@ -63,65 +63,65 @@ export function HeroSlideshow(props: HeroSlideshowProps): React.JSX.Element {
 
   return (
     <div
-      className="relative rounded-2xl overflow-hidden bg-emerald-900 text-white shadow-lg border border-emerald-800/60"
+      className="relative rounded-2xl overflow-hidden bg-gradient-to-r from-emerald-950 via-emerald-900 to-emerald-850 text-white shadow-lg border border-emerald-800/60"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
       <div className="w-full">
         {currentSlide === 0 && (
-          <div className="relative w-full min-h-[400px] sm:min-h-[360px] p-6 sm:p-10 lg:p-12 pb-14 flex flex-col justify-between space-y-6 overflow-hidden">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 z-10">
-              <div className="max-w-2xl space-y-4">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-emerald-800 border border-emerald-700/60 text-emerald-200 text-xs font-semibold">
-                  <Sparkles size={14} />
-                  <span>Platform Agrikultur Cerdas</span>
-                </div>
+          <div className="relative w-full min-h-[420px] sm:min-h-[390px] lg:min-h-[410px] p-6 sm:p-10 lg:p-12 pb-14 flex flex-col justify-between space-y-6 overflow-hidden">
+            <div className="hidden md:block absolute right-4 top-1/2 -translate-y-1/2 w-[460px] h-[460px] bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
 
-                <h1 className="text-2xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-tight">
-                  Hubungkan Hasil Panen Petani Langsung ke Meja Anda
-                </h1>
-
-                <p className="text-xs sm:text-sm text-emerald-100/90 leading-relaxed max-w-xl">
-                  Solusi digital rantai pasok agrikultur Indonesia dengan transparansi harga pasar, dan kepastian transaksi aman bagi petani maupun pembeli.
-                </p>
-
-                <div className="flex flex-wrap items-center gap-3 pt-1">
-                  <Link
-                    to="/catalog"
-                    className="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-emerald-900 hover:bg-emerald-50 text-xs sm:text-sm font-bold rounded-lg shadow-xs transition-all cursor-pointer"
-                  >
-                    <Store size={17} />
-                    <span>Jelajahi Katalog Lengkap</span>
-                  </Link>
-                  <button
-                    type="button"
-                    onClick={() => setCurrentSlide(1)}
-                    className="inline-flex items-center gap-2 px-4 py-2.5 bg-emerald-800/80 hover:bg-emerald-800 text-white border border-emerald-700/60 text-xs sm:text-sm font-semibold rounded-lg transition-all cursor-pointer"
-                  >
-                    <CalendarCheck size={17} />
-                    <span>Rekomendasi Tani</span>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setCurrentSlide(2)}
-                    className="inline-flex items-center gap-2 px-4 py-2.5 bg-emerald-800/80 hover:bg-emerald-800 text-white border border-emerald-700/60 text-xs sm:text-sm font-semibold rounded-lg transition-all cursor-pointer"
-                  >
-                    <CloudSun size={17} />
-                    <span>Cek Cuaca BMKG</span>
-                  </button>
-                </div>
+            <div className="relative z-10 max-w-xl lg:max-w-xl xl:max-w-2xl space-y-4">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-emerald-800/90 border border-emerald-700/70 text-emerald-200 text-xs font-semibold backdrop-blur-xs">
+                <Sparkles size={14} className="text-emerald-400" />
+                <span>Platform Agrikultur Cerdas</span>
               </div>
 
-              <div className="hidden md:flex items-center justify-center shrink-0 md:max-w-xs lg:max-w-md xl:max-w-lg">
-                <img
-                  src="/images/banner/banner-model.png"
-                  alt="Petani dan Pembeli AgroConnect"
-                  className="w-full max-h-[260px] lg:max-h-[300px] xl:max-h-[340px] object-contain drop-shadow-2xl transition-transform duration-300 hover:scale-105"
-                />
+              <h1 className="text-2xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-tight">
+                Hubungkan Hasil Panen Petani Langsung ke Meja Anda
+              </h1>
+
+              <p className="text-xs sm:text-sm text-emerald-100/90 leading-relaxed max-w-lg">
+                Solusi digital rantai pasok agrikultur Indonesia dengan transparansi harga pasar, dan kepastian transaksi aman bagi petani maupun pembeli.
+              </p>
+
+              <div className="flex flex-wrap items-center gap-3 pt-2">
+                <Link
+                  to="/catalog"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-emerald-950 hover:bg-emerald-50 text-xs sm:text-sm font-bold rounded-xl shadow-xs transition-all cursor-pointer"
+                >
+                  <Store size={17} className="text-emerald-700" />
+                  <span>Jelajahi Katalog Lengkap</span>
+                </Link>
+                <button
+                  type="button"
+                  onClick={() => setCurrentSlide(1)}
+                  className="inline-flex items-center gap-2 px-4 py-2.5 bg-emerald-800/80 hover:bg-emerald-700 text-white border border-emerald-700/60 text-xs sm:text-sm font-semibold rounded-xl transition-all cursor-pointer"
+                >
+                  <CalendarCheck size={17} />
+                  <span>Rekomendasi Tani</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setCurrentSlide(2)}
+                  className="inline-flex items-center gap-2 px-4 py-2.5 bg-emerald-800/80 hover:bg-emerald-700 text-white border border-emerald-700/60 text-xs sm:text-sm font-semibold rounded-xl transition-all cursor-pointer"
+                >
+                  <CloudSun size={17} />
+                  <span>Cek Cuaca BMKG</span>
+                </button>
               </div>
             </div>
 
-            <div className="flex flex-wrap gap-5 pt-4 text-xs text-emerald-200/80 border-t border-emerald-800/80 z-10">
+            <div className="hidden md:flex absolute right-4 lg:right-10 xl:right-16 bottom-0 items-end justify-center pointer-events-none z-10">
+              <img
+                src="/images/banner/banner-model.png"
+                alt="Petani dan Pembeli AgroConnect"
+                className="h-[310px] sm:h-[340px] lg:h-[380px] xl:h-[410px] w-auto max-w-[340px] sm:max-w-[390px] lg:max-w-[460px] xl:max-w-[500px] object-contain drop-shadow-[0_20px_35px_rgba(0,0,0,0.45)] transition-transform duration-500 hover:scale-105 pointer-events-auto"
+              />
+            </div>
+
+            <div className="flex flex-wrap gap-5 pt-4 text-xs text-emerald-200/80 border-t border-emerald-800/80 z-10 max-w-xl lg:max-w-2xl">
               <div className="flex items-center gap-1.5">
                 <ShieldCheck size={16} className="text-emerald-400" />
                 <span>Transaksi Terlindungi & Mutu Terjamin</span>
