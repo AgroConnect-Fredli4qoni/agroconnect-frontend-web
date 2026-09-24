@@ -188,14 +188,33 @@ export async function createOrder(payload: CheckoutPayload, token: string): Prom
 }
 
 /**
- * Fetch purchase history for authenticated buyer.
+ * Fetch transaction history for authenticated user (orders as buyer or incoming orders as farmer).
  *
- * @param userId - Buyer user identifier.
+ * @param userId - User identifier.
  * @param token - Bearer JWT string.
- * @returns Array of previous orders.
+ * @param status - Optional transactional status filter.
+ * @param role - Optional role scope filter.
+ * @returns Array of orders matching criteria.
  */
-export async function fetchUserOrders(userId: number, token: string): Promise<Order[]> {
-  const response = await fetch(`${API_BASE_URL}/api/orders/user?user_id=${userId}`, {
+export async function fetchUserOrders(
+  userId: number,
+  token: string,
+  status?: string,
+  role?: string
+): Promise<Order[]> {
+  const params = new URLSearchParams()
+  if (userId > 0) {
+    params.append('user_id', userId.toString())
+  }
+  if (status && status !== 'ALL') {
+    params.append('status', status)
+  }
+  if (role) {
+    params.append('role', role)
+  }
+  const queryString = params.toString() ? `?${params.toString()}` : ''
+
+  const response = await fetch(`${API_BASE_URL}/api/orders/user${queryString}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },

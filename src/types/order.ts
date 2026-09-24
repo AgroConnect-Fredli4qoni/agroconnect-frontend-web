@@ -37,6 +37,8 @@ export interface Order {
   id: number
   order_code: string
   user_id: number
+  customer_name?: string
+  customer_email?: string
   total_amount: number
   status: OrderStatus
   shipping_address: string

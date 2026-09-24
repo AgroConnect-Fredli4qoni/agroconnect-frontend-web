@@ -17,6 +17,7 @@ import { DashboardSidebar } from '../components/DashboardSidebar'
 import { FarmerProductsManager } from '../components/FarmerProductsManager'
 import { SalesStatsDashboard } from '../components/SalesStatsDashboard'
 import { ProfilePhotoUploader } from '../components/dashboard/ProfilePhotoUploader'
+import { TransactionManager } from '../components/dashboard/TransactionManager'
 
 /**
  * DashboardPage provides the two-column authenticated dashboard layout hosting the user profile manager.
@@ -27,7 +28,7 @@ export function DashboardPage(): React.JSX.Element {
   const navigate = useNavigate()
   const { user, token, isAuthenticated, logout, updateUserSession } = useAuth()
 
-  const [activeMenu, setActiveMenu] = useState<'stats' | 'profile' | 'products'>('stats')
+  const [activeMenu, setActiveMenu] = useState<'stats' | 'profile' | 'products' | 'transactions'>('stats')
   const [activeTab, setActiveTab] = useState<'info' | 'security'>('info')
   const [name, setName] = useState<string>('')
   const [oldPassword, setOldPassword] = useState<string>('')
@@ -161,12 +162,13 @@ export function DashboardPage(): React.JSX.Element {
         <DashboardSidebar
           user={user}
           activeMenu={activeMenu}
-          onSelectMenu={(menu) => setActiveMenu(menu as 'stats' | 'profile' | 'products')}
+          onSelectMenu={(menu) => setActiveMenu(menu as 'stats' | 'profile' | 'products' | 'transactions')}
           onLogout={logout}
         />
 
         <section className="flex-1 min-w-0 w-full space-y-6">
           {activeMenu === 'stats' && <SalesStatsDashboard />}
+          {activeMenu === 'transactions' && <TransactionManager />}
           {activeMenu === 'products' && <FarmerProductsManager />}
           {activeMenu === 'profile' && (
             <>
