@@ -15,6 +15,7 @@ import { useAuth } from '../context/AuthContext'
 import { fetchUserProfile, updateUserProfile } from '../services/api'
 import { DashboardSidebar } from '../components/DashboardSidebar'
 import { FarmerProductsManager } from '../components/FarmerProductsManager'
+import { SalesStatsDashboard } from '../components/SalesStatsDashboard'
 
 /**
  * DashboardPage provides the two-column authenticated dashboard layout hosting the user profile manager.
@@ -25,7 +26,7 @@ export function DashboardPage(): React.JSX.Element {
   const navigate = useNavigate()
   const { user, token, isAuthenticated, logout, updateUserSession } = useAuth()
 
-  const [activeMenu, setActiveMenu] = useState<'profile' | 'products'>('profile')
+  const [activeMenu, setActiveMenu] = useState<'stats' | 'profile' | 'products'>('stats')
   const [activeTab, setActiveTab] = useState<'info' | 'security'>('info')
   const [name, setName] = useState<string>('')
   const [oldPassword, setOldPassword] = useState<string>('')
@@ -159,14 +160,14 @@ export function DashboardPage(): React.JSX.Element {
         <DashboardSidebar
           user={user}
           activeMenu={activeMenu}
-          onSelectMenu={(menu) => setActiveMenu(menu as 'profile' | 'products')}
+          onSelectMenu={(menu) => setActiveMenu(menu as 'stats' | 'profile' | 'products')}
           onLogout={logout}
         />
 
         <section className="flex-1 min-w-0 w-full space-y-6">
-          {activeMenu === 'products' ? (
-            <FarmerProductsManager />
-          ) : (
+          {activeMenu === 'stats' && <SalesStatsDashboard />}
+          {activeMenu === 'products' && <FarmerProductsManager />}
+          {activeMenu === 'profile' && (
             <>
               <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-xs flex flex-col sm:flex-row items-center sm:items-start gap-5">
                 <div className="w-20 h-20 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-500 text-white flex items-center justify-center text-3xl font-black shadow-md shrink-0">

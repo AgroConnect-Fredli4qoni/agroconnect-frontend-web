@@ -1,6 +1,6 @@
 import { AuthResponse, LoginCredentials, RegisterPayload, UpdateProfilePayload, UserProfile } from '../types/auth'
 import { CreateProductInput, Product, UpdateProductInput } from '../types/product'
-import { CheckoutPayload, Order } from '../types/order'
+import { CheckoutPayload, Order, OrderStats } from '../types/order'
 import { WeatherResponse } from '../types/weather'
 import { FarmerApiRecord } from '../types/farmer'
 
@@ -274,6 +274,55 @@ export async function updateUserProfile(payload: UpdateProfilePayload, token: st
   if (!response.ok) {
     const errData = await response.json().catch(() => ({}))
     throw new ApiError(errData.error || 'Failed to update user profile', response.status)
+  }
+  return response.json()
+}
+
+/**
+ * Fetch sales statistics and transaction aggregates for authenticated dashboard.
+ *
+ * @param token - Bearer JWT string.
+ * @returns OrderStats metrics, distribution, and recent orders.
+ */
+export async function fetchOrderStats(token: string): Promise<OrderStats> {
+  const response = await fetch(`${API_BASE_URL}/api/orders/stats`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+
+  if (!response.ok) {
+    const errData = await response.json().catch(() => ({}))
+    throw new ApiError(errData.error || 'Failed to fetch sales statistics', response.status)
+  }
+  return response.json()
+}
+
+/**
+ * Update transaction status of an order (e.g. PENDING -> PAID / SHIPPED / COMPLETED).
+ *
+ * @param orderCode - Unique order identifier code.
+ * @param status - Target OrderStatus.
+ * @param token - Bearer JWT string.
+ * @returns Updated order confirmation object.
+ */
+export async function updateOrderStatus(
+  orderCode: string,
+  status: string,
+  token: string
+): Promise<{ message: string; order_code: string; status: string }> {
+  const response = await fetch(`${API_BASE_URL}/api/orders/${orderCode}/status`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ status }),
+  })
+
+  if (!response.ok) {
+    const errData = await response.json().catch(() => ({}))
+    throw new ApiError(errData.error || 'Failed to update order status', response.status)
   }
   return response.json()
 }

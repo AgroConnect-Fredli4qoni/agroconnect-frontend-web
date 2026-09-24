@@ -55,3 +55,42 @@ export interface CheckoutPayload {
     quantity: number
   }[]
 }
+
+/**
+ * TopProductStat represents commodity sales volume and revenue performance.
+ */
+export interface TopProductStat {
+  product_id: string
+  product_name: string
+  total_quantity: number
+  total_revenue: number
+}
+
+/**
+ * StatusBreakdownItem represents the count and percentage of orders per transactional status.
+ */
+export interface StatusBreakdownItem {
+  status: OrderStatus
+  count: number
+  percentage: number
+}
+
+/**
+ * OrderStats encapsulates comprehensive sales analytics and transaction history.
+ */
+export interface OrderStats {
+  total_revenue: number
+  total_orders: number
+  total_items_sold: number
+  average_order_value: number
+  status_breakdown: StatusBreakdownItem[]
+  top_products: TopProductStat[]
+  recent_orders: Order[]
+}
+
+/**
+ * UpdateOrderStatusPayload defines the payload required to update order status.
+ */
+export interface UpdateOrderStatusPayload {
+  status: OrderStatus
+}
