@@ -68,6 +68,7 @@ export function CartPage(): React.JSX.Element {
           product_name: item.product_name,
           price: item.price,
           quantity: item.quantity,
+          farmer_id: item.farmer_id,
         })),
       }
 

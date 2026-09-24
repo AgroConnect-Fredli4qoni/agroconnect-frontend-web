@@ -8,6 +8,7 @@ export interface CartItem {
   quantity: number
   unit: string
   stock_available: number
+  farmer_id?: number
 }
 
 /**
@@ -21,6 +22,7 @@ export interface OrderItem {
   price: number
   quantity: number
   subtotal: number
+  farmer_id?: number
 }
 
 /**
@@ -53,6 +55,7 @@ export interface CheckoutPayload {
     product_name: string
     price: number
     quantity: number
+    farmer_id?: number
   }[]
 }
 

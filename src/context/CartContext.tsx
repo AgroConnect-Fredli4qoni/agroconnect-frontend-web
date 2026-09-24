@@ -51,6 +51,7 @@ export function CartProvider({ children }: { children: React.ReactNode }): React
           quantity: Math.min(quantity, product.stock_kg),
           unit: product.unit,
           stock_available: product.stock_kg,
+          farmer_id: product.farmer_id,
         },
       ]
     })
