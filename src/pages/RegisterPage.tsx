@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
-import { User, Mail, Lock, ArrowRight, Eye, EyeOff, Sprout } from 'lucide-react'
+import { User, Mail, Lock, ArrowRight, Eye, EyeOff } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 
 /**
@@ -52,9 +52,11 @@ export function RegisterPage(): React.JSX.Element {
     <div className="min-h-screen flex flex-col items-center justify-center py-12 px-4 bg-slate-50">
       <div className="mb-6 text-center">
         <Link to="/" className="inline-flex items-center justify-center gap-2.5 group">
-          <div className="w-11 h-11 rounded-xl bg-emerald-600 text-white flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform">
-            <Sprout size={24} />
-          </div>
+          <img
+            src="/images/logo/logo.png"
+            alt="AgroConnect Logo"
+            className="w-11 h-11 object-contain group-hover:scale-105 transition-transform"
+          />
           <span className="text-2xl sm:text-3xl font-black text-emerald-950 tracking-tight">AgroConnect</span>
         </Link>
       </div>

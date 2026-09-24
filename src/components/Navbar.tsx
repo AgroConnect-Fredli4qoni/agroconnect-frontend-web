@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom'
-import { ShoppingCart, ClipboardList, User, LogOut, Sprout, Search, X } from 'lucide-react'
+import { ShoppingCart, ClipboardList, User, LogOut, Search, X } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { useCart } from '../context/CartContext'
 
@@ -54,9 +54,11 @@ export function Navbar(_props?: NavbarProps): React.JSX.Element {
       <div className="max-w-[1680px] mx-auto px-4 sm:px-8 lg:px-12 py-3 flex items-center justify-between gap-2">
         <div className="flex items-center gap-4 lg:gap-6 shrink-0">
           <Link to="/" className="flex items-center gap-2.5 group">
-            <div className="w-8 h-8 rounded-lg bg-emerald-600 text-white flex items-center justify-center shadow-2xs group-hover:scale-105 transition-transform shrink-0">
-              <Sprout size={18} />
-            </div>
+            <img
+              src="/images/logo/logo.png"
+              alt="AgroConnect"
+              className="w-8 h-8 sm:w-9 sm:h-9 object-contain group-hover:scale-105 transition-transform shrink-0"
+            />
             <div className="flex flex-col">
               <span className="text-lg font-black tracking-tight text-emerald-900 leading-tight">AgroConnect</span>
               <span className="text-[10px] text-slate-400 font-medium hidden sm:block">Smart Agro-Commerce & Weather</span>

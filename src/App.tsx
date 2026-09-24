@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import { BrowserRouter, Routes, Route, Navigate, useParams, useLocation } from 'react-router-dom'
-import { Sprout } from 'lucide-react'
 import { AuthProvider } from './context/AuthContext'
 import { CartProvider } from './context/CartContext'
 import { Navbar } from './components/Navbar'
@@ -58,9 +57,11 @@ function AppContent(): React.JSX.Element {
         <footer className="bg-slate-900 text-slate-400 py-8 border-t border-slate-800 mt-12">
           <div className="max-w-[1680px] mx-auto px-4 sm:px-8 lg:px-12 flex flex-col md:flex-row items-center justify-between gap-6 text-xs">
             <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-xl bg-emerald-600 text-white flex items-center justify-center shadow-xs shrink-0">
-                <Sprout size={20} />
-              </div>
+              <img
+                src="/images/logo/logo.png"
+                alt="AgroConnect Logo"
+                className="w-10 h-10 object-contain shrink-0"
+              />
               <div>
                 <span className="font-bold text-white text-sm block">AgroConnect Platform</span>
                 <p className="text-slate-400 text-xs mt-0.5">Solusi Agrikultur Cerdas & Rantai Pasok Hasil Tani Nusantara</p>

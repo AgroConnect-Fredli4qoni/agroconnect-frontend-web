@@ -69,50 +69,59 @@ export function HeroSlideshow(props: HeroSlideshowProps): React.JSX.Element {
     >
       <div className="w-full">
         {currentSlide === 0 && (
-          <div className="w-full min-h-[400px] sm:min-h-[360px] p-6 sm:p-10 lg:p-12 pb-14 flex flex-col justify-between space-y-6">
-            <div className="max-w-3xl space-y-4">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-emerald-800 border border-emerald-700/60 text-emerald-200 text-xs font-semibold">
-                <Sparkles size={14} />
-                <span>Platform Agrikultur Cerdas Terintegrasi BMKG</span>
+          <div className="relative w-full min-h-[400px] sm:min-h-[360px] p-6 sm:p-10 lg:p-12 pb-14 flex flex-col justify-between space-y-6 overflow-hidden">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 z-10">
+              <div className="max-w-2xl space-y-4">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-emerald-800 border border-emerald-700/60 text-emerald-200 text-xs font-semibold">
+                  <Sparkles size={14} />
+                  <span>Platform Agrikultur Cerdas</span>
+                </div>
+
+                <h1 className="text-2xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-tight">
+                  Hubungkan Hasil Panen Petani Langsung ke Meja Anda
+                </h1>
+
+                <p className="text-xs sm:text-sm text-emerald-100/90 leading-relaxed max-w-xl">
+                  Solusi digital rantai pasok agrikultur Indonesia dengan transparansi harga pasar, dan kepastian transaksi aman bagi petani maupun pembeli.
+                </p>
+
+                <div className="flex flex-wrap items-center gap-3 pt-1">
+                  <Link
+                    to="/catalog"
+                    className="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-emerald-900 hover:bg-emerald-50 text-xs sm:text-sm font-bold rounded-lg shadow-xs transition-all cursor-pointer"
+                  >
+                    <Store size={17} />
+                    <span>Jelajahi Katalog Lengkap</span>
+                  </Link>
+                  <button
+                    type="button"
+                    onClick={() => setCurrentSlide(1)}
+                    className="inline-flex items-center gap-2 px-4 py-2.5 bg-emerald-800/80 hover:bg-emerald-800 text-white border border-emerald-700/60 text-xs sm:text-sm font-semibold rounded-lg transition-all cursor-pointer"
+                  >
+                    <CalendarCheck size={17} />
+                    <span>Rekomendasi Tani</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setCurrentSlide(2)}
+                    className="inline-flex items-center gap-2 px-4 py-2.5 bg-emerald-800/80 hover:bg-emerald-800 text-white border border-emerald-700/60 text-xs sm:text-sm font-semibold rounded-lg transition-all cursor-pointer"
+                  >
+                    <CloudSun size={17} />
+                    <span>Cek Cuaca BMKG</span>
+                  </button>
+                </div>
               </div>
 
-              <h1 className="text-2xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-tight">
-                Hubungkan Hasil Panen Petani Langsung ke Meja Anda
-              </h1>
-
-              <p className="text-xs sm:text-sm text-emerald-100/90 leading-relaxed max-w-2xl">
-                Solusi digital rantai pasok agrikultur Indonesia dengan panduan cuaca presisi BMKG,
-                transparansi harga pasar adil, dan kepastian transaksi aman bagi petani maupun pembeli.
-              </p>
-
-              <div className="flex flex-wrap items-center gap-3 pt-1">
-                <Link
-                  to="/catalog"
-                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-emerald-900 hover:bg-emerald-50 text-xs sm:text-sm font-bold rounded-lg shadow-xs transition-all cursor-pointer"
-                >
-                  <Store size={17} />
-                  <span>Jelajahi Katalog Lengkap</span>
-                </Link>
-                <button
-                  type="button"
-                  onClick={() => setCurrentSlide(1)}
-                  className="inline-flex items-center gap-2 px-4 py-2.5 bg-emerald-800/80 hover:bg-emerald-800 text-white border border-emerald-700/60 text-xs sm:text-sm font-semibold rounded-lg transition-all cursor-pointer"
-                >
-                  <CalendarCheck size={17} />
-                  <span>Rekomendasi Tani</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setCurrentSlide(2)}
-                  className="inline-flex items-center gap-2 px-4 py-2.5 bg-emerald-800/80 hover:bg-emerald-800 text-white border border-emerald-700/60 text-xs sm:text-sm font-semibold rounded-lg transition-all cursor-pointer"
-                >
-                  <CloudSun size={17} />
-                  <span>Cek Cuaca BMKG</span>
-                </button>
+              <div className="hidden md:flex items-center justify-center shrink-0 md:max-w-xs lg:max-w-md xl:max-w-lg">
+                <img
+                  src="/images/banner/banner-model.png"
+                  alt="Petani dan Pembeli AgroConnect"
+                  className="w-full max-h-[260px] lg:max-h-[300px] xl:max-h-[340px] object-contain drop-shadow-2xl transition-transform duration-300 hover:scale-105"
+                />
               </div>
             </div>
 
-            <div className="flex flex-wrap gap-5 pt-4 text-xs text-emerald-200/80 border-t border-emerald-800/80">
+            <div className="flex flex-wrap gap-5 pt-4 text-xs text-emerald-200/80 border-t border-emerald-800/80 z-10">
               <div className="flex items-center gap-1.5">
                 <ShieldCheck size={16} className="text-emerald-400" />
                 <span>Transaksi Terlindungi & Mutu Terjamin</span>
@@ -141,13 +150,12 @@ export function HeroSlideshow(props: HeroSlideshowProps): React.JSX.Element {
 
                 <div className="flex flex-wrap items-center gap-2 text-xs">
                   <span className="text-emerald-200/90">Status Tindakan:</span>
-                  <span className={`px-3 py-1 rounded-lg font-bold text-xs ${
-                    isAlert
-                      ? 'bg-amber-400 text-amber-950'
-                      : isOptimal
+                  <span className={`px-3 py-1 rounded-lg font-bold text-xs ${isAlert
+                    ? 'bg-amber-400 text-amber-950'
+                    : isOptimal
                       ? 'bg-emerald-400 text-emerald-950'
                       : 'bg-sky-300 text-sky-950'
-                  }`}>
+                    }`}>
                     {recommendation?.action_label || 'Pemeriksaan Cuaca'}
                   </span>
                   <span className="bg-emerald-800 border border-emerald-700/60 font-semibold px-3 py-1 rounded-lg text-emerald-100">
@@ -309,25 +317,22 @@ export function HeroSlideshow(props: HeroSlideshowProps): React.JSX.Element {
         <button
           type="button"
           onClick={() => setCurrentSlide(0)}
-          className={`h-1.5 rounded-full transition-all cursor-pointer ${
-            currentSlide === 0 ? 'w-8 bg-emerald-400' : 'w-2 bg-white/40 hover:bg-white/70'
-          }`}
+          className={`h-1.5 rounded-full transition-all cursor-pointer ${currentSlide === 0 ? 'w-8 bg-emerald-400' : 'w-2 bg-white/40 hover:bg-white/70'
+            }`}
           title="Slide 1: AgroConnect Hero"
         />
         <button
           type="button"
           onClick={() => setCurrentSlide(1)}
-          className={`h-1.5 rounded-full transition-all cursor-pointer ${
-            currentSlide === 1 ? 'w-8 bg-emerald-400' : 'w-2 bg-white/40 hover:bg-white/70'
-          }`}
+          className={`h-1.5 rounded-full transition-all cursor-pointer ${currentSlide === 1 ? 'w-8 bg-emerald-400' : 'w-2 bg-white/40 hover:bg-white/70'
+            }`}
           title="Slide 2: Rekomendasi Aksi Tani"
         />
         <button
           type="button"
           onClick={() => setCurrentSlide(2)}
-          className={`h-1.5 rounded-full transition-all cursor-pointer ${
-            currentSlide === 2 ? 'w-8 bg-emerald-400' : 'w-2 bg-white/40 hover:bg-white/70'
-          }`}
+          className={`h-1.5 rounded-full transition-all cursor-pointer ${currentSlide === 2 ? 'w-8 bg-emerald-400' : 'w-2 bg-white/40 hover:bg-white/70'
+            }`}
           title="Slide 3: Parameter Cuaca BMKG"
         />
       </div>
