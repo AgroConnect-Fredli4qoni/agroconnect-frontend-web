@@ -1,7 +1,7 @@
 import React from 'react'
 import { Trophy, Sprout, Package } from 'lucide-react'
 import { TopProductStat } from '../../types/order'
-import { formatIDR } from '../../utils/currency'
+import { formatIDR } from '../../utils'
 
 /**
  * TopCommoditiesTableProps defines properties required by TopCommoditiesTable.

@@ -1,7 +1,7 @@
 import React from 'react'
 import { History, Calendar, CheckCircle2, Clock, Truck, ShieldCheck, XCircle, Loader2, LucideIcon } from 'lucide-react'
 import { Order, OrderStatus } from '../../types/order'
-import { formatIDR } from '../../utils/currency'
+import { formatIDR } from '../../utils'
 
 /**
  * RecentOrdersTableProps defines properties required by RecentOrdersTable.

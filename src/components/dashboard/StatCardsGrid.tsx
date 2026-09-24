@@ -1,6 +1,6 @@
 import React from 'react'
 import { TrendingUp, ShoppingBag, PackageCheck, Coins } from 'lucide-react'
-import { formatIDR } from '../../utils/currency'
+import { formatIDR } from '../../utils'
 
 /**
  * StatCardsGridProps defines the metrics rendered by StatCardsGrid.
