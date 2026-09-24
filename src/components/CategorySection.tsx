@@ -1,18 +1,17 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ArrowRight, LayoutGrid, Wheat, Salad, Flame, Sprout, Layers, LucideIcon } from 'lucide-react'
+import { ArrowRight, LayoutGrid } from 'lucide-react'
 
 /**
- * CategoryItem defines representation of an agricultural commodity category.
+ * CategoryItem defines representation of an agricultural commodity category with CDN visual assets.
  */
 export interface CategoryItem {
   id: string
   name: string
   label: string
-  icon: LucideIcon
+  iconUrl: string
   description: string
   bgAccent: string
-  iconColor: string
 }
 
 const CATEGORIES: CategoryItem[] = [
@@ -20,47 +19,42 @@ const CATEGORIES: CategoryItem[] = [
     id: 'all',
     name: 'Semua',
     label: 'Semua Komoditas',
-    icon: Layers,
+    iconUrl: 'https://img.icons8.com/bubbles/100/more.png',
     description: 'Seluruh hasil panen Nusantara',
-    bgAccent: 'bg-emerald-50 text-emerald-800',
-    iconColor: 'text-emerald-700 bg-emerald-100/70'
+    bgAccent: 'bg-emerald-50/80',
   },
   {
     id: 'pangan',
     name: 'Pangan Pokok',
     label: 'Pangan Pokok',
-    icon: Wheat,
+    iconUrl: 'https://img.icons8.com/bubbles/100/rice-bowl.png',
     description: 'Beras, jagung & biji-bijian',
-    bgAccent: 'bg-amber-50 text-amber-800',
-    iconColor: 'text-amber-700 bg-amber-100/70'
+    bgAccent: 'bg-amber-50/80',
   },
   {
     id: 'sayur',
     name: 'Sayur',
     label: 'Sayur Segar',
-    icon: Salad,
+    iconUrl: 'https://img.icons8.com/bubbles/100/broccoli.png',
     description: 'Sayuran organik dataran tinggi',
-    bgAccent: 'bg-green-50 text-green-800',
-    iconColor: 'text-green-700 bg-green-100/70'
+    bgAccent: 'bg-green-50/80',
   },
   {
     id: 'bumbu',
     name: 'Bumbu',
     label: 'Bumbu & Rempah',
-    icon: Flame,
+    iconUrl: 'https://img.icons8.com/bubbles/100/chili-pepper.png',
     description: 'Cabai, bawang & rempah dapur',
-    bgAccent: 'bg-rose-50 text-rose-800',
-    iconColor: 'text-rose-700 bg-rose-100/70'
+    bgAccent: 'bg-rose-50/80',
   },
   {
     id: 'palawija',
     name: 'Palawija',
     label: 'Palawija & Umbi',
-    icon: Sprout,
+    iconUrl: 'https://img.icons8.com/bubbles/100/nutshell.png',
     description: 'Kacang-kacangan & aneka umbi',
-    bgAccent: 'bg-orange-50 text-orange-800',
-    iconColor: 'text-orange-700 bg-orange-100/70'
-  }
+    bgAccent: 'bg-orange-50/80',
+  },
 ]
 
 /**
@@ -88,30 +82,32 @@ export function CategorySection(): React.JSX.Element {
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
-        {CATEGORIES.map((cat) => {
-          const IconComponent = cat.icon
-          return (
-            <div
-              key={cat.id}
-              role="button"
-              tabIndex={0}
-              onClick={() => handleCategoryClick(cat.name)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  handleCategoryClick(cat.name)
-                }
-              }}
-              className="group relative bg-white border border-slate-200/90 hover:border-emerald-500/60 rounded-xl p-4.5 shadow-2xs hover:shadow-md transition-all duration-200 cursor-pointer flex flex-col justify-between overflow-hidden"
-            >
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center transition-transform duration-200 group-hover:scale-110 shadow-2xs ${cat.iconColor}`}>
-                    <IconComponent size={24} />
-                  </div>
-                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${cat.bgAccent}`}>
-                    Katalog
-                  </span>
+        {CATEGORIES.map((cat) => (
+          <div
+            key={cat.id}
+            role="button"
+            tabIndex={0}
+            onClick={() => handleCategoryClick(cat.name)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                handleCategoryClick(cat.name)
+              }
+            }}
+            className="group relative bg-white border border-slate-200/90 hover:border-emerald-500/60 rounded-xl p-4.5 shadow-2xs hover:shadow-md transition-all duration-200 cursor-pointer flex flex-col justify-between overflow-hidden"
+          >
+            <div className="space-y-3">
+              <div className="flex items-center justify-start">
+                <div
+                  className={`w-14 h-14 rounded-2xl flex items-center justify-center p-1.5 transition-transform duration-200 group-hover:scale-110 shadow-2xs ${cat.bgAccent}`}
+                >
+                  <img
+                    src={cat.iconUrl}
+                    alt={cat.label}
+                    className="w-full h-full object-contain"
+                    loading="lazy"
+                  />
                 </div>
+              </div>
 
               <div>
                 <h3 className="text-sm font-black text-slate-900 group-hover:text-emerald-700 transition-colors">
@@ -128,8 +124,7 @@ export function CategorySection(): React.JSX.Element {
               <ArrowRight size={14} className="transition-transform duration-200 group-hover:translate-x-1" />
             </div>
           </div>
-        )
-      })}
+        ))}
       </div>
     </section>
   )
