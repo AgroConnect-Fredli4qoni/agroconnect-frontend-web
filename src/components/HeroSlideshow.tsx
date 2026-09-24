@@ -63,15 +63,13 @@ export function HeroSlideshow(props: HeroSlideshowProps): React.JSX.Element {
 
   return (
     <div
-      className="relative rounded-2xl overflow-hidden bg-gradient-to-r from-emerald-950 via-emerald-900 to-emerald-850 text-white shadow-lg border border-emerald-800/60"
+      className="relative rounded-2xl overflow-hidden bg-emerald-900 text-white shadow-lg border border-emerald-800/60"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
       <div className="w-full">
         {currentSlide === 0 && (
           <div className="relative w-full min-h-[420px] sm:min-h-[390px] lg:min-h-[410px] p-6 sm:p-10 lg:p-12 pb-14 flex flex-col justify-between space-y-6 overflow-hidden">
-            <div className="hidden md:block absolute right-4 top-1/2 -translate-y-1/2 w-[460px] h-[460px] bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
-
             <div className="relative z-10 max-w-xl lg:max-w-xl xl:max-w-2xl space-y-4">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-emerald-800/90 border border-emerald-700/70 text-emerald-200 text-xs font-semibold backdrop-blur-xs">
                 <Sparkles size={14} className="text-emerald-400" />
