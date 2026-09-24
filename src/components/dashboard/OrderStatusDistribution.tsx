@@ -65,18 +65,7 @@ const STATUS_METADATA: Record<OrderStatus, StatusMeta> = {
 export function OrderStatusDistribution(props: OrderStatusDistributionProps): React.JSX.Element {
   const { breakdown, totalOrders } = props
 
-  const safeBreakdown: StatusBreakdownItem[] = (['COMPLETED', 'PAID', 'PENDING', 'SHIPPED', 'CANCELLED'] as OrderStatus[])
-    .map((statusKey) => {
-      const match = breakdown.find((b) => b.status === statusKey)
-      return (
-        match || {
-          status: statusKey,
-          count: 0,
-          percentage: 0,
-        }
-      )
-    })
-    .filter((item) => item.count > 0 || item.status === 'COMPLETED' || item.status === 'PENDING')
+  const activeBreakdown = breakdown.filter((item) => item.count > 0)
 
   return (
     <div className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-xs flex flex-col justify-between">
@@ -96,49 +85,56 @@ export function OrderStatusDistribution(props: OrderStatusDistributionProps): Re
           </span>
         </div>
 
-        <div className="h-2.5 w-full bg-slate-100 rounded-full flex overflow-hidden mb-6">
-          {safeBreakdown.map((item) => {
-            const meta = STATUS_METADATA[item.status] || STATUS_METADATA.PENDING
-            if (item.count === 0) return null
-            return (
-              <div
-                key={item.status}
-                style={{ width: `${Math.max(item.percentage, 3)}%` }}
-                className={`${meta.color} transition-all duration-500`}
-                title={`${meta.label}: ${item.count} (${item.percentage}%)`}
-              />
-            )
-          })}
-        </div>
-
-        <div className="space-y-3.5">
-          {safeBreakdown.map((item) => {
-            const meta = STATUS_METADATA[item.status] || STATUS_METADATA.PENDING
-            const IconComponent = meta.icon
-            return (
-              <div key={item.status} className="space-y-1.5">
-                <div className="flex items-center justify-between text-xs">
-                  <div className="flex items-center gap-2">
-                    <span className={`w-6 h-6 rounded-md ${meta.bgColor} ${meta.textColor} flex items-center justify-center`}>
-                      <IconComponent size={14} />
-                    </span>
-                    <span className="font-semibold text-slate-700">{meta.label}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="font-bold text-slate-900">{item.count}</span>
-                    <span className="text-[11px] font-medium text-slate-400">({item.percentage}%)</span>
-                  </div>
-                </div>
-                <div className="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
+        {activeBreakdown.length === 0 ? (
+          <div className="py-8 text-center text-xs text-slate-400">
+            Belum ada transaksi tercatat untuk distribusi status pesanan.
+          </div>
+        ) : (
+          <>
+            <div className="h-2.5 w-full bg-slate-100 rounded-full flex overflow-hidden mb-6">
+              {activeBreakdown.map((item) => {
+                const meta = STATUS_METADATA[item.status] || STATUS_METADATA.PENDING
+                return (
                   <div
+                    key={item.status}
                     style={{ width: `${item.percentage}%` }}
-                    className={`h-full ${meta.color} rounded-full transition-all duration-500`}
+                    className={`${meta.color} transition-all duration-500`}
+                    title={`${meta.label}: ${item.count} (${item.percentage}%)`}
                   />
-                </div>
-              </div>
-            )
-          })}
-        </div>
+                )
+              })}
+            </div>
+
+            <div className="space-y-3.5">
+              {activeBreakdown.map((item) => {
+                const meta = STATUS_METADATA[item.status] || STATUS_METADATA.PENDING
+                const IconComponent = meta.icon
+                return (
+                  <div key={item.status} className="space-y-1.5">
+                    <div className="flex items-center justify-between text-xs">
+                      <div className="flex items-center gap-2">
+                        <span className={`w-6 h-6 rounded-md ${meta.bgColor} ${meta.textColor} flex items-center justify-center`}>
+                          <IconComponent size={14} />
+                        </span>
+                        <span className="font-semibold text-slate-700">{meta.label}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold text-slate-900">{item.count}</span>
+                        <span className="text-[11px] font-medium text-slate-400">({item.percentage}%)</span>
+                      </div>
+                    </div>
+                    <div className="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
+                      <div
+                        style={{ width: `${item.percentage}%` }}
+                        className={`h-full ${meta.color} rounded-full transition-all duration-500`}
+                      />
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          </>
+        )}
       </div>
     </div>
   )
