@@ -16,6 +16,7 @@ import { fetchUserProfile, updateUserProfile } from '../services/api'
 import { DashboardSidebar } from '../components/DashboardSidebar'
 import { FarmerProductsManager } from '../components/FarmerProductsManager'
 import { SalesStatsDashboard } from '../components/SalesStatsDashboard'
+import { ProfilePhotoUploader } from '../components/dashboard/ProfilePhotoUploader'
 
 /**
  * DashboardPage provides the two-column authenticated dashboard layout hosting the user profile manager.
@@ -170,8 +171,12 @@ export function DashboardPage(): React.JSX.Element {
           {activeMenu === 'profile' && (
             <>
               <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-xs flex flex-col sm:flex-row items-center sm:items-start gap-5">
-                <div className="w-20 h-20 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-500 text-white flex items-center justify-center text-3xl font-black shadow-md shrink-0">
-                  {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
+                <div className="w-20 h-20 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-500 text-white flex items-center justify-center text-3xl font-black shadow-md shrink-0 overflow-hidden">
+                  {user.avatar_url ? (
+                    <img src={user.avatar_url} alt={user.name} className="w-full h-full object-cover" />
+                  ) : (
+                    user.name ? user.name.charAt(0).toUpperCase() : 'U'
+                  )}
                 </div>
             <div className="flex-1 text-center sm:text-left space-y-1">
               <div className="flex flex-col sm:flex-row sm:items-center gap-2">
@@ -240,11 +245,18 @@ export function DashboardPage(): React.JSX.Element {
           )}
 
           {activeTab === 'info' && (
-            <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-xs space-y-6">
-              <div>
-                <h3 className="text-sm font-bold text-slate-900">Detail Akun & Identitas</h3>
-                <p className="text-xs text-slate-500">Perbarui nama pengguna yang ditampilkan pada transaksi dan katalog.</p>
-              </div>
+            <div className="space-y-6">
+              <ProfilePhotoUploader
+                user={user}
+                token={token}
+                onUpdateSuccess={(updatedUser, updatedToken) => updateUserSession(updatedUser, updatedToken)}
+              />
+
+              <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-xs space-y-6">
+                <div>
+                  <h3 className="text-sm font-bold text-slate-900">Detail Akun & Identitas</h3>
+                  <p className="text-xs text-slate-500">Perbarui nama pengguna yang ditampilkan pada transaksi dan katalog.</p>
+                </div>
 
               <form onSubmit={handleUpdateName} className="space-y-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -300,6 +312,7 @@ export function DashboardPage(): React.JSX.Element {
                   </button>
                 </div>
               </form>
+            </div>
             </div>
           )}
 

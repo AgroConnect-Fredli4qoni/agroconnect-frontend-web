@@ -11,6 +11,7 @@ export interface UserProfile {
   name: string
   email: string
   role: UserRole
+  avatar_url?: string
 }
 
 /**
@@ -44,6 +45,7 @@ export interface RegisterPayload {
  */
 export interface UpdateProfilePayload {
   name?: string
+  avatar_url?: string
   old_password?: string
   new_password?: string
 }

@@ -24,8 +24,12 @@ export function DashboardSidebar(props: DashboardSidebarProps): React.JSX.Elemen
   return (
     <aside className="w-full lg:w-64 xl:w-72 shrink-0 space-y-4">
       <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-xs flex items-center gap-3.5">
-        <div className="w-12 h-12 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-500 text-white flex items-center justify-center text-lg font-black shadow-2xs shrink-0">
-          {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
+        <div className="w-12 h-12 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-500 text-white flex items-center justify-center text-lg font-black shadow-2xs shrink-0 overflow-hidden">
+          {user.avatar_url ? (
+            <img src={user.avatar_url} alt={user.name} className="w-full h-full object-cover" />
+          ) : (
+            user.name ? user.name.charAt(0).toUpperCase() : 'U'
+          )}
         </div>
         <div className="flex-1 min-w-0">
           <h2 className="text-sm font-bold text-slate-900 truncate">{user.name}</h2>

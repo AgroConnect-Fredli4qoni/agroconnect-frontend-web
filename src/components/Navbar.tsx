@@ -133,15 +133,16 @@ export function Navbar(_props?: NavbarProps): React.JSX.Element {
               }`}
               title="Dashboard Pengguna"
             >
-              <div className="w-8 h-8 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-xs group-hover:bg-emerald-600 group-hover:text-white transition-colors shadow-2xs">
-                {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
+              <div className="w-8 h-8 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-xs group-hover:bg-emerald-600 group-hover:text-white transition-colors shadow-2xs overflow-hidden shrink-0">
+                {user.avatar_url ? (
+                  <img src={user.avatar_url} alt={user.name} className="w-full h-full object-cover" />
+                ) : (
+                  user.name ? user.name.charAt(0).toUpperCase() : 'U'
+                )}
               </div>
               <div className="flex flex-col text-left hidden sm:flex">
                 <span className="text-xs font-bold text-slate-800 leading-tight group-hover:text-emerald-700 transition-colors max-w-[130px] truncate">
                   {user.name}
-                </span>
-                <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded mt-0.5 self-start">
-                  {user.role === 'admin' ? 'Admin' : user.role === 'farmer' ? 'Mitra Tani' : 'Pembeli'}
                 </span>
               </div>
             </Link>
