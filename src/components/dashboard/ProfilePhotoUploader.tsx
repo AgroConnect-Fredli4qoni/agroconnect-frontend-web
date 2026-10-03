@@ -1,7 +1,8 @@
 import React, { useState, useRef } from 'react'
-import { Camera, Upload, Trash2, CheckCircle2, AlertCircle, Loader2, Image as ImageIcon, Link as LinkIcon } from 'lucide-react'
+import { Camera, Upload, Trash2, CheckCircle2, AlertCircle, Loader2, Image as ImageIcon, Link as LinkIcon, Crop } from 'lucide-react'
 import { UserProfile } from '../../types/auth'
 import { updateUserProfile } from '../../services/api'
+import { ImageCropModal } from './ImageCropModal'
 
 /**
  * ProfilePhotoUploaderProps defines component configuration and session update callback.
@@ -27,10 +28,15 @@ export function ProfilePhotoUploader(props: ProfilePhotoUploaderProps): React.JS
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
   const [successMsg, setSuccessMsg] = useState<string>('')
   const [errorMsg, setErrorMsg] = useState<string>('')
+  const [isCropOpen, setIsCropOpen] = useState<boolean>(false)
+  const [imageToCrop, setImageToCrop] = useState<string>('')
 
   const fileInputRef = useRef<HTMLInputElement | null>(null)
 
-  const compressAndSetImage = (file: File): void => {
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
     if (!file.type.startsWith('image/')) {
       setErrorMsg('Berkas yang dipilih harus berupa gambar (JPG, PNG, WEBP).')
       return
@@ -46,46 +52,21 @@ export function ProfilePhotoUploader(props: ProfilePhotoUploaderProps): React.JS
 
     const reader = new FileReader()
     reader.onload = (readerEvent: ProgressEvent<FileReader>) => {
-      const img = new Image()
-      img.onload = () => {
-        const canvas = document.createElement('canvas')
-        const maxDimension = 360
-        let width = img.width
-        let height = img.height
-
-        if (width > height) {
-          if (width > maxDimension) {
-            height = Math.round((height * maxDimension) / width)
-            width = maxDimension
-          }
-        } else {
-          if (height > maxDimension) {
-            width = Math.round((width * maxDimension) / height)
-            height = maxDimension
-          }
-        }
-
-        canvas.width = width
-        canvas.height = height
-        const ctx = canvas.getContext('2d')
-        if (ctx) {
-          ctx.drawImage(img, 0, 0, width, height)
-          const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.85)
-          setPreview(compressedDataUrl)
-        }
-      }
       if (readerEvent.target?.result) {
-        img.src = readerEvent.target.result as string
+        setImageToCrop(readerEvent.target.result as string)
+        setIsCropOpen(true)
       }
     }
     reader.readAsDataURL(file)
+
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ''
+    }
   }
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    const file = e.target.files?.[0]
-    if (file) {
-      compressAndSetImage(file)
-    }
+  const handleCropComplete = (croppedDataUrl: string): void => {
+    setPreview(croppedDataUrl)
+    setSuccessMsg('Hasil potong foto berhasil diterapkan. Klik "Simpan Foto Profil" untuk memperbarui.')
   }
 
   const handleApplyUrl = (): void => {
@@ -192,6 +173,21 @@ export function ProfilePhotoUploader(props: ProfilePhotoUploaderProps): React.JS
               <span>Pilih File Gambar</span>
             </button>
 
+            {preview && (
+              <button
+                type="button"
+                onClick={() => {
+                  setImageToCrop(preview)
+                  setIsCropOpen(true)
+                }}
+                className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-xl text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200/60 transition-all cursor-pointer shadow-2xs"
+                title="Sesuaikan posisi, perbesaran, atau potong ulang foto profil"
+              >
+                <Crop size={14} className="text-emerald-600" />
+                <span>Edit & Crop</span>
+              </button>
+            )}
+
             <button
               type="button"
               onClick={() => setShowUrlInput(!showUrlInput)}
@@ -274,6 +270,13 @@ export function ProfilePhotoUploader(props: ProfilePhotoUploaderProps): React.JS
           </button>
         </div>
       )}
+
+      <ImageCropModal
+        imageSrc={imageToCrop}
+        isOpen={isCropOpen}
+        onClose={() => setIsCropOpen(false)}
+        onCropComplete={handleCropComplete}
+      />
     </div>
   )
 }
