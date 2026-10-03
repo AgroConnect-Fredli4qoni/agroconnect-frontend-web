@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate, useParams, useLocation } from '
 import { AuthProvider } from './context/AuthContext'
 import { CartProvider } from './context/CartContext'
 import { Navbar } from './components/Navbar'
+import { BottomNav } from './components/BottomNav'
 import { HomePage } from './pages/HomePage'
 import { CatalogPage } from './pages/CatalogPage'
 import { CartPage } from './pages/CartPage'
@@ -75,6 +76,8 @@ function AppContent(): React.JSX.Element {
           </div>
         </footer>
       )}
+
+      {!isAuthPage && <BottomNav />}
     </div>
   )
 }

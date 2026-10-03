@@ -54,32 +54,27 @@ export function Navbar(_props?: NavbarProps): React.JSX.Element {
   return (
     <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-xs">
       <div className="max-w-[1680px] mx-auto px-4 sm:px-8 lg:px-12 py-3 flex items-center justify-between gap-2">
-        <div className="flex items-center gap-2 sm:gap-4 lg:gap-6 shrink-0">
-          <button
-            type="button"
-            onClick={() => setIsMobileSidebarOpen(true)}
-            className="p-1.5 rounded-xl text-slate-600 hover:text-emerald-900 hover:bg-slate-100 lg:hidden transition-colors cursor-pointer"
-            title="Buka Menu Navigasi"
-          >
-            <Menu size={22} />
-          </button>
-
-          <Link to="/" className="flex items-center gap-2.5 group">
+        <div className="flex items-center gap-4 lg:gap-6 shrink-0">
+          <Link to="/" className="flex items-center gap-2 sm:gap-2.5 group">
             <img
               src="/images/logo/logo.png"
               alt="AgroConnect"
               className="w-8 h-8 sm:w-9 sm:h-9 object-contain group-hover:scale-105 transition-transform shrink-0"
             />
             <div className="flex flex-col">
-              <span className="text-lg font-black tracking-tight text-emerald-900 leading-tight">AgroConnect</span>
-              <span className="text-[10px] text-slate-400 font-medium hidden sm:block">Smart Agro-Commerce & Weather</span>
+              <span className="text-base sm:text-lg font-black tracking-tight text-emerald-900 leading-tight">
+                AgroConnect
+              </span>
+              <span className="text-[9px] sm:text-[10px] text-slate-400 font-medium block">
+                Smart Agro-Commerce & Weather
+              </span>
             </div>
           </Link>
         </div>
 
         <form
           onSubmit={handleSearchSubmit}
-          className="flex-1 max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg mx-2 sm:mx-6 min-w-[130px]"
+          className="hidden md:flex flex-1 max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg mx-2 sm:mx-6 min-w-[130px]"
         >
           <div className="relative flex items-center w-full">
             <Search
@@ -106,95 +101,102 @@ export function Navbar(_props?: NavbarProps): React.JSX.Element {
           </div>
         </form>
 
-        <div className="flex items-center gap-3 shrink-0">
-        {isAuthenticated && (
+        <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
           <Link
-            to="/orders"
-            className={`relative inline-flex items-center gap-1.5 p-2 sm:px-3 sm:py-2 text-xs font-semibold rounded-lg transition-all cursor-pointer ${
-              location.pathname === '/orders' ? 'bg-emerald-50 text-emerald-700 font-bold' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+            to="/cart"
+            className={`relative p-2 sm:p-2.5 rounded-lg transition-all cursor-pointer ${
+              location.pathname === '/cart' ? 'bg-emerald-50 text-emerald-700' : 'text-slate-700 hover:text-emerald-700 hover:bg-emerald-50'
             }`}
-            title="Riwayat Transaksi Pesanan"
+            title="Keranjang Belanja"
           >
-            <ClipboardList size={20} />
-            <span className="hidden sm:inline">Pesanan</span>
+            <ShoppingCart size={21} />
+            {totalItems > 0 && (
+              <span className="absolute -top-1 -right-1 bg-emerald-600 text-white text-[10px] font-black w-4.5 h-4.5 rounded-full flex items-center justify-center shadow-xs">
+                {totalItems}
+              </span>
+            )}
           </Link>
-        )}
 
-        <Link
-          to="/cart"
-          className={`relative p-2.5 rounded-lg transition-all cursor-pointer ${
-            location.pathname === '/cart' ? 'bg-emerald-50 text-emerald-700' : 'text-slate-700 hover:text-emerald-700 hover:bg-emerald-50'
-          }`}
-          title="Keranjang Belanja"
-        >
-          <ShoppingCart size={20} />
-          {totalItems > 0 && (
-            <span className="absolute -top-1 -right-1 bg-emerald-600 text-white text-[10px] font-black w-5 h-5 rounded-full flex items-center justify-center shadow-xs">
-              {totalItems}
-            </span>
+          <button
+            type="button"
+            onClick={() => setIsMobileSidebarOpen(true)}
+            className="p-1.5 sm:p-2 rounded-xl text-slate-700 hover:text-emerald-900 hover:bg-slate-100 lg:hidden transition-colors cursor-pointer"
+            title="Buka Menu Navigasi"
+          >
+            <Menu size={22} />
+          </button>
+
+          {isAuthenticated && (
+            <Link
+              to="/orders"
+              className={`hidden lg:inline-flex items-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-lg transition-all cursor-pointer ${
+                location.pathname === '/orders' ? 'bg-emerald-50 text-emerald-700 font-bold' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+              }`}
+              title="Riwayat Transaksi Pesanan"
+            >
+              <ClipboardList size={18} />
+              <span>Pesanan</span>
+            </Link>
           )}
-        </Link>
 
-        {isAuthenticated && user ? (
-          <div className="flex items-center gap-2 sm:gap-3 pl-3 border-l border-slate-200">
-            <Link
-              to="/dashboard"
-              className={`flex items-center gap-2 pl-1 pr-3.5 py-1 rounded-full border transition-all cursor-pointer group ${
-                location.pathname.startsWith('/dashboard') || location.pathname.startsWith('/profile')
-                  ? 'bg-emerald-50/90 border-emerald-300 text-emerald-950 shadow-2xs'
-                  : 'border-transparent hover:bg-slate-100 hover:border-slate-200 text-slate-700'
-              }`}
-              title="Dashboard Pengguna"
-            >
-              <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gradient-to-tr from-emerald-600 to-teal-500 text-white flex items-center justify-center font-bold text-xs ring-1 ring-emerald-500/20 shadow-2xs overflow-hidden shrink-0">
-                {user.avatar_url ? (
-                  <img src={user.avatar_url} alt={user.name} className="w-full h-full object-cover" />
-                ) : (
-                  <span>{user.name ? user.name.charAt(0).toUpperCase() : 'U'}</span>
-                )}
-              </div>
-              <div className="hidden sm:flex items-center">
-                <span className="text-xs font-semibold text-slate-800 group-hover:text-emerald-700 transition-colors max-w-[130px] truncate leading-none">
-                  {user.name}
-                </span>
-              </div>
-            </Link>
-            <button
-              type="button"
-              className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer"
-              onClick={logout}
-              title="Keluar dari akun"
-            >
-              <LogOut size={18} />
-            </button>
-          </div>
-        ) : (
-          <div className="flex items-center gap-2">
-            <Link
-              to="/login"
-              className={`inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold rounded-lg border border-slate-200 text-slate-700 hover:text-emerald-700 hover:bg-emerald-50/60 hover:border-emerald-200 transition-all cursor-pointer ${
-                location.pathname === '/login'
-                  ? 'bg-slate-100 text-slate-900 border-slate-300'
-                  : ''
-              }`}
-              title="Masuk ke Akun"
-            >
-              <User size={15} />
-              <span>Masuk</span>
-            </Link>
-            <Link
-              to="/register"
-              className={`inline-flex items-center gap-1.5 px-4 py-2 text-xs font-bold rounded-lg shadow-xs transition-all cursor-pointer ${
-                location.pathname === '/register'
-                  ? 'bg-emerald-800 text-white'
-                  : 'bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white hover:shadow-sm'
-              }`}
-              title="Daftar Akun Baru"
-            >
-              <span>Daftar</span>
-            </Link>
-          </div>
-        )}
+          {isAuthenticated && user ? (
+            <div className="hidden lg:flex items-center gap-2 sm:gap-3 pl-3 border-l border-slate-200">
+              <Link
+                to="/dashboard"
+                className={`flex items-center gap-2 pl-1 pr-3.5 py-1 rounded-full border transition-all cursor-pointer group ${
+                  location.pathname.startsWith('/dashboard') || location.pathname.startsWith('/profile')
+                    ? 'bg-emerald-50/90 border-emerald-300 text-emerald-950 shadow-2xs'
+                    : 'border-transparent hover:bg-slate-100 hover:border-slate-200 text-slate-700'
+                }`}
+                title="Dashboard Pengguna"
+              >
+                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gradient-to-tr from-emerald-600 to-teal-500 text-white flex items-center justify-center font-bold text-xs ring-1 ring-emerald-500/20 shadow-2xs overflow-hidden shrink-0">
+                  {user.avatar_url ? (
+                    <img src={user.avatar_url} alt={user.name} className="w-full h-full object-cover" />
+                  ) : (
+                    <span>{user.name ? user.name.charAt(0).toUpperCase() : 'U'}</span>
+                  )}
+                </div>
+                <div className="flex items-center">
+                  <span className="text-xs font-semibold text-slate-800 group-hover:text-emerald-700 transition-colors max-w-[130px] truncate leading-none">
+                    {user.name}
+                  </span>
+                </div>
+              </Link>
+              <button
+                type="button"
+                className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer"
+                onClick={logout}
+                title="Keluar dari akun"
+              >
+                <LogOut size={18} />
+              </button>
+            </div>
+          ) : (
+            <div className="hidden lg:flex items-center gap-2">
+              <Link
+                to="/login"
+                className={`inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold rounded-lg border border-slate-200 text-slate-700 hover:text-emerald-700 hover:bg-emerald-50/60 hover:border-emerald-200 transition-all cursor-pointer ${
+                  location.pathname === '/login' ? 'bg-slate-100 text-slate-900 border-slate-300' : ''
+                }`}
+                title="Masuk ke Akun"
+              >
+                <User size={15} />
+                <span>Masuk</span>
+              </Link>
+              <Link
+                to="/register"
+                className={`inline-flex items-center gap-1.5 px-4 py-2 text-xs font-bold rounded-lg shadow-xs transition-all cursor-pointer ${
+                  location.pathname === '/register'
+                    ? 'bg-emerald-800 text-white'
+                    : 'bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white hover:shadow-sm'
+                }`}
+                title="Daftar Akun Baru"
+              >
+                <span>Daftar</span>
+              </Link>
+            </div>
+          )}
         </div>
       </div>
 

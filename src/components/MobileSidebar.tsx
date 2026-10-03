@@ -4,14 +4,17 @@ import {
   X,
   Home,
   Store,
-  CloudSun,
   ShoppingCart,
   ClipboardList,
-  LayoutDashboard,
   LogOut,
   ChevronRight,
   ShieldCheck,
   Sprout,
+  MapPin,
+  CreditCard,
+  Bell,
+  HelpCircle,
+  Settings,
 } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { useCart } from '../context/CartContext'
@@ -64,12 +67,12 @@ export function MobileSidebar(props: MobileSidebarProps): React.JSX.Element | nu
   const isRoleAdmin = user?.role === 'admin'
 
   const roleLabel = isRoleFarmer
-    ? 'Petani Mitra'
+    ? 'Petani Terverifikasi'
     : isRoleAdmin
       ? 'Administrator'
-      : 'Pembeli Komoditas'
+      : 'Pembeli Terverifikasi'
 
-  const navLinks = [
+  const primaryNavLinks = [
     {
       to: '/',
       label: 'Beranda',
@@ -78,33 +81,56 @@ export function MobileSidebar(props: MobileSidebarProps): React.JSX.Element | nu
     },
     {
       to: '/catalog',
-      label: 'Katalog Komoditas',
+      label: 'Kategori & Produk',
       icon: Store,
       active: location.pathname.startsWith('/catalog') || location.pathname.startsWith('/katalog'),
     },
     {
       to: '/cart',
-      label: 'Keranjang Belanja',
+      label: 'Keranjang',
       icon: ShoppingCart,
       active: location.pathname === '/cart',
       badge: totalItems > 0 ? totalItems : undefined,
     },
-    ...(isAuthenticated
-      ? [
-          {
-            to: '/orders',
-            label: 'Riwayat Pesanan',
-            icon: ClipboardList,
-            active: location.pathname === '/orders',
-          },
-          {
-            to: '/dashboard',
-            label: 'Dashboard Akun',
-            icon: LayoutDashboard,
-            active: location.pathname === '/dashboard',
-          },
-        ]
-      : []),
+    {
+      to: isAuthenticated ? '/orders' : '/login',
+      label: 'Pesanan Saya',
+      icon: ClipboardList,
+      active: location.pathname === '/orders',
+    },
+  ]
+
+  const secondaryNavLinks = [
+    {
+      to: isAuthenticated ? '/dashboard' : '/login',
+      label: 'Alamat Saya',
+      icon: MapPin,
+      active: false,
+    },
+    {
+      to: isAuthenticated ? '/dashboard' : '/login',
+      label: 'Metode Pembayaran',
+      icon: CreditCard,
+      active: false,
+    },
+    {
+      to: isAuthenticated ? '/dashboard' : '/login',
+      label: 'Notifikasi',
+      icon: Bell,
+      active: false,
+    },
+    {
+      to: '/catalog',
+      label: 'Bantuan & Pusat Informasi',
+      icon: HelpCircle,
+      active: false,
+    },
+    {
+      to: isAuthenticated ? '/dashboard' : '/login',
+      label: 'Pengaturan',
+      icon: Settings,
+      active: location.pathname === '/dashboard',
+    },
   ]
 
   return (
@@ -199,14 +225,14 @@ export function MobileSidebar(props: MobileSidebarProps): React.JSX.Element | nu
 
           <nav className="p-3 space-y-1">
             <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 px-3 py-1 block">
-              Menu Navigasi
+              Menu Utama
             </span>
 
-            {navLinks.map((item) => {
+            {primaryNavLinks.map((item) => {
               const IconComp = item.icon
               return (
                 <Link
-                  key={item.to}
+                  key={item.label}
                   to={item.to}
                   className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                     item.active
@@ -231,24 +257,49 @@ export function MobileSidebar(props: MobileSidebarProps): React.JSX.Element | nu
               )
             })}
 
-            <div className="pt-2 mt-2 border-t border-slate-100">
+            <div className="pt-2 mt-2 border-t border-slate-100 space-y-1">
               <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 px-3 py-1 block">
-                Layanan Pertanian Cerdas
+                Akun & Preferensi
               </span>
 
-              <a
-                href="/#cuaca"
-                onClick={onClose}
-                className="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-100 transition-colors"
-              >
-                <CloudSun size={18} className="text-emerald-700" />
-                <span>Prakiraan Cuaca BMKG</span>
-              </a>
+              {secondaryNavLinks.map((item) => {
+                const IconComp = item.icon
+                return (
+                  <Link
+                    key={item.label}
+                    to={item.to}
+                    className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                      item.active
+                        ? 'bg-emerald-600 text-white shadow-xs'
+                        : 'text-slate-700 hover:bg-slate-100 hover:text-slate-900'
+                    }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <IconComp size={18} className={item.active ? 'text-white' : 'text-slate-500'} />
+                      <span>{item.label}</span>
+                    </div>
+                  </Link>
+                )
+              })}
             </div>
           </nav>
         </div>
 
-        <div className="p-4 border-t border-slate-100 bg-slate-50/50 space-y-3">
+        <div className="p-3 border-t border-slate-100 bg-slate-50/50 space-y-2.5">
+          <div className="p-3.5 rounded-2xl bg-gradient-to-br from-emerald-800 to-teal-900 text-white shadow-md space-y-1.5">
+            <div className="flex items-center gap-2">
+              <div className="w-7 h-7 rounded-lg bg-emerald-700/80 flex items-center justify-center text-emerald-300 shrink-0">
+                <Sprout size={16} />
+              </div>
+              <p className="text-xs font-black tracking-tight leading-snug">
+                Bersama Petani Membangun Ketahanan Pangan Indonesia
+              </p>
+            </div>
+            <p className="text-[10px] text-emerald-200/80 leading-relaxed pl-9">
+              Rantai pasok agrikultur digital terintegrasi data cuaca BMKG.
+            </p>
+          </div>
+
           {isAuthenticated && (
             <button
               type="button"
@@ -256,14 +307,14 @@ export function MobileSidebar(props: MobileSidebarProps): React.JSX.Element | nu
                 logout()
                 onClose()
               }}
-              className="w-full flex items-center justify-center gap-2 py-2.5 px-4 bg-white border border-rose-200 text-rose-700 hover:bg-rose-50 rounded-xl text-xs font-bold transition-colors cursor-pointer shadow-2xs"
+              className="w-full flex items-center justify-center gap-2 py-2 px-4 bg-white border border-rose-200 text-rose-700 hover:bg-rose-50 rounded-xl text-xs font-bold transition-colors cursor-pointer shadow-2xs"
             >
               <LogOut size={15} />
               <span>Keluar Akun</span>
             </button>
           )}
 
-          <div className="text-[10px] text-slate-400 text-center leading-tight">
+          <div className="text-[10px] text-slate-400 text-center leading-tight pb-1">
             <p className="font-semibold text-slate-500">AgroConnect Platform v1.0</p>
             <p>Standardisasi BNSP Full-Stack Developer</p>
           </div>
