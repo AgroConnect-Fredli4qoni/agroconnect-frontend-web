@@ -102,11 +102,11 @@ export function HeroSlideshow(props: HeroSlideshowProps): React.JSX.Element {
               </div>
             </div>
 
-            <div className="flex absolute right-0 sm:right-4 md:right-8 lg:right-12 bottom-0 items-end justify-end pointer-events-none z-0 sm:z-10">
+            <div className="hidden sm:flex absolute right-0 sm:right-4 md:right-8 lg:right-12 bottom-0 items-end justify-end pointer-events-none z-10">
               <img
                 src="/images/banner/banner-model.png"
                 alt="Petani dan Pembeli AgroConnect"
-                className="h-[180px] sm:h-[300px] md:h-[340px] lg:h-[380px] xl:h-[410px] w-auto max-w-[170px] sm:max-w-[340px] md:max-w-[390px] lg:max-w-[460px] xl:max-w-[500px] object-contain drop-shadow-[0_20px_35px_rgba(0,0,0,0.45)] transition-transform duration-500 hover:scale-105 pointer-events-auto opacity-40 sm:opacity-100"
+                className="h-[300px] md:h-[340px] lg:h-[380px] xl:h-[410px] w-auto max-w-[340px] md:max-w-[390px] lg:max-w-[460px] xl:max-w-[500px] object-contain drop-shadow-[0_20px_35px_rgba(0,0,0,0.45)] transition-transform duration-500 hover:scale-105 pointer-events-auto"
               />
             </div>
 
