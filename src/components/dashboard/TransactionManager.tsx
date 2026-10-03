@@ -12,13 +12,17 @@ import {
 import { useAuth } from '../../context/AuthContext'
 import { fetchUserOrders, updateOrderStatus } from '../../services/api'
 import { Order, OrderStatus } from '../../types/order'
+import {
+  StatusFilterTab,
+  ORDER_STATUS_TABS,
+  computeStatusCounts,
+  filterOrders,
+} from '../../services/orderPipeline'
 import { OrderDetailModal } from './OrderDetailModal'
+import { OrderStatusBadge } from './OrderStatusBadge'
 import { TransactionPovToggle, TransactionPov } from './TransactionPovToggle'
 
-/**
- * StatusFilterTab defines options for filtering order lists.
- */
-export type StatusFilterTab = 'ALL' | OrderStatus
+export type { StatusFilterTab }
 
 /**
  * TransactionManager provides comprehensive order management for farmers, buyers, and platform administrators.
@@ -112,65 +116,12 @@ export function TransactionManager(): React.JSX.Element {
     }
   }
 
-  const statusCounts = useMemo(() => {
-    const counts: Record<string, number> = {
-      ALL: orders.length,
-      PENDING: 0,
-      PAID: 0,
-      SHIPPED: 0,
-      COMPLETED: 0,
-      CANCELLED: 0,
-    }
-    for (const ord of orders) {
-      if (counts[ord.status] !== undefined) {
-        counts[ord.status]++
-      }
-    }
-    return counts
-  }, [orders])
+  const statusCounts = useMemo(() => computeStatusCounts(orders), [orders])
 
-  const filteredOrders = useMemo(() => {
-    return orders.filter((order) => {
-      const matchesTab = activeTab === 'ALL' || order.status === activeTab
-
-      const query = searchQuery.trim().toLowerCase()
-      if (!query) return matchesTab
-
-      const matchesCode = order.order_code.toLowerCase().includes(query)
-      const matchesCustomer = (order.customer_name || '').toLowerCase().includes(query)
-      const matchesAddress = order.shipping_address.toLowerCase().includes(query)
-      const matchesItem = (order.items || []).some((it) =>
-        it.product_name.toLowerCase().includes(query)
-      )
-
-      return matchesTab && (matchesCode || matchesCustomer || matchesAddress || matchesItem)
-    })
-  }, [orders, activeTab, searchQuery])
-
-  const getStatusBadge = (status: OrderStatus): React.JSX.Element => {
-    const styles: Record<OrderStatus, string> = {
-      PAID: 'bg-blue-50 text-blue-700 border-blue-200',
-      SHIPPED: 'bg-purple-50 text-purple-700 border-purple-200',
-      COMPLETED: 'bg-emerald-50 text-emerald-700 border-emerald-200',
-      CANCELLED: 'bg-rose-50 text-rose-700 border-rose-200',
-      PENDING: 'bg-amber-50 text-amber-700 border-amber-200',
-    }
-
-    return (
-      <span className={`inline-flex items-center text-[11px] font-bold px-2.5 py-0.5 rounded-full border ${styles[status]}`}>
-        {status}
-      </span>
-    )
-  }
-
-  const tabs: { key: StatusFilterTab; label: string }[] = [
-    { key: 'ALL', label: 'Semua' },
-    { key: 'PENDING', label: 'Menunggu' },
-    { key: 'PAID', label: 'Terbayar' },
-    { key: 'SHIPPED', label: 'Dikirim' },
-    { key: 'COMPLETED', label: 'Selesai' },
-    { key: 'CANCELLED', label: 'Dibatalkan' },
-  ]
+  const filteredOrders = useMemo(
+    () => filterOrders(orders, activeTab, searchQuery),
+    [orders, activeTab, searchQuery]
+  )
 
   return (
     <div className="space-y-6">
@@ -230,7 +181,7 @@ export function TransactionManager(): React.JSX.Element {
       <div className="bg-white border border-slate-200 rounded-2xl p-4 shadow-xs space-y-4">
         <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
           <div className="flex items-center gap-1.5 overflow-x-auto pb-1 md:pb-0 scrollbar-none">
-            {tabs.map((tab) => (
+            {ORDER_STATUS_TABS.map((tab) => (
               <button
                 key={tab.key}
                 type="button"
@@ -335,7 +286,9 @@ export function TransactionManager(): React.JSX.Element {
                       Rp {order.total_amount.toLocaleString('id-ID')}
                     </td>
 
-                    <td className="py-3 px-3 text-center">{getStatusBadge(order.status)}</td>
+                    <td className="py-3 px-3 text-center">
+                      <OrderStatusBadge status={order.status} />
+                    </td>
 
                     <td className="py-3 px-3 text-center">
                       <div className="flex items-center justify-center gap-1.5">

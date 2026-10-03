@@ -1,6 +1,7 @@
 import React from 'react'
-import { PieChart, CheckCircle2, Clock, Truck, ShieldCheck, XCircle, LucideIcon } from 'lucide-react'
-import { OrderStatus, StatusBreakdownItem } from '../../types/order'
+import { PieChart } from 'lucide-react'
+import { StatusBreakdownItem } from '../../types/order'
+import { ORDER_STATUS_CONFIG } from '../../services/orderPipeline'
 
 /**
  * OrderStatusDistributionProps defines properties required by OrderStatusDistribution.
@@ -8,52 +9,6 @@ import { OrderStatus, StatusBreakdownItem } from '../../types/order'
 export interface OrderStatusDistributionProps {
   breakdown: StatusBreakdownItem[]
   totalOrders: number
-}
-
-interface StatusMeta {
-  label: string
-  color: string
-  bgColor: string
-  textColor: string
-  icon: LucideIcon
-}
-
-const STATUS_METADATA: Record<OrderStatus, StatusMeta> = {
-  COMPLETED: {
-    label: 'Pesanan Selesai',
-    color: 'bg-emerald-500',
-    bgColor: 'bg-emerald-50',
-    textColor: 'text-emerald-700',
-    icon: CheckCircle2,
-  },
-  PAID: {
-    label: 'Pembayaran Diterima',
-    color: 'bg-blue-500',
-    bgColor: 'bg-blue-50',
-    textColor: 'text-blue-700',
-    icon: ShieldCheck,
-  },
-  SHIPPED: {
-    label: 'Sedang Dikirim',
-    color: 'bg-purple-500',
-    bgColor: 'bg-purple-50',
-    textColor: 'text-purple-700',
-    icon: Truck,
-  },
-  PENDING: {
-    label: 'Menunggu Pembayaran',
-    color: 'bg-amber-500',
-    bgColor: 'bg-amber-50',
-    textColor: 'text-amber-700',
-    icon: Clock,
-  },
-  CANCELLED: {
-    label: 'Transaksi Dibatalkan',
-    color: 'bg-rose-500',
-    bgColor: 'bg-rose-50',
-    textColor: 'text-rose-700',
-    icon: XCircle,
-  },
 }
 
 /**
@@ -93,7 +48,7 @@ export function OrderStatusDistribution(props: OrderStatusDistributionProps): Re
           <>
             <div className="h-2.5 w-full bg-slate-100 rounded-full flex overflow-hidden mb-6">
               {activeBreakdown.map((item) => {
-                const meta = STATUS_METADATA[item.status] || STATUS_METADATA.PENDING
+                const meta = ORDER_STATUS_CONFIG[item.status] || ORDER_STATUS_CONFIG.PENDING
                 return (
                   <div
                     key={item.status}
@@ -107,7 +62,7 @@ export function OrderStatusDistribution(props: OrderStatusDistributionProps): Re
 
             <div className="space-y-3.5">
               {activeBreakdown.map((item) => {
-                const meta = STATUS_METADATA[item.status] || STATUS_METADATA.PENDING
+                const meta = ORDER_STATUS_CONFIG[item.status] || ORDER_STATUS_CONFIG.PENDING
                 const IconComponent = meta.icon
                 return (
                   <div key={item.status} className="space-y-1.5">

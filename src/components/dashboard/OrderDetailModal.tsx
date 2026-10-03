@@ -13,6 +13,8 @@ import {
   Loader2,
 } from 'lucide-react'
 import { Order, OrderStatus } from '../../types/order'
+import { getAllowedNextStatuses } from '../../services/orderPipeline'
+import { OrderStatusBadge } from './OrderStatusBadge'
 
 /**
  * OrderDetailModalProps defines configuration for viewing and updating order invoice details.
@@ -39,20 +41,7 @@ export function OrderDetailModal(props: OrderDetailModalProps): React.JSX.Elemen
     return null
   }
 
-  const getStatusColor = (status: OrderStatus): string => {
-    switch (status) {
-      case 'PAID':
-        return 'bg-blue-50 text-blue-700 border-blue-200'
-      case 'SHIPPED':
-        return 'bg-purple-50 text-purple-700 border-purple-200'
-      case 'COMPLETED':
-        return 'bg-emerald-50 text-emerald-700 border-emerald-200'
-      case 'CANCELLED':
-        return 'bg-rose-50 text-rose-700 border-rose-200'
-      default:
-        return 'bg-amber-50 text-amber-700 border-amber-200'
-    }
-  }
+  const allowedTransitions = getAllowedNextStatuses(order.status, userRole)
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-200">
@@ -64,9 +53,7 @@ export function OrderDetailModal(props: OrderDetailModalProps): React.JSX.Elemen
                 <span className="font-mono text-sm font-black text-slate-800 bg-white px-2.5 py-1 rounded-md border border-slate-200 shadow-2xs">
                   {order.order_code}
                 </span>
-                <span className={`text-xs font-bold px-2.5 py-0.5 rounded-full border ${getStatusColor(order.status)}`}>
-                  {order.status}
-                </span>
+                <OrderStatusBadge status={order.status} size="md" />
               </div>
               <p className="text-[11px] text-slate-400 mt-1 flex items-center gap-1">
                 <Calendar size={12} />
@@ -180,7 +167,7 @@ export function OrderDetailModal(props: OrderDetailModalProps): React.JSX.Elemen
             </div>
 
             <div className="flex flex-wrap gap-2 pt-1">
-              {order.status === 'PENDING' && (
+              {allowedTransitions.includes('PAID') && (
                 <button
                   type="button"
                   disabled={isUpdating}
@@ -192,7 +179,7 @@ export function OrderDetailModal(props: OrderDetailModalProps): React.JSX.Elemen
                 </button>
               )}
 
-              {(order.status === 'PAID' || (order.status === 'PENDING' && userRole === 'admin')) && (
+              {allowedTransitions.includes('SHIPPED') && (
                 <button
                   type="button"
                   disabled={isUpdating}
@@ -204,7 +191,7 @@ export function OrderDetailModal(props: OrderDetailModalProps): React.JSX.Elemen
                 </button>
               )}
 
-              {(order.status === 'SHIPPED' || order.status === 'PAID') && (
+              {allowedTransitions.includes('COMPLETED') && (
                 <button
                   type="button"
                   disabled={isUpdating}
@@ -216,7 +203,7 @@ export function OrderDetailModal(props: OrderDetailModalProps): React.JSX.Elemen
                 </button>
               )}
 
-              {order.status !== 'COMPLETED' && order.status !== 'CANCELLED' && (
+              {allowedTransitions.includes('CANCELLED') && (
                 <button
                   type="button"
                   disabled={isUpdating}

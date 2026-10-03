@@ -1,6 +1,8 @@
 import React from 'react'
-import { History, Calendar, CheckCircle2, Clock, Truck, ShieldCheck, XCircle, Loader2, LucideIcon } from 'lucide-react'
+import { History, Calendar, Loader2 } from 'lucide-react'
 import { Order, OrderStatus } from '../../types/order'
+import { getAllowedNextStatuses } from '../../services/orderPipeline'
+import { OrderStatusBadge } from './OrderStatusBadge'
 import { formatIDR } from '../../utils'
 
 /**
@@ -11,14 +13,6 @@ export interface RecentOrdersTableProps {
   onUpdateStatus?: (orderCode: string, newStatus: OrderStatus) => Promise<void>
   updatingCode?: string | null
   userRole?: string
-}
-
-const STATUS_BADGES: Record<OrderStatus, { bg: string; text: string; border: string; icon: LucideIcon }> = {
-  COMPLETED: { bg: 'bg-emerald-50', text: 'text-emerald-700', border: 'border-emerald-200', icon: CheckCircle2 },
-  PAID: { bg: 'bg-blue-50', text: 'text-blue-700', border: 'border-blue-200', icon: ShieldCheck },
-  SHIPPED: { bg: 'bg-purple-50', text: 'text-purple-700', border: 'border-purple-200', icon: Truck },
-  PENDING: { bg: 'bg-amber-50', text: 'text-amber-700', border: 'border-amber-200', icon: Clock },
-  CANCELLED: { bg: 'bg-rose-50', text: 'text-rose-700', border: 'border-rose-200', icon: XCircle },
 }
 
 /**
@@ -82,8 +76,6 @@ export function RecentOrdersTable(props: RecentOrdersTableProps): React.JSX.Elem
             </thead>
             <tbody className="divide-y divide-slate-100 text-xs">
               {orders.map((order) => {
-                const badge = STATUS_BADGES[order.status] || STATUS_BADGES.PENDING
-                const IconComponent = badge.icon
                 const itemsCount = order.items?.length || 0
                 const firstItemName = order.items && order.items.length > 0 ? order.items[0].product_name : 'Komoditas Pertanian'
 
@@ -117,12 +109,7 @@ export function RecentOrdersTable(props: RecentOrdersTableProps): React.JSX.Elem
                     </td>
 
                     <td className="py-3.5 px-3 whitespace-nowrap">
-                      <span
-                        className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold border ${badge.bg} ${badge.text} ${badge.border}`}
-                      >
-                        <IconComponent size={13} />
-                        {order.status}
-                      </span>
+                      <OrderStatusBadge status={order.status} />
                     </td>
 
                     {canManageStatus && (
@@ -133,17 +120,28 @@ export function RecentOrdersTable(props: RecentOrdersTableProps): React.JSX.Elem
                             <span>Memproses...</span>
                           </div>
                         ) : (
-                          <select
-                            value={order.status}
-                            onChange={(e) => onUpdateStatus?.(order.order_code, e.target.value as OrderStatus)}
-                            className="text-[11px] font-semibold text-slate-700 bg-white border border-slate-200 rounded-lg px-2 py-1 focus:outline-none focus:ring-1 focus:ring-emerald-500 cursor-pointer shadow-2xs"
-                          >
-                            <option value="PENDING">PENDING</option>
-                            <option value="PAID">PAID</option>
-                            <option value="SHIPPED">SHIPPED</option>
-                            <option value="COMPLETED">COMPLETED</option>
-                            <option value="CANCELLED">CANCELLED</option>
-                          </select>
+                          (() => {
+                            const allowed = getAllowedNextStatuses(order.status, userRole)
+                            if (allowed.length === 0) {
+                              return <span className="text-[11px] font-bold text-slate-400">Terkunci</span>
+                            }
+                            return (
+                              <select
+                                value={order.status}
+                                onChange={(e) => onUpdateStatus?.(order.order_code, e.target.value as OrderStatus)}
+                                className="text-[11px] font-semibold text-slate-700 bg-white border border-slate-200 rounded-lg px-2 py-1 focus:outline-none focus:ring-1 focus:ring-emerald-500 cursor-pointer shadow-2xs"
+                              >
+                                <option value={order.status} disabled>
+                                  {order.status}
+                                </option>
+                                {allowed.map((next) => (
+                                  <option key={next} value={next}>
+                                    {next}
+                                  </option>
+                                ))}
+                              </select>
+                            )
+                          })()
                         )}
                       </td>
                     )}
