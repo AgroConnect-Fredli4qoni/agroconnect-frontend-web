@@ -11,7 +11,8 @@ export interface ImageCropModalProps {
   onCropComplete: (croppedDataUrl: string) => void
 }
 
-const CROP_SIZE = 280
+const CONTAINER_SIZE = 280
+const CROP_MASK_SIZE = 240
 
 /**
  * ImageCropModal provides an interactive photo editing modal with zoom, drag-to-position, rotation, and circular avatar cropping.
@@ -92,6 +93,10 @@ export function ImageCropModal(props: ImageCropModalProps): React.JSX.Element | 
     setRotation((prev) => (prev + 90) % 360)
   }
 
+  const aspect = imageSize.width > 0 && imageSize.height > 0 ? imageSize.width / imageSize.height : 1
+  const baseWidth = aspect >= 1 ? CROP_MASK_SIZE * aspect : CROP_MASK_SIZE
+  const baseHeight = aspect >= 1 ? CROP_MASK_SIZE : CROP_MASK_SIZE / aspect
+
   const handleApplyCrop = (): void => {
     if (!imageRef.current) return
 
@@ -106,45 +111,28 @@ export function ImageCropModal(props: ImageCropModalProps): React.JSX.Element | 
     ctx.imageSmoothingEnabled = true
     ctx.imageSmoothingQuality = 'high'
 
+    const scaleFactor = outputDimension / CROP_MASK_SIZE
+
     ctx.save()
     ctx.translate(outputDimension / 2, outputDimension / 2)
+    ctx.translate(offset.x * scaleFactor, offset.y * scaleFactor)
+    ctx.scale(zoom, zoom)
     ctx.rotate((rotation * Math.PI) / 180)
 
-    const scaleFactor = outputDimension / CROP_SIZE
-    const renderedScale = zoom * scaleFactor
-
-    const rad = (rotation * Math.PI) / 180
-    const cos = Math.cos(rad)
-    const sin = Math.sin(rad)
-    const adjustedOffsetX = (offset.x * cos + offset.y * sin) * scaleFactor
-    const adjustedOffsetY = (-offset.x * sin + offset.y * cos) * scaleFactor
-
-    ctx.translate(adjustedOffsetX, adjustedOffsetY)
-
-    const aspect = imageSize.width > 0 && imageSize.height > 0 ? imageSize.width / imageSize.height : 1
-    let drawWidth = outputDimension
-    let drawHeight = outputDimension
-
-    if (aspect > 1) {
-      drawWidth = outputDimension * aspect
-    } else {
-      drawHeight = outputDimension / aspect
-    }
-
-    drawWidth *= renderedScale
-    drawHeight *= renderedScale
+    const drawW = baseWidth * scaleFactor
+    const drawH = baseHeight * scaleFactor
 
     ctx.drawImage(
       imageRef.current,
-      -drawWidth / 2,
-      -drawHeight / 2,
-      drawWidth,
-      drawHeight
+      -drawW / 2,
+      -drawH / 2,
+      drawW,
+      drawH
     )
 
     ctx.restore()
 
-    const croppedDataUrl = canvas.toDataURL('image/jpeg', 0.88)
+    const croppedDataUrl = canvas.toDataURL('image/jpeg', 0.90)
     onCropComplete(croppedDataUrl)
     onClose()
   }
@@ -185,8 +173,8 @@ export function ImageCropModal(props: ImageCropModalProps): React.JSX.Element | 
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
-            className="relative w-[280px] h-[280px] bg-slate-900 rounded-3xl overflow-hidden cursor-grab active:cursor-grabbing shadow-inner select-none flex items-center justify-center"
-            style={{ width: `${CROP_SIZE}px`, height: `${CROP_SIZE}px` }}
+            className="relative bg-slate-950 rounded-2xl overflow-hidden cursor-grab active:cursor-grabbing shadow-inner select-none flex items-center justify-center"
+            style={{ width: `${CONTAINER_SIZE}px`, height: `${CONTAINER_SIZE}px` }}
           >
             <img
               ref={imageRef}
@@ -195,16 +183,19 @@ export function ImageCropModal(props: ImageCropModalProps): React.JSX.Element | 
               onLoad={handleImageLoad}
               crossOrigin="anonymous"
               draggable={false}
-              className="max-w-none pointer-events-none transition-transform duration-75 origin-center"
+              className="max-w-none pointer-events-none select-none transition-transform duration-75 origin-center"
               style={{
-                width: imageSize.width > imageSize.height ? 'auto' : `${CROP_SIZE}px`,
-                height: imageSize.width > imageSize.height ? `${CROP_SIZE}px` : 'auto',
+                width: `${baseWidth}px`,
+                height: `${baseHeight}px`,
                 transform: `translate(${offset.x}px, ${offset.y}px) scale(${zoom}) rotate(${rotation}deg)`
               }}
             />
 
             <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
-              <div className="w-[240px] h-[240px] rounded-full border-2 border-emerald-400/90 shadow-[0_0_0_9999px_rgba(15,23,42,0.65)] ring-2 ring-white/40" />
+              <div
+                className="rounded-full border-2 border-emerald-400 shadow-[0_0_0_9999px_rgba(15,23,42,0.72)] ring-2 ring-white/50"
+                style={{ width: `${CROP_MASK_SIZE}px`, height: `${CROP_MASK_SIZE}px` }}
+              />
             </div>
 
             <div className="absolute top-3 left-3 bg-black/60 backdrop-blur-xs text-white/90 text-[10px] font-semibold px-2.5 py-1 rounded-full pointer-events-none flex items-center gap-1.5">

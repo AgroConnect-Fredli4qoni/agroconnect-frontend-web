@@ -130,7 +130,11 @@ export function ProfilePhotoUploader(props: ProfilePhotoUploaderProps): React.JS
     <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-xs space-y-6">
       <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
         <div className="relative group shrink-0">
-          <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-3xl overflow-hidden bg-gradient-to-tr from-emerald-600 to-teal-500 text-white flex items-center justify-center font-black text-3xl sm:text-4xl shadow-md ring-4 ring-emerald-500/10 transition-transform group-hover:scale-105 duration-300">
+          <div
+            onClick={() => fileInputRef.current?.click()}
+            className="w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden bg-gradient-to-tr from-emerald-600 to-teal-500 text-white flex items-center justify-center font-black text-3xl sm:text-4xl shadow-md ring-4 ring-emerald-100 border-2 border-white transition-transform group-hover:scale-105 duration-300 cursor-pointer"
+            title="Klik untuk memilih foto baru"
+          >
             {preview ? (
               <img src={preview} alt={user.name} className="w-full h-full object-cover" />
             ) : (
@@ -140,10 +144,10 @@ export function ProfilePhotoUploader(props: ProfilePhotoUploaderProps): React.JS
           <button
             type="button"
             onClick={() => fileInputRef.current?.click()}
-            className="absolute -bottom-2 -right-2 w-9 h-9 rounded-xl bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white flex items-center justify-center shadow-md transition-all cursor-pointer ring-2 ring-white"
+            className="absolute bottom-0 right-0 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white flex items-center justify-center shadow-md transition-all cursor-pointer ring-2 ring-white hover:scale-105"
             title="Pilih foto baru"
           >
-            <Camera size={16} />
+            <Camera size={15} />
           </button>
         </div>
 

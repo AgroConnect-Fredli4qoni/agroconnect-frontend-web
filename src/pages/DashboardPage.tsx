@@ -173,11 +173,11 @@ export function DashboardPage(): React.JSX.Element {
           {activeMenu === 'profile' && (
             <>
               <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-xs flex flex-col sm:flex-row items-center sm:items-start gap-5">
-                <div className="w-20 h-20 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-500 text-white flex items-center justify-center text-3xl font-black shadow-md shrink-0 overflow-hidden">
+                <div className="w-20 h-20 rounded-full bg-gradient-to-tr from-emerald-600 to-teal-500 text-white flex items-center justify-center text-3xl font-black shadow-md shrink-0 overflow-hidden ring-4 ring-emerald-100">
                   {user.avatar_url ? (
                     <img src={user.avatar_url} alt={user.name} className="w-full h-full object-cover" />
                   ) : (
-                    user.name ? user.name.charAt(0).toUpperCase() : 'U'
+                    <span>{user.name ? user.name.charAt(0).toUpperCase() : 'U'}</span>
                   )}
                 </div>
             <div className="flex-1 text-center sm:text-left space-y-1">

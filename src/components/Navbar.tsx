@@ -128,22 +128,22 @@ export function Navbar(_props?: NavbarProps): React.JSX.Element {
           <div className="flex items-center gap-2 sm:gap-3 pl-3 border-l border-slate-200">
             <Link
               to="/dashboard"
-              className={`flex items-center gap-2.5 p-1 rounded-xl transition-all cursor-pointer group ${
-                location.pathname === '/dashboard'
-                  ? 'bg-emerald-50 ring-1 ring-emerald-300'
-                  : 'hover:bg-slate-100'
+              className={`flex items-center gap-2 pl-1 pr-3.5 py-1 rounded-full border transition-all cursor-pointer group ${
+                location.pathname.startsWith('/dashboard') || location.pathname.startsWith('/profile')
+                  ? 'bg-emerald-50/90 border-emerald-300 text-emerald-950 shadow-2xs'
+                  : 'border-transparent hover:bg-slate-100 hover:border-slate-200 text-slate-700'
               }`}
               title="Dashboard Pengguna"
             >
-              <div className="w-8 h-8 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-xs group-hover:bg-emerald-600 group-hover:text-white transition-colors shadow-2xs overflow-hidden shrink-0">
+              <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gradient-to-tr from-emerald-600 to-teal-500 text-white flex items-center justify-center font-bold text-xs ring-1 ring-emerald-500/20 shadow-2xs overflow-hidden shrink-0">
                 {user.avatar_url ? (
                   <img src={user.avatar_url} alt={user.name} className="w-full h-full object-cover" />
                 ) : (
-                  user.name ? user.name.charAt(0).toUpperCase() : 'U'
+                  <span>{user.name ? user.name.charAt(0).toUpperCase() : 'U'}</span>
                 )}
               </div>
-              <div className="flex flex-col text-left hidden sm:flex">
-                <span className="text-xs font-bold text-slate-800 leading-tight group-hover:text-emerald-700 transition-colors max-w-[130px] truncate">
+              <div className="hidden sm:flex items-center">
+                <span className="text-xs font-semibold text-slate-800 group-hover:text-emerald-700 transition-colors max-w-[130px] truncate leading-none">
                   {user.name}
                 </span>
               </div>
