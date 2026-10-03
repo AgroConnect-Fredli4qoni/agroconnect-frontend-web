@@ -7,6 +7,7 @@ import { StatCardsGrid } from './dashboard/StatCardsGrid'
 import { OrderStatusDistribution } from './dashboard/OrderStatusDistribution'
 import { TopCommoditiesTable } from './dashboard/TopCommoditiesTable'
 import { RecentOrdersTable } from './dashboard/RecentOrdersTable'
+import { TransactionPovToggle, TransactionPov } from './dashboard/TransactionPovToggle'
 
 /**
  * SalesStatsDashboard orchestrates real-time sales metrics, distribution breakdowns, and recent order transactions.
@@ -15,6 +16,9 @@ import { RecentOrdersTable } from './dashboard/RecentOrdersTable'
  */
 export function SalesStatsDashboard(): React.JSX.Element {
   const { token, user } = useAuth()
+  const [currentPov, setCurrentPov] = useState<TransactionPov>(
+    user?.role === 'farmer' ? 'seller' : 'buyer'
+  )
   const [stats, setStats] = useState<OrderStats | null>(null)
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const [isRefreshing, setIsRefreshing] = useState<boolean>(false)
@@ -34,20 +38,21 @@ export function SalesStatsDashboard(): React.JSX.Element {
       setErrorMessage('')
 
       try {
-        const data = await fetchOrderStats(token)
+        const activeRole = currentPov === 'seller' ? 'farmer' : 'buyer'
+        const data = await fetchOrderStats(token, activeRole)
         setStats(data)
       } catch (err: unknown) {
         if (err instanceof Error) {
           setErrorMessage(err.message)
         } else {
-          setErrorMessage('Gagal memuat data statistik penjualan')
+          setErrorMessage('Gagal memuat data statistik transaksi')
         }
       } finally {
         setIsLoading(false)
         setIsRefreshing(false)
       }
     },
-    [token]
+    [token, currentPov]
   )
 
   useEffect(() => {
@@ -97,26 +102,35 @@ export function SalesStatsDashboard(): React.JSX.Element {
 
   return (
     <div className="space-y-6">
-      <div className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-xs flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
         <div className="flex items-center gap-3.5">
           <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-500 text-white flex items-center justify-center shadow-md shrink-0">
             <BarChart3 size={24} />
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h1 className="text-lg font-bold text-slate-900">Ikhtisar & Statistik Penjualan</h1>
+              <h1 className="text-lg font-bold text-slate-900">
+                {currentPov === 'seller' ? 'Ikhtisar & Statistik Penjualan' : 'Ikhtisar & Statistik Belanja'}
+              </h1>
               <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">
                 <Sparkles size={11} />
                 Live Data
               </span>
             </div>
             <p className="text-xs text-slate-500">
-              Performa transaksi pesanan, distribusi komoditas panen, dan metrik revenue
+              {currentPov === 'seller'
+                ? 'Performa transaksi pesanan masuk, komoditas terlaris, dan metrik revenue'
+                : 'Ringkasan belanja komoditas panen, alokasi anggaran, dan riwayat pesanan Anda'}
             </p>
           </div>
         </div>
 
-        <div className="flex items-center gap-2 self-end sm:self-auto">
+        <div className="flex flex-wrap items-center gap-3 self-end lg:self-auto">
+          <TransactionPovToggle
+            currentPov={currentPov}
+            onPovChange={setCurrentPov}
+          />
+
           <button
             type="button"
             onClick={() => loadStats(true)}
@@ -150,7 +164,7 @@ export function SalesStatsDashboard(): React.JSX.Element {
             totalOrders={stats.total_orders}
             totalItemsSold={stats.total_items_sold}
             averageOrderValue={stats.average_order_value}
-            userRole={user?.role}
+            userRole={currentPov === 'seller' ? 'farmer' : 'buyer'}
           />
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -165,7 +179,7 @@ export function SalesStatsDashboard(): React.JSX.Element {
             orders={stats.recent_orders}
             onUpdateStatus={handleUpdateStatus}
             updatingCode={updatingCode}
-            userRole={user?.role}
+            userRole={currentPov === 'seller' ? 'farmer' : 'buyer'}
           />
         </>
       )}

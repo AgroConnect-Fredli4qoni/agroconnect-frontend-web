@@ -13,6 +13,7 @@ import { useAuth } from '../../context/AuthContext'
 import { fetchUserOrders, updateOrderStatus } from '../../services/api'
 import { Order, OrderStatus } from '../../types/order'
 import { OrderDetailModal } from './OrderDetailModal'
+import { TransactionPovToggle, TransactionPov } from './TransactionPovToggle'
 
 /**
  * StatusFilterTab defines options for filtering order lists.
@@ -26,6 +27,12 @@ export type StatusFilterTab = 'ALL' | OrderStatus
  */
 export function TransactionManager(): React.JSX.Element {
   const { user, token } = useAuth()
+
+  const [currentPov, setCurrentPov] = useState<TransactionPov>(
+    user?.role === 'farmer' ? 'seller' : 'buyer'
+  )
+  const [sellerOrderCount, setSellerOrderCount] = useState<number>(0)
+  const [buyerOrderCount, setBuyerOrderCount] = useState<number>(0)
 
   const [orders, setOrders] = useState<Order[]>([])
   const [isLoading, setIsLoading] = useState<boolean>(true)
@@ -46,8 +53,21 @@ export function TransactionManager(): React.JSX.Element {
     setErrorMsg('')
 
     try {
-      const data = await fetchUserOrders(user.id, token)
+      const activeRole = currentPov === 'seller' ? 'farmer' : 'buyer'
+      const data = await fetchUserOrders(user.id, token, undefined, activeRole)
       setOrders(data || [])
+
+      if (currentPov === 'seller') {
+        setSellerOrderCount(data ? data.length : 0)
+        fetchUserOrders(user.id, token, undefined, 'buyer')
+          .then((bData) => setBuyerOrderCount(bData ? bData.length : 0))
+          .catch(() => {})
+      } else {
+        setBuyerOrderCount(data ? data.length : 0)
+        fetchUserOrders(user.id, token, undefined, 'farmer')
+          .then((sData) => setSellerOrderCount(sData ? sData.length : 0))
+          .catch(() => {})
+      }
     } catch (err: unknown) {
       if (err instanceof Error) {
         setErrorMsg(err.message)
@@ -61,7 +81,7 @@ export function TransactionManager(): React.JSX.Element {
 
   useEffect(() => {
     loadOrders()
-  }, [token, user])
+  }, [token, user, currentPov])
 
   const handleStatusChange = async (orderCode: string, newStatus: OrderStatus): Promise<void> => {
     if (!token) return
@@ -154,36 +174,43 @@ export function TransactionManager(): React.JSX.Element {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
             <h2 className="text-xl font-black text-slate-900 tracking-tight">
-              {user?.role === 'farmer'
-                ? 'Kelola Pesanan Masuk'
-                : user?.role === 'admin'
-                ? 'Manajemen Transaksi Platform'
-                : 'Riwayat Pesanan Saya'}
+              {currentPov === 'seller'
+                ? 'Kelola Pesanan Masuk (Penjual)'
+                : 'Riwayat Belanja Saya (Pembeli)'}
             </h2>
             <span className="text-xs font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-full">
               {orders.length} Transaksi
             </span>
           </div>
           <p className="text-xs text-slate-500 mt-1">
-            {user?.role === 'farmer'
+            {currentPov === 'seller'
               ? 'Pantau pesanan hasil panen dari pembeli dan perbarui status pengiriman komoditas.'
-              : 'Daftar transaksi komoditas pertanian dengan integritas ACID.'}
+              : 'Daftar transaksi belanja komoditas pertanian segar langsung dari petani dengan integritas ACID.'}
           </p>
         </div>
 
-        <button
-          type="button"
-          onClick={loadOrders}
-          disabled={isLoading}
-          className="inline-flex items-center gap-2 px-3.5 py-2 bg-white hover:bg-slate-50 active:bg-slate-100 text-slate-700 text-xs font-semibold rounded-xl border border-slate-200 shadow-2xs transition-all cursor-pointer disabled:opacity-50 self-start sm:self-auto"
-        >
-          <RefreshCw size={14} className={isLoading ? 'animate-spin' : ''} />
-          <span>Segarkan Data</span>
-        </button>
+        <div className="flex flex-wrap items-center gap-3">
+          <TransactionPovToggle
+            currentPov={currentPov}
+            onPovChange={setCurrentPov}
+            sellerCount={sellerOrderCount}
+            buyerCount={buyerOrderCount}
+          />
+
+          <button
+            type="button"
+            onClick={loadOrders}
+            disabled={isLoading}
+            className="inline-flex items-center gap-2 px-3.5 py-2 bg-white hover:bg-slate-50 active:bg-slate-100 text-slate-700 text-xs font-semibold rounded-xl border border-slate-200 shadow-2xs transition-all cursor-pointer disabled:opacity-50"
+          >
+            <RefreshCw size={14} className={isLoading ? 'animate-spin' : ''} />
+            <span>Segarkan Data</span>
+          </button>
+        </div>
       </div>
 
       {successMsg && (
@@ -259,7 +286,7 @@ export function TransactionManager(): React.JSX.Element {
               <thead>
                 <tr className="border-b border-slate-100 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
                   <th className="py-3 px-3">Kode & Waktu</th>
-                  <th className="py-3 px-3">Pemesan</th>
+                  <th className="py-3 px-3">{currentPov === 'seller' ? 'Pemesan' : 'Tujuan Pengiriman'}</th>
                   <th className="py-3 px-3">Rincian Komoditas</th>
                   <th className="py-3 px-3 text-right">Total Nilai</th>
                   <th className="py-3 px-3 text-center">Status</th>
@@ -284,7 +311,9 @@ export function TransactionManager(): React.JSX.Element {
 
                     <td className="py-3 px-3">
                       <span className="font-semibold text-slate-800 block">
-                        {order.customer_name || 'Pelanggan'}
+                        {currentPov === 'seller'
+                          ? (order.customer_name || 'Pelanggan')
+                          : (user?.name || 'Pesanan Saya')}
                       </span>
                       <span className="text-[10px] text-slate-400 block truncate max-w-[140px]">
                         {order.shipping_address}
@@ -323,7 +352,7 @@ export function TransactionManager(): React.JSX.Element {
                           <span>Nota</span>
                         </button>
 
-                        {order.status === 'PAID' && (
+                        {currentPov === 'seller' && order.status === 'PAID' && (
                           <button
                             type="button"
                             disabled={isUpdatingStatus}
@@ -342,10 +371,10 @@ export function TransactionManager(): React.JSX.Element {
                             disabled={isUpdatingStatus}
                             onClick={() => handleStatusChange(order.order_code, 'COMPLETED')}
                             className="inline-flex items-center gap-1 px-2 py-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 font-bold text-[11px] rounded-md transition-colors cursor-pointer"
-                            title="Selesaikan Pesanan"
+                            title={currentPov === 'seller' ? 'Selesaikan Pesanan' : 'Konfirmasi Barang Diterima'}
                           >
                             <CheckCircle2 size={12} />
-                            <span>Selesai</span>
+                            <span>{currentPov === 'seller' ? 'Selesai' : 'Diterima'}</span>
                           </button>
                         )}
                       </div>
@@ -367,7 +396,7 @@ export function TransactionManager(): React.JSX.Element {
         }}
         onStatusUpdate={handleStatusChange}
         isUpdating={isUpdatingStatus}
-        userRole={user?.role}
+        userRole={currentPov === 'seller' ? 'farmer' : 'buyer'}
       />
     </div>
   )

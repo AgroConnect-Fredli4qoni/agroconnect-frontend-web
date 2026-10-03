@@ -301,10 +301,12 @@ export async function updateUserProfile(payload: UpdateProfilePayload, token: st
  * Fetch sales statistics and transaction aggregates for authenticated dashboard.
  *
  * @param token - Bearer JWT string.
+ * @param role - Optional role scope filter ('farmer' or 'buyer').
  * @returns OrderStats metrics, distribution, and recent orders.
  */
-export async function fetchOrderStats(token: string): Promise<OrderStats> {
-  const response = await fetch(`${API_BASE_URL}/api/orders/stats`, {
+export async function fetchOrderStats(token: string, role?: string): Promise<OrderStats> {
+  const query = role ? `?role=${encodeURIComponent(role)}` : ''
+  const response = await fetch(`${API_BASE_URL}/api/orders/stats${query}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },

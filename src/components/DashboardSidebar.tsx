@@ -71,13 +71,7 @@ export function DashboardSidebar(props: DashboardSidebarProps): React.JSX.Elemen
             }`}
           >
             <Receipt size={16} />
-            <span>
-              {user.role === 'farmer'
-                ? 'Kelola Transaksi'
-                : user.role === 'admin'
-                ? 'Kelola Transaksi'
-                : 'Pesanan Saya'}
-            </span>
+            <span>Kelola Transaksi</span>
           </button>
 
           <button
