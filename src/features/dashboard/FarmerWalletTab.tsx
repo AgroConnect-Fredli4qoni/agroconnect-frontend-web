@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react'
-import { Wallet, ArrowDownRight, ArrowUpRight, ShieldCheck, RefreshCw, AlertCircle, Building, Smartphone } from 'lucide-react'
+import { Wallet, ArrowDownRight, ArrowUpRight, ShieldCheck, RefreshCw, AlertCircle, Building, Smartphone, Plus } from 'lucide-react'
 import { useAuth } from '../auth/AuthContext'
 import { fetchWalletOverview } from '../../services/walletService'
 import { WalletOverview } from '../../types/wallet'
 import { WithdrawModal } from './WithdrawModal'
+import { PayoutDestinationModal } from './PayoutDestinationModal'
 
 /**
  * FarmerWalletTab renders the dedicated AgroConnect Farmer Wallet dashboard.
@@ -16,6 +17,7 @@ export function FarmerWalletTab(): React.JSX.Element {
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const [errorMsg, setErrorMsg] = useState<string>('')
   const [isWithdrawOpen, setIsWithdrawOpen] = useState<boolean>(false)
+  const [isPayoutModalOpen, setIsPayoutModalOpen] = useState<boolean>(false)
 
   const loadWalletData = useCallback(async (): Promise<void> => {
     if (!token) return
@@ -107,9 +109,27 @@ export function FarmerWalletTab(): React.JSX.Element {
 
         <div className="bg-white rounded-2xl border border-slate-200/90 p-5 shadow-xs flex flex-col justify-between space-y-3">
           <div>
-            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider block">Rekening Penarikan Terdaftar</span>
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-xs font-bold text-slate-500 uppercase tracking-wider block">Rekening Penarikan Terdaftar</span>
+              <button
+                type="button"
+                onClick={() => setIsPayoutModalOpen(true)}
+                className="px-2.5 py-1 bg-emerald-50 hover:bg-emerald-100 active:bg-emerald-200 text-emerald-800 rounded-lg text-[11px] font-bold transition-all flex items-center gap-1 cursor-pointer shrink-0"
+                title="Kelola atau tambah rekening / e-wallet tujuan"
+              >
+                <Plus size={13} />
+                <span>Atur / Tambah</span>
+              </button>
+            </div>
+
             <div className="flex items-center gap-2 mt-2">
-              <Building size={18} className="text-emerald-700 shrink-0" />
+              {['DANA', 'GoPay', 'OVO', 'ShopeePay', 'LinkAja'].some((p) =>
+                (overview?.wallet.bank_name || '').includes(p)
+              ) ? (
+                <Smartphone size={18} className="text-emerald-700 shrink-0" />
+              ) : (
+                <Building size={18} className="text-emerald-700 shrink-0" />
+              )}
               <span className="text-sm font-bold text-slate-800 truncate">
                 {overview?.wallet.bank_name || 'Bank Rakyat Indonesia (BRI)'}
               </span>
@@ -122,9 +142,18 @@ export function FarmerWalletTab(): React.JSX.Element {
             </span>
           </div>
 
-          <div className="text-[10px] text-slate-400 border-t border-slate-100 pt-2 flex items-center gap-1">
-            <Smartphone size={12} className="text-emerald-600" />
-            <span>Dapat ditarik ke rekening lain atau E-Wallet sewaktu-waktu.</span>
+          <div className="text-[10px] text-slate-400 border-t border-slate-100 pt-2 flex items-center justify-between">
+            <div className="flex items-center gap-1">
+              <ShieldCheck size={12} className="text-emerald-600" />
+              <span>{overview?.payout_accounts?.length || 1} Arah Pencairan Aktif</span>
+            </div>
+            <button
+              type="button"
+              onClick={() => setIsPayoutModalOpen(true)}
+              className="text-emerald-700 hover:text-emerald-800 font-bold cursor-pointer"
+            >
+              Kelola
+            </button>
           </div>
         </div>
       </div>
@@ -202,13 +231,24 @@ export function FarmerWalletTab(): React.JSX.Element {
       </div>
 
       {overview && (
-        <WithdrawModal
-          isOpen={isWithdrawOpen}
-          onClose={() => setIsWithdrawOpen(false)}
-          currentBalance={overview.wallet.balance}
-          token={token || ''}
-          onSuccess={loadWalletData}
-        />
+        <>
+          <WithdrawModal
+            isOpen={isWithdrawOpen}
+            onClose={() => setIsWithdrawOpen(false)}
+            currentBalance={overview.wallet.balance}
+            token={token || ''}
+            onSuccess={loadWalletData}
+            payoutAccounts={overview.payout_accounts || []}
+          />
+          <PayoutDestinationModal
+            isOpen={isPayoutModalOpen}
+            onClose={() => setIsPayoutModalOpen(false)}
+            onSuccess={loadWalletData}
+            token={token || ''}
+            accounts={overview.payout_accounts || []}
+            defaultHolderName={overview.wallet.account_holder}
+          />
+        </>
       )}
     </div>
   )

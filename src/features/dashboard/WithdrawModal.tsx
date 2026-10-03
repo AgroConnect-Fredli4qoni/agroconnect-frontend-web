@@ -1,6 +1,7 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { X, Building2, Smartphone, AlertCircle, CheckCircle2, ArrowRight } from 'lucide-react'
 import { requestWithdrawal } from '../../services/walletService'
+import { PayoutAccount } from '../../types/wallet'
 
 /**
  * WithdrawModalProps defines configuration for the cash-out modal.
@@ -11,6 +12,7 @@ export interface WithdrawModalProps {
   currentBalance: number
   token: string
   onSuccess: () => void
+  payoutAccounts?: PayoutAccount[]
 }
 
 const BANK_PROVIDERS = ['Bank Rakyat Indonesia (BRI)', 'Bank Central Asia (BCA)', 'Bank Mandiri', 'Bank Negara Indonesia (BNI)']
@@ -24,7 +26,7 @@ const QUICK_AMOUNTS = [50000, 100000, 250000, 500000]
  * @returns Rendered JSX modal.
  */
 export function WithdrawModal(props: WithdrawModalProps): React.JSX.Element | null {
-  const { isOpen, onClose, currentBalance, token, onSuccess } = props
+  const { isOpen, onClose, currentBalance, token, onSuccess, payoutAccounts = [] } = props
 
   const [targetType, setTargetType] = useState<'bank' | 'ewallet'>('bank')
   const [targetProvider, setTargetProvider] = useState<string>(BANK_PROVIDERS[0])
@@ -34,6 +36,18 @@ export function WithdrawModal(props: WithdrawModalProps): React.JSX.Element | nu
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [errorMsg, setErrorMsg] = useState<string>('')
   const [isSuccess, setIsSuccess] = useState<boolean>(false)
+
+  useEffect(() => {
+    if (isOpen && payoutAccounts.length > 0) {
+      const primary = payoutAccounts.find((a) => a.is_primary) || payoutAccounts[0]
+      if (primary) {
+        setTargetType(primary.account_type)
+        setTargetProvider(primary.provider_name)
+        setTargetAccount(primary.account_number)
+        setAccountHolder(primary.account_holder)
+      }
+    }
+  }, [isOpen, payoutAccounts])
 
   if (!isOpen) return null
 
@@ -154,6 +168,53 @@ export function WithdrawModal(props: WithdrawModalProps): React.JSX.Element | nu
                 Tarik Semua
               </button>
             </div>
+
+            {payoutAccounts && payoutAccounts.length > 0 && (
+              <div>
+                <label className="text-xs font-bold text-slate-700 block mb-1.5">
+                  Gunakan Rekening / E-Wallet Tersimpan
+                </label>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  {payoutAccounts.map((acc) => {
+                    const isSelected = targetAccount === acc.account_number && targetProvider === acc.provider_name
+                    return (
+                      <button
+                        key={acc.id}
+                        type="button"
+                        onClick={() => {
+                          setTargetType(acc.account_type)
+                          setTargetProvider(acc.provider_name)
+                          setTargetAccount(acc.account_number)
+                          setAccountHolder(acc.account_holder)
+                        }}
+                        className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer flex items-center gap-2.5 ${
+                          isSelected
+                            ? 'border-emerald-600 bg-emerald-50 text-emerald-900 ring-1 ring-emerald-600/30'
+                            : 'border-slate-200 bg-slate-50/50 hover:bg-slate-100 text-slate-700'
+                        }`}
+                      >
+                        <span className={`p-1.5 rounded-lg shrink-0 ${acc.account_type === 'bank' ? 'bg-blue-100 text-blue-800' : 'bg-emerald-100 text-emerald-800'}`}>
+                          {acc.account_type === 'bank' ? <Building2 size={14} /> : <Smartphone size={14} />}
+                        </span>
+                        <div className="min-w-0 flex-1">
+                          <div className="text-[11px] font-bold truncate flex items-center justify-between">
+                            <span>{acc.provider_name}</span>
+                            {acc.is_primary && (
+                              <span className="text-[9px] px-1.5 py-0.5 bg-emerald-600 text-white rounded-full font-black">
+                                Utama
+                              </span>
+                            )}
+                          </div>
+                          <div className="text-[10px] font-mono text-slate-500 truncate">
+                            {acc.account_number}
+                          </div>
+                        </div>
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
+            )}
 
             <div>
               <label className="text-xs font-bold text-slate-700 block mb-2">Metode Penarikan</label>

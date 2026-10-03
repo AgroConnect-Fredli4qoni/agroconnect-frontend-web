@@ -60,3 +60,66 @@ export async function fetchOrderSnapToken(orderCode: string, token?: string): Pr
     token,
   })
 }
+
+/**
+ * Fetch registered payout destinations for the authenticated farmer.
+ *
+ * @param token - Bearer JWT authorization token.
+ * @returns Array of registered PayoutAccount records.
+ */
+export async function fetchPayoutAccounts(token: string): Promise<import('../types/wallet').PayoutAccount[]> {
+  return httpClient.request<import('../types/wallet').PayoutAccount[]>({
+    path: '/api/wallet/payout-accounts',
+    token,
+  })
+}
+
+/**
+ * Register a new bank account or e-wallet payout destination.
+ *
+ * @param payload - Payout destination specifications.
+ * @param token - Bearer JWT authorization token.
+ * @returns Newly registered PayoutAccount record.
+ */
+export async function addPayoutAccount(
+  payload: import('../types/wallet').CreatePayoutAccountPayload,
+  token: string
+): Promise<import('../types/wallet').PayoutAccount> {
+  return httpClient.request<import('../types/wallet').PayoutAccount>({
+    path: '/api/wallet/payout-accounts',
+    method: 'POST',
+    body: payload,
+    token,
+  })
+}
+
+/**
+ * Designate a specific saved payout account as the primary destination.
+ *
+ * @param id - Identifier of target payout account.
+ * @param token - Bearer JWT authorization token.
+ * @returns Success message confirmation.
+ */
+export async function setPrimaryPayoutAccount(id: number, token: string): Promise<{ message: string }> {
+  return httpClient.request<{ message: string }>({
+    path: `/api/wallet/payout-accounts/${id}/primary`,
+    method: 'PUT',
+    token,
+  })
+}
+
+/**
+ * Delete a saved payout destination account.
+ *
+ * @param id - Identifier of target payout account.
+ * @param token - Bearer JWT authorization token.
+ * @returns Success message confirmation.
+ */
+export async function deletePayoutAccount(id: number, token: string): Promise<{ message: string }> {
+  return httpClient.request<{ message: string }>({
+    path: `/api/wallet/payout-accounts/${id}`,
+    method: 'DELETE',
+    token,
+  })
+}
+

@@ -63,10 +63,38 @@ export interface UpdateWalletAccountPayload {
 }
 
 /**
+ * PayoutAccount represents a registered bank or e-wallet destination for farmer payouts.
+ */
+export interface PayoutAccount {
+  id: number
+  farmer_id: number
+  account_type: 'bank' | 'ewallet'
+  provider_name: string
+  account_number: string
+  account_holder: string
+  is_primary: boolean
+  created_at: string
+  updated_at: string
+}
+
+/**
+ * CreatePayoutAccountPayload defines the payload for registering a new payout destination.
+ */
+export interface CreatePayoutAccountPayload {
+  account_type: 'bank' | 'ewallet'
+  provider_name: string
+  account_number: string
+  account_holder: string
+  is_primary?: boolean
+}
+
+/**
  * WalletOverview represents the consolidated wallet dashboard payload.
  */
 export interface WalletOverview {
   wallet: FarmerWallet
   transactions: WalletTransaction[]
   withdrawals: WithdrawalRequest[]
+  payout_accounts: PayoutAccount[]
 }
+
