@@ -308,16 +308,6 @@ export function ProfilePage(): React.JSX.Element {
                 </div>
                 <p className="text-[10px] text-slate-400">Email akun bersifat permanen sebagai identitas login unik.</p>
               </div>
-
-              <div className="space-y-1.5 sm:col-span-2">
-                <label className="text-xs font-semibold text-slate-700">Peran Sistem (Role)</label>
-                <input
-                  type="text"
-                  value={user.role === 'admin' ? 'Administrator' : user.role === 'farmer' ? 'Mitra Petani' : 'Pembeli'}
-                  disabled
-                  className="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl text-slate-500 cursor-not-allowed font-medium"
-                />
-              </div>
             </div>
 
             <div className="pt-2 flex justify-end">
