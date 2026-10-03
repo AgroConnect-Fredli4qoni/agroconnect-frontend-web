@@ -3,21 +3,9 @@ import { CreateProductInput, Product, UpdateProductInput } from '../types/produc
 import { CheckoutPayload, Order, OrderStats } from '../types/order'
 import { WeatherResponse } from '../types/weather'
 import { FarmerApiRecord } from '../types/farmer'
+import { httpClient, ApiError } from './httpClient'
 
-const API_BASE_URL = 'http://localhost:8080'
-
-/**
- * ApiError wraps HTTP error responses with status code and message.
- */
-export class ApiError extends Error {
-  public statusCode: number
-
-  constructor(message: string, statusCode: number) {
-    super(message)
-    this.statusCode = statusCode
-    this.name = 'ApiError'
-  }
-}
+export { ApiError, httpClient }
 
 /**
  * Fetch agricultural weather analytics from BMKG service via Gateway.
@@ -26,12 +14,10 @@ export class ApiError extends Error {
  * @returns WeatherResponse containing climate data and farming recommendations.
  */
 export async function fetchWeather(region: string = 'Indonesia'): Promise<WeatherResponse> {
-  const url = `${API_BASE_URL}/api/weather?region=${encodeURIComponent(region)}`
-  const response = await fetch(url)
-  if (!response.ok) {
-    throw new ApiError('Failed to fetch weather parameters', response.status)
-  }
-  return response.json()
+  return httpClient.request<WeatherResponse>({
+    path: '/api/weather',
+    params: { region },
+  })
 }
 
 /**
@@ -42,15 +28,13 @@ export async function fetchWeather(region: string = 'Indonesia'): Promise<Weathe
  * @returns Array of Product items.
  */
 export async function fetchProducts(search?: string, category?: string): Promise<Product[]> {
-  const params = new URLSearchParams()
-  if (search) params.append('search', search)
-  if (category && category !== 'Semua') params.append('category', category)
-
-  const response = await fetch(`${API_BASE_URL}/api/products?${params.toString()}`)
-  if (!response.ok) {
-    throw new ApiError('Failed to fetch catalog commodities', response.status)
-  }
-  return response.json()
+  return httpClient.request<Product[]>({
+    path: '/api/products',
+    params: {
+      search,
+      category: category && category !== 'Semua' ? category : undefined,
+    },
+  })
 }
 
 /**
@@ -61,20 +45,12 @@ export async function fetchProducts(search?: string, category?: string): Promise
  * @returns Created Product item.
  */
 export async function createProduct(payload: CreateProductInput, token: string): Promise<Product> {
-  const response = await fetch(`${API_BASE_URL}/api/products`, {
+  return httpClient.request<Product>({
+    path: '/api/products',
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify(payload),
+    token,
+    body: payload,
   })
-
-  if (!response.ok) {
-    const errData = await response.json().catch(() => ({}))
-    throw new ApiError(errData.error || 'Failed to publish product', response.status)
-  }
-  return response.json()
 }
 
 /**
@@ -84,17 +60,11 @@ export async function createProduct(payload: CreateProductInput, token: string):
  * @param token - Bearer JWT string.
  */
 export async function deleteProduct(id: string, token: string): Promise<void> {
-  const response = await fetch(`${API_BASE_URL}/api/products/${id}`, {
+  return httpClient.request<void>({
+    path: `/api/products/${id}`,
     method: 'DELETE',
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    token,
   })
-
-  if (!response.ok) {
-    const errData = await response.json().catch(() => ({}))
-    throw new ApiError(errData.error || 'Failed to delete commodity', response.status)
-  }
 }
 
 /**
@@ -106,20 +76,12 @@ export async function deleteProduct(id: string, token: string): Promise<void> {
  * @returns Updated Product item.
  */
 export async function updateProduct(id: string, payload: UpdateProductInput, token: string): Promise<Product> {
-  const response = await fetch(`${API_BASE_URL}/api/products/${id}`, {
+  return httpClient.request<Product>({
+    path: `/api/products/${id}`,
     method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify(payload),
+    token,
+    body: payload,
   })
-
-  if (!response.ok) {
-    const errData = await response.json().catch(() => ({}))
-    throw new ApiError(errData.error || 'Failed to update commodity', response.status)
-  }
-  return response.json()
 }
 
 /**
@@ -129,17 +91,11 @@ export async function updateProduct(id: string, payload: UpdateProductInput, tok
  * @returns AuthResponse with JWT and User profile.
  */
 export async function loginUser(credentials: LoginCredentials): Promise<AuthResponse> {
-  const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
+  return httpClient.request<AuthResponse>({
+    path: '/api/auth/login',
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(credentials),
+    body: credentials,
   })
-
-  if (!response.ok) {
-    const errData = await response.json().catch(() => ({}))
-    throw new ApiError(errData.error || 'Invalid email or password', response.status)
-  }
-  return response.json()
 }
 
 /**
@@ -149,17 +105,11 @@ export async function loginUser(credentials: LoginCredentials): Promise<AuthResp
  * @returns Newly registered UserProfile.
  */
 export async function registerUser(payload: RegisterPayload): Promise<UserProfile> {
-  const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
+  const result = await httpClient.request<{ user: UserProfile }>({
+    path: '/api/auth/register',
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload),
+    body: payload,
   })
-
-  if (!response.ok) {
-    const errData = await response.json().catch(() => ({}))
-    throw new ApiError(errData.error || 'Registration failed', response.status)
-  }
-  const result = await response.json()
   return result.user
 }
 
@@ -171,20 +121,12 @@ export async function registerUser(payload: RegisterPayload): Promise<UserProfil
  * @returns Confirmed Order object with order code.
  */
 export async function createOrder(payload: CheckoutPayload, token: string): Promise<Order> {
-  const response = await fetch(`${API_BASE_URL}/api/orders`, {
+  return httpClient.request<Order>({
+    path: '/api/orders',
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify(payload),
+    token,
+    body: payload,
   })
-
-  if (!response.ok) {
-    const errData = await response.json().catch(() => ({}))
-    throw new ApiError(errData.error || 'Transaction execution failed', response.status)
-  }
-  return response.json()
 }
 
 /**
@@ -202,28 +144,15 @@ export async function fetchUserOrders(
   status?: string,
   role?: string
 ): Promise<Order[]> {
-  const params = new URLSearchParams()
-  if (userId > 0) {
-    params.append('user_id', userId.toString())
-  }
-  if (status && status !== 'ALL') {
-    params.append('status', status)
-  }
-  if (role) {
-    params.append('role', role)
-  }
-  const queryString = params.toString() ? `?${params.toString()}` : ''
-
-  const response = await fetch(`${API_BASE_URL}/api/orders/user${queryString}`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
+  return httpClient.request<Order[]>({
+    path: '/api/orders/user',
+    token,
+    params: {
+      user_id: userId > 0 ? userId : undefined,
+      status: status && status !== 'ALL' ? status : undefined,
+      role: role || undefined,
     },
   })
-
-  if (!response.ok) {
-    throw new ApiError('Failed to load transaction history', response.status)
-  }
-  return response.json()
 }
 
 /**
@@ -232,11 +161,9 @@ export async function fetchUserOrders(
  * @returns Array of FarmerApiRecord items.
  */
 export async function fetchFarmers(): Promise<FarmerApiRecord[]> {
-  const response = await fetch(`${API_BASE_URL}/api/farmers`)
-  if (!response.ok) {
-    throw new ApiError('Failed to fetch farmers list', response.status)
-  }
-  return response.json()
+  return httpClient.request<FarmerApiRecord[]>({
+    path: '/api/farmers',
+  })
 }
 
 /**
@@ -246,11 +173,9 @@ export async function fetchFarmers(): Promise<FarmerApiRecord[]> {
  * @returns Detailed FarmerApiRecord object.
  */
 export async function fetchFarmerBySlug(slug: string): Promise<FarmerApiRecord> {
-  const response = await fetch(`${API_BASE_URL}/api/farmers/${encodeURIComponent(slug)}`)
-  if (!response.ok) {
-    throw new ApiError(`Farmer profile not found for slug: ${slug}`, response.status)
-  }
-  return response.json()
+  return httpClient.request<FarmerApiRecord>({
+    path: `/api/farmers/${encodeURIComponent(slug)}`,
+  })
 }
 
 /**
@@ -260,17 +185,10 @@ export async function fetchFarmerBySlug(slug: string): Promise<FarmerApiRecord> 
  * @returns Authenticated UserProfile.
  */
 export async function fetchUserProfile(token: string): Promise<UserProfile> {
-  const response = await fetch(`${API_BASE_URL}/api/auth/profile`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+  return httpClient.request<UserProfile>({
+    path: '/api/auth/profile',
+    token,
   })
-
-  if (!response.ok) {
-    const errData = await response.json().catch(() => ({}))
-    throw new ApiError(errData.error || 'Failed to fetch user profile', response.status)
-  }
-  return response.json()
 }
 
 /**
@@ -281,20 +199,12 @@ export async function fetchUserProfile(token: string): Promise<UserProfile> {
  * @returns AuthResponse with refreshed token and updated UserProfile.
  */
 export async function updateUserProfile(payload: UpdateProfilePayload, token: string): Promise<AuthResponse> {
-  const response = await fetch(`${API_BASE_URL}/api/auth/profile`, {
+  return httpClient.request<AuthResponse>({
+    path: '/api/auth/profile',
     method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify(payload),
+    token,
+    body: payload,
   })
-
-  if (!response.ok) {
-    const errData = await response.json().catch(() => ({}))
-    throw new ApiError(errData.error || 'Failed to update user profile', response.status)
-  }
-  return response.json()
 }
 
 /**
@@ -305,18 +215,13 @@ export async function updateUserProfile(payload: UpdateProfilePayload, token: st
  * @returns OrderStats metrics, distribution, and recent orders.
  */
 export async function fetchOrderStats(token: string, role?: string): Promise<OrderStats> {
-  const query = role ? `?role=${encodeURIComponent(role)}` : ''
-  const response = await fetch(`${API_BASE_URL}/api/orders/stats${query}`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
+  return httpClient.request<OrderStats>({
+    path: '/api/orders/stats',
+    token,
+    params: {
+      role: role || undefined,
     },
   })
-
-  if (!response.ok) {
-    const errData = await response.json().catch(() => ({}))
-    throw new ApiError(errData.error || 'Failed to fetch sales statistics', response.status)
-  }
-  return response.json()
 }
 
 /**
@@ -332,18 +237,10 @@ export async function updateOrderStatus(
   status: string,
   token: string
 ): Promise<{ message: string; order_code: string; status: string }> {
-  const response = await fetch(`${API_BASE_URL}/api/orders/${orderCode}/status`, {
+  return httpClient.request<{ message: string; order_code: string; status: string }>({
+    path: `/api/orders/${orderCode}/status`,
     method: 'PATCH',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify({ status }),
+    token,
+    body: { status },
   })
-
-  if (!response.ok) {
-    const errData = await response.json().catch(() => ({}))
-    throw new ApiError(errData.error || 'Failed to update order status', response.status)
-  }
-  return response.json()
 }
