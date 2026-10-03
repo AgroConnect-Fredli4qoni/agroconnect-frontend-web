@@ -102,22 +102,22 @@ export function SalesStatsDashboard(): React.JSX.Element {
 
   return (
     <div className="space-y-6">
-      <div className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-xs flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
-        <div className="flex items-center gap-3.5">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-500 text-white flex items-center justify-center shadow-md shrink-0">
-            <BarChart3 size={24} />
+      <div className="bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-6 shadow-xs flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
+        <div className="flex items-center gap-3 sm:gap-3.5 w-full lg:w-auto">
+          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-500 text-white flex items-center justify-center shadow-md shrink-0">
+            <BarChart3 className="w-5 h-5 sm:w-6 sm:h-6" />
           </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-lg font-bold text-slate-900">
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-2 flex-wrap">
+              <h1 className="text-base sm:text-lg font-bold text-slate-900 truncate">
                 {currentPov === 'seller' ? 'Ikhtisar & Statistik Penjualan' : 'Ikhtisar & Statistik Belanja'}
               </h1>
-              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 shrink-0">
                 <Sparkles size={11} />
                 Live Data
               </span>
             </div>
-            <p className="text-xs text-slate-500">
+            <p className="text-[11px] sm:text-xs text-slate-500 line-clamp-1 sm:line-clamp-none">
               {currentPov === 'seller'
                 ? 'Performa transaksi pesanan masuk, komoditas terlaris, dan metrik revenue'
                 : 'Ringkasan belanja komoditas panen, alokasi anggaran, dan riwayat pesanan Anda'}
@@ -125,7 +125,7 @@ export function SalesStatsDashboard(): React.JSX.Element {
           </div>
         </div>
 
-        <div className="flex flex-wrap items-center gap-3 self-end lg:self-auto">
+        <div className="flex items-center gap-2.5 w-full lg:w-auto justify-between lg:justify-end border-t lg:border-t-0 pt-3 lg:pt-0 border-slate-100">
           <TransactionPovToggle
             currentPov={currentPov}
             onPovChange={setCurrentPov}
@@ -135,7 +135,7 @@ export function SalesStatsDashboard(): React.JSX.Element {
             type="button"
             onClick={() => loadStats(true)}
             disabled={isRefreshing}
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl text-xs font-bold text-slate-700 transition-all cursor-pointer shadow-2xs disabled:opacity-50"
+            className="inline-flex items-center justify-center gap-1.5 px-3 sm:px-3.5 py-2 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl text-xs font-bold text-slate-700 transition-all cursor-pointer shadow-2xs disabled:opacity-50 shrink-0"
           >
             <RotateCw size={14} className={isRefreshing ? 'animate-spin text-emerald-600' : ''} />
             <span>Segarkan</span>
@@ -167,7 +167,7 @@ export function SalesStatsDashboard(): React.JSX.Element {
             userRole={currentPov === 'seller' ? 'farmer' : 'buyer'}
           />
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
             <OrderStatusDistribution
               breakdown={stats.status_breakdown}
               totalOrders={stats.total_orders}

@@ -20,9 +20,9 @@ export function TopCommoditiesTable(props: TopCommoditiesTableProps): React.JSX.
   const { products } = props
 
   return (
-    <div className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-xs flex flex-col justify-between">
+    <div className="bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-6 shadow-xs flex flex-col justify-between">
       <div>
-        <div className="flex items-center justify-between mb-5">
+        <div className="flex items-center justify-between mb-4 sm:mb-5">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center">
               <Trophy size={18} />
@@ -46,7 +46,7 @@ export function TopCommoditiesTable(props: TopCommoditiesTableProps): React.JSX.
             <p className="text-xs text-slate-500">Belum ada data transaksi penjualan komoditas</p>
           </div>
         ) : (
-          <div className="space-y-3">
+          <div className="space-y-2.5 sm:space-y-3">
             {products.map((item, index) => {
               const rank = index + 1
               const rankColor =
@@ -61,7 +61,7 @@ export function TopCommoditiesTable(props: TopCommoditiesTableProps): React.JSX.
               return (
                 <div
                   key={`${item.product_id}-${index}`}
-                  className="flex items-center justify-between p-3 rounded-xl bg-slate-50/60 hover:bg-slate-100/80 transition-colors border border-slate-100"
+                  className="flex items-center justify-between p-2.5 sm:p-3 rounded-xl bg-slate-50/60 hover:bg-slate-100/80 transition-colors border border-slate-100"
                 >
                   <div className="flex items-center gap-3 min-w-0">
                     <span

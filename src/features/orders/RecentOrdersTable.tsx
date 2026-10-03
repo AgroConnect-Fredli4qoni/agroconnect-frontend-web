@@ -41,10 +41,10 @@ export function RecentOrdersTable(props: RecentOrdersTableProps): React.JSX.Elem
   }
 
   return (
-    <div className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-xs space-y-4">
+    <div className="bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-6 shadow-xs space-y-4">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-slate-100">
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center">
+          <div className="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
             <History size={18} />
           </div>
           <div>
@@ -62,95 +62,180 @@ export function RecentOrdersTable(props: RecentOrdersTableProps): React.JSX.Elem
           Belum ada riwayat transaksi pesanan yang tercatat dalam sistem.
         </div>
       ) : (
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="border-b border-slate-200 text-[11px] font-bold uppercase tracking-wider text-slate-400">
-                <th className="py-3 px-3">Kode Pesanan</th>
-                <th className="py-3 px-3">Komoditas Dipesan</th>
-                <th className="py-3 px-3">Waktu Transaksi</th>
-                <th className="py-3 px-3">Total Nominal</th>
-                <th className="py-3 px-3">Status Transaksi</th>
-                {canManageStatus && <th className="py-3 px-3 text-right">Kelola Status</th>}
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100 text-xs">
-              {orders.map((order) => {
-                const itemsCount = order.items?.length || 0
-                const firstItemName = order.items && order.items.length > 0 ? order.items[0].product_name : 'Komoditas Pertanian'
+        <>
+          <div className="block md:hidden space-y-3">
+            {orders.map((order) => {
+              const itemsCount = order.items?.length || 0
+              const firstItemName = order.items && order.items.length > 0 ? order.items[0].product_name : 'Komoditas Pertanian'
+              const allowed = getAllowedNextStatuses(order.status, userRole)
 
-                return (
-                  <tr key={order.id || order.order_code} className="hover:bg-slate-50/80 transition-colors">
-                    <td className="py-3.5 px-3">
-                      <span className="font-mono font-bold text-slate-900">{order.order_code}</span>
-                      <div className="text-[10px] text-slate-400 truncate max-w-[180px]" title={order.shipping_address}>
-                        {order.shipping_address}
-                      </div>
-                    </td>
-
-                    <td className="py-3.5 px-3">
-                      <span className="font-semibold text-slate-800 line-clamp-1">{firstItemName}</span>
-                      {itemsCount > 1 && (
-                        <span className="text-[10px] text-emerald-600 font-medium">
-                          +{itemsCount - 1} komoditas lainnya
-                        </span>
-                      )}
-                    </td>
-
-                    <td className="py-3.5 px-3 whitespace-nowrap">
-                      <div className="flex items-center gap-1.5 text-slate-600 text-[11px]">
-                        <Calendar size={13} className="text-slate-400" />
+              return (
+                <div
+                  key={`mobile-${order.id || order.order_code}`}
+                  className="bg-slate-50/50 border border-slate-200/90 rounded-xl p-3.5 shadow-2xs space-y-3 hover:border-slate-300 transition-colors"
+                >
+                  <div className="flex items-center justify-between gap-2 border-b border-slate-200/60 pb-2.5">
+                    <div className="min-w-0 flex-1">
+                      <span className="font-mono font-bold text-xs text-slate-900 truncate block">
+                        {order.order_code}
+                      </span>
+                      <div className="flex items-center gap-1.5 text-slate-400 text-[10px] mt-0.5">
+                        <Calendar size={11} className="shrink-0" />
                         <span>{formatDate(order.created_at)}</span>
                       </div>
-                    </td>
+                    </div>
+                    <OrderStatusBadge status={order.status} />
+                  </div>
 
-                    <td className="py-3.5 px-3 whitespace-nowrap">
-                      <span className="font-bold text-slate-900">{formatIDR(order.total_amount)}</span>
-                    </td>
+                  <div className="space-y-1">
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="min-w-0 flex-1">
+                        <div className="text-xs font-bold text-slate-800 line-clamp-1">
+                          {firstItemName}
+                        </div>
+                        {itemsCount > 1 && (
+                          <span className="text-[10px] text-emerald-600 font-semibold">
+                            +{itemsCount - 1} komoditas lainnya
+                          </span>
+                        )}
+                      </div>
+                      <div className="text-xs font-black text-emerald-700 shrink-0 text-right">
+                        {formatIDR(order.total_amount)}
+                      </div>
+                    </div>
 
-                    <td className="py-3.5 px-3 whitespace-nowrap">
-                      <OrderStatusBadge status={order.status} />
-                    </td>
+                    {order.shipping_address && (
+                      <p className="text-[10px] text-slate-400 truncate" title={order.shipping_address}>
+                        Tujuan: {order.shipping_address}
+                      </p>
+                    )}
+                  </div>
 
-                    {canManageStatus && (
-                      <td className="py-3.5 px-3 text-right whitespace-nowrap">
-                        {updatingCode === order.order_code ? (
-                          <div className="inline-flex items-center gap-1 text-[11px] text-slate-500">
-                            <Loader2 size={13} className="animate-spin text-emerald-600" />
-                            <span>Memproses...</span>
-                          </div>
-                        ) : (
-                          (() => {
-                            const allowed = getAllowedNextStatuses(order.status, userRole)
-                            if (allowed.length === 0) {
-                              return <span className="text-[11px] font-bold text-slate-400">Terkunci</span>
-                            }
-                            return (
-                              <select
-                                value={order.status}
-                                onChange={(e) => onUpdateStatus?.(order.order_code, e.target.value as OrderStatus)}
-                                className="text-[11px] font-semibold text-slate-700 bg-white border border-slate-200 rounded-lg px-2 py-1 focus:outline-none focus:ring-1 focus:ring-emerald-500 cursor-pointer shadow-2xs"
-                              >
-                                <option value={order.status} disabled>
-                                  {order.status}
-                                </option>
-                                {allowed.map((next) => (
-                                  <option key={next} value={next}>
-                                    {next}
-                                  </option>
-                                ))}
-                              </select>
-                            )
-                          })()
+                  {canManageStatus && (
+                    <div className="pt-2 border-t border-slate-200/60 flex items-center justify-between gap-2">
+                      <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                        Kelola Status
+                      </span>
+                      {updatingCode === order.order_code ? (
+                        <div className="inline-flex items-center gap-1 text-[11px] text-slate-500">
+                          <Loader2 size={13} className="animate-spin text-emerald-600" />
+                          <span>Memproses...</span>
+                        </div>
+                      ) : allowed.length === 0 ? (
+                        <span className="text-[11px] font-bold text-slate-400">Terkunci</span>
+                      ) : (
+                        <select
+                          value={order.status}
+                          onChange={(e) => onUpdateStatus?.(order.order_code, e.target.value as OrderStatus)}
+                          className="text-[11px] font-semibold text-slate-700 bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-emerald-500 cursor-pointer shadow-2xs"
+                        >
+                          <option value={order.status} disabled>
+                            {order.status}
+                          </option>
+                          {allowed.map((next) => (
+                            <option key={next} value={next}>
+                              {next}
+                            </option>
+                          ))}
+                        </select>
+                      )}
+                    </div>
+                  )}
+                </div>
+              )
+            })}
+          </div>
+
+          <div className="hidden md:block overflow-x-auto">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="border-b border-slate-200 text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                  <th className="py-3 px-3">Kode Pesanan</th>
+                  <th className="py-3 px-3">Komoditas Dipesan</th>
+                  <th className="py-3 px-3">Waktu Transaksi</th>
+                  <th className="py-3 px-3">Total Nominal</th>
+                  <th className="py-3 px-3">Status Transaksi</th>
+                  {canManageStatus && <th className="py-3 px-3 text-right">Kelola Status</th>}
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100 text-xs">
+                {orders.map((order) => {
+                  const itemsCount = order.items?.length || 0
+                  const firstItemName = order.items && order.items.length > 0 ? order.items[0].product_name : 'Komoditas Pertanian'
+
+                  return (
+                    <tr key={order.id || order.order_code} className="hover:bg-slate-50/80 transition-colors">
+                      <td className="py-3.5 px-3">
+                        <span className="font-mono font-bold text-slate-900">{order.order_code}</span>
+                        <div className="text-[10px] text-slate-400 truncate max-w-[180px]" title={order.shipping_address}>
+                          {order.shipping_address}
+                        </div>
+                      </td>
+
+                      <td className="py-3.5 px-3">
+                        <span className="font-semibold text-slate-800 line-clamp-1">{firstItemName}</span>
+                        {itemsCount > 1 && (
+                          <span className="text-[10px] text-emerald-600 font-medium">
+                            +{itemsCount - 1} komoditas lainnya
+                          </span>
                         )}
                       </td>
-                    )}
-                  </tr>
-                )
-              })}
-            </tbody>
-          </table>
-        </div>
+
+                      <td className="py-3.5 px-3 whitespace-nowrap">
+                        <div className="flex items-center gap-1.5 text-slate-600 text-[11px]">
+                          <Calendar size={13} className="text-slate-400" />
+                          <span>{formatDate(order.created_at)}</span>
+                        </div>
+                      </td>
+
+                      <td className="py-3.5 px-3 whitespace-nowrap">
+                        <span className="font-bold text-slate-900">{formatIDR(order.total_amount)}</span>
+                      </td>
+
+                      <td className="py-3.5 px-3 whitespace-nowrap">
+                        <OrderStatusBadge status={order.status} />
+                      </td>
+
+                      {canManageStatus && (
+                        <td className="py-3.5 px-3 text-right whitespace-nowrap">
+                          {updatingCode === order.order_code ? (
+                            <div className="inline-flex items-center gap-1 text-[11px] text-slate-500">
+                              <Loader2 size={13} className="animate-spin text-emerald-600" />
+                              <span>Memproses...</span>
+                            </div>
+                          ) : (
+                            (() => {
+                              const allowed = getAllowedNextStatuses(order.status, userRole)
+                              if (allowed.length === 0) {
+                                return <span className="text-[11px] font-bold text-slate-400">Terkunci</span>
+                              }
+                              return (
+                                <select
+                                  value={order.status}
+                                  onChange={(e) => onUpdateStatus?.(order.order_code, e.target.value as OrderStatus)}
+                                  className="text-[11px] font-semibold text-slate-700 bg-white border border-slate-200 rounded-lg px-2 py-1 focus:outline-none focus:ring-1 focus:ring-emerald-500 cursor-pointer shadow-2xs"
+                                >
+                                  <option value={order.status} disabled>
+                                    {order.status}
+                                  </option>
+                                  {allowed.map((next) => (
+                                    <option key={next} value={next}>
+                                      {next}
+                                    </option>
+                                  ))}
+                                </select>
+                              )
+                            })()
+                          )}
+                        </td>
+                      )}
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
+          </div>
+        </>
       )}
     </div>
   )
