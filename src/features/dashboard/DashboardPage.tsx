@@ -69,7 +69,7 @@ export function DashboardPage(): React.JSX.Element {
   }
 
   return (
-    <div className="max-w-[1680px] mx-auto px-4 sm:px-8 lg:px-12 py-8">
+    <div className="max-w-[1680px] mx-auto px-3.5 sm:px-8 lg:px-12 py-6 sm:py-8 pb-24 lg:pb-8">
       <div className="flex flex-col lg:flex-row items-start gap-8">
         <DashboardSidebar
           user={user}

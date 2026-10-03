@@ -22,7 +22,7 @@ export function DashboardSidebar(props: DashboardSidebarProps): React.JSX.Elemen
   const { user, activeMenu, onSelectMenu, onLogout } = props
 
   return (
-    <aside className="w-full lg:w-64 xl:w-72 shrink-0 space-y-4">
+    <aside className="hidden lg:block w-full lg:w-64 xl:w-72 shrink-0 space-y-4">
       <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-xs flex items-center gap-3.5">
         <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-emerald-600 to-teal-500 text-white flex items-center justify-center text-lg font-black shadow-2xs shrink-0 overflow-hidden ring-2 ring-emerald-100">
           {user.avatar_url ? (
