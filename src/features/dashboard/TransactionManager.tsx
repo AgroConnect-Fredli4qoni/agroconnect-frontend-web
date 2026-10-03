@@ -124,43 +124,46 @@ export function TransactionManager(): React.JSX.Element {
   )
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-2">
-            <h2 className="text-xl font-black text-slate-900 tracking-tight">
+    <div className="space-y-4 sm:space-y-6">
+      <div className="bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-5 shadow-xs space-y-3.5 sm:space-y-4">
+        <div className="flex items-start sm:items-center justify-between gap-3">
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
+              <h2 className="text-base sm:text-xl font-black text-slate-900 tracking-tight truncate">
+                {currentPov === 'seller'
+                  ? 'Kelola Pesanan Masuk'
+                  : 'Riwayat Belanja Saya'}
+              </h2>
+              <span className="text-[10px] sm:text-xs font-bold text-emerald-800 bg-emerald-100 px-2.5 py-0.5 rounded-full whitespace-nowrap shrink-0">
+                {orders.length} Transaksi
+              </span>
+            </div>
+            <p className="text-[11px] sm:text-xs text-slate-500 mt-0.5 line-clamp-1 sm:line-clamp-none">
               {currentPov === 'seller'
-                ? 'Kelola Pesanan Masuk (Penjual)'
-                : 'Riwayat Belanja Saya (Pembeli)'}
-            </h2>
-            <span className="text-xs font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-full">
-              {orders.length} Transaksi
-            </span>
+                ? 'Pantau pesanan hasil panen dan perbarui status pengiriman komoditas.'
+                : 'Daftar transaksi belanja komoditas langsung dari petani dengan integritas ACID.'}
+            </p>
           </div>
-          <p className="text-xs text-slate-500 mt-1">
-            {currentPov === 'seller'
-              ? 'Pantau pesanan hasil panen dari pembeli dan perbarui status pengiriman komoditas.'
-              : 'Daftar transaksi belanja komoditas pertanian segar langsung dari petani dengan integritas ACID.'}
-          </p>
+
+          <button
+            type="button"
+            onClick={loadOrders}
+            disabled={isLoading}
+            className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 sm:py-2 bg-slate-50 hover:bg-slate-100 active:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl border border-slate-200 shadow-2xs transition-all cursor-pointer disabled:opacity-50 shrink-0"
+            title="Segarkan data transaksi"
+          >
+            <RefreshCw size={13} className={isLoading ? 'animate-spin text-emerald-600' : ''} />
+            <span className="hidden sm:inline">Segarkan Data</span>
+          </button>
         </div>
 
-        <div className="flex flex-wrap items-center gap-3">
+        <div className="pt-0.5">
           <TransactionPovToggle
             currentPov={currentPov}
             onPovChange={setCurrentPov}
             sellerCount={sellerOrderCount}
             buyerCount={buyerOrderCount}
           />
-
-          <button
-            type="button"
-            onClick={loadOrders}
-            disabled={isLoading}
-            className="inline-flex items-center gap-2 px-3.5 py-2 bg-white hover:bg-slate-50 active:bg-slate-100 text-slate-700 text-xs font-semibold rounded-xl border border-slate-200 shadow-2xs transition-all cursor-pointer disabled:opacity-50"
-          >
-            <RefreshCw size={14} className={isLoading ? 'animate-spin' : ''} />
-            <span>Segarkan Data</span>
-          </button>
         </div>
       </div>
 
@@ -232,111 +235,212 @@ export function TransactionManager(): React.JSX.Element {
             </p>
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="border-b border-slate-100 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-                  <th className="py-3 px-3">Kode & Waktu</th>
-                  <th className="py-3 px-3">{currentPov === 'seller' ? 'Pemesan' : 'Tujuan Pengiriman'}</th>
-                  <th className="py-3 px-3">Rincian Komoditas</th>
-                  <th className="py-3 px-3 text-right">Total Nilai</th>
-                  <th className="py-3 px-3 text-center">Status</th>
-                  <th className="py-3 px-3 text-center">Aksi</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100 text-xs">
-                {filteredOrders.map((order) => (
-                  <tr key={order.order_code} className="hover:bg-slate-50/70 transition-colors">
-                    <td className="py-3 px-3">
-                      <span className="font-mono font-bold text-slate-800 block">{order.order_code}</span>
+          <>
+            <div className="block md:hidden space-y-3">
+              {filteredOrders.map((order) => (
+                <div
+                  key={`mobile-${order.order_code}`}
+                  className="bg-slate-50/60 border border-slate-200/90 rounded-xl p-3.5 shadow-2xs space-y-3 hover:border-slate-300 transition-colors"
+                >
+                  <div className="flex items-center justify-between gap-2 border-b border-slate-200/60 pb-2.5">
+                    <div className="min-w-0 flex-1">
+                      <span className="font-mono font-bold text-xs text-slate-900 truncate block">
+                        {order.order_code}
+                      </span>
                       <span className="text-[10px] text-slate-400 flex items-center gap-1 mt-0.5">
-                        <Calendar size={11} />
-                        {new Date(order.created_at).toLocaleDateString('id-ID', {
-                          day: 'numeric',
-                          month: 'short',
-                          hour: '2-digit',
-                          minute: '2-digit',
-                        })}
+                        <Calendar size={11} className="shrink-0" />
+                        <span>
+                          {new Date(order.created_at).toLocaleDateString('id-ID', {
+                            day: 'numeric',
+                            month: 'short',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                          })}
+                        </span>
                       </span>
-                    </td>
+                    </div>
+                    <OrderStatusBadge status={order.status} />
+                  </div>
 
-                    <td className="py-3 px-3">
-                      <span className="font-semibold text-slate-800 block">
-                        {currentPov === 'seller'
-                          ? (order.customer_name || 'Pelanggan')
-                          : (user?.name || 'Pesanan Saya')}
-                      </span>
-                      <span className="text-[10px] text-slate-400 block truncate max-w-[140px]">
-                        {order.shipping_address}
-                      </span>
-                    </td>
-
-                    <td className="py-3 px-3">
-                      <div className="space-y-0.5 max-w-[200px]">
-                        {(order.items || []).map((it) => (
-                          <div key={it.id || it.product_id} className="text-[11px] text-slate-600 truncate">
-                            <span className="font-medium text-slate-800">{it.product_name}</span>{' '}
-                            <span className="text-slate-400">({it.quantity} kg)</span>
-                          </div>
-                        ))}
+                  <div className="space-y-1.5">
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="min-w-0 flex-1">
+                        <span className="text-xs font-bold text-slate-800 line-clamp-1">
+                          {currentPov === 'seller'
+                            ? (order.customer_name || 'Pelanggan')
+                            : (user?.name || 'Pesanan Saya')}
+                        </span>
+                        <div className="space-y-0.5 mt-1">
+                          {(order.items || []).map((it) => (
+                            <div key={it.id || it.product_id} className="text-[11px] text-slate-600 truncate">
+                              <span className="font-medium text-slate-800">{it.product_name}</span>{' '}
+                              <span className="text-slate-400">({it.quantity} kg)</span>
+                            </div>
+                          ))}
+                        </div>
                       </div>
-                    </td>
-
-                    <td className="py-3 px-3 text-right font-black text-emerald-700">
-                      Rp {order.total_amount.toLocaleString('id-ID')}
-                    </td>
-
-                    <td className="py-3 px-3 text-center">
-                      <OrderStatusBadge status={order.status} />
-                    </td>
-
-                    <td className="py-3 px-3 text-center">
-                      <div className="flex items-center justify-center gap-1.5">
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setSelectedOrder(order)
-                            setIsModalOpen(true)
-                          }}
-                          className="inline-flex items-center gap-1 px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[11px] rounded-md transition-colors cursor-pointer"
-                          title="Lihat Faktur & Rincian Lengkap"
-                        >
-                          <Eye size={12} />
-                          <span>Nota</span>
-                        </button>
-
-                        {currentPov === 'seller' && order.status === 'PAID' && (
-                          <button
-                            type="button"
-                            disabled={isUpdatingStatus}
-                            onClick={() => handleStatusChange(order.order_code, 'SHIPPED')}
-                            className="inline-flex items-center gap-1 px-2 py-1 bg-purple-50 hover:bg-purple-100 text-purple-700 border border-purple-200 font-bold text-[11px] rounded-md transition-colors cursor-pointer"
-                            title="Kirim Komoditas"
-                          >
-                            <Truck size={12} />
-                            <span>Kirim</span>
-                          </button>
-                        )}
-
-                        {order.status === 'SHIPPED' && (
-                          <button
-                            type="button"
-                            disabled={isUpdatingStatus}
-                            onClick={() => handleStatusChange(order.order_code, 'COMPLETED')}
-                            className="inline-flex items-center gap-1 px-2 py-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 font-bold text-[11px] rounded-md transition-colors cursor-pointer"
-                            title={currentPov === 'seller' ? 'Selesaikan Pesanan' : 'Konfirmasi Barang Diterima'}
-                          >
-                            <CheckCircle2 size={12} />
-                            <span>{currentPov === 'seller' ? 'Selesai' : 'Diterima'}</span>
-                          </button>
-                        )}
+                      <div className="text-xs font-black text-emerald-700 shrink-0 text-right">
+                        Rp {order.total_amount.toLocaleString('id-ID')}
                       </div>
-                    </td>
+                    </div>
+
+                    {order.shipping_address && (
+                      <p className="text-[10px] text-slate-400 truncate" title={order.shipping_address}>
+                        Tujuan: {order.shipping_address}
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="pt-2 border-t border-slate-200/60 flex items-center justify-end gap-2">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSelectedOrder(order)
+                        setIsModalOpen(true)
+                      }}
+                      className="inline-flex items-center gap-1 px-3 py-1.5 bg-white hover:bg-slate-100 text-slate-700 font-bold text-xs rounded-lg border border-slate-200 shadow-2xs transition-colors cursor-pointer"
+                      title="Lihat Faktur & Rincian Lengkap"
+                    >
+                      <Eye size={12} />
+                      <span>Nota</span>
+                    </button>
+
+                    {currentPov === 'seller' && order.status === 'PAID' && (
+                      <button
+                        type="button"
+                        disabled={isUpdatingStatus}
+                        onClick={() => handleStatusChange(order.order_code, 'SHIPPED')}
+                        className="inline-flex items-center gap-1 px-3 py-1.5 bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs rounded-lg shadow-2xs transition-colors cursor-pointer"
+                        title="Kirim Komoditas"
+                      >
+                        <Truck size={12} />
+                        <span>Kirim</span>
+                      </button>
+                    )}
+
+                    {order.status === 'SHIPPED' && (
+                      <button
+                        type="button"
+                        disabled={isUpdatingStatus}
+                        onClick={() => handleStatusChange(order.order_code, 'COMPLETED')}
+                        className="inline-flex items-center gap-1 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-lg shadow-2xs transition-colors cursor-pointer"
+                        title={currentPov === 'seller' ? 'Selesaikan Pesanan' : 'Konfirmasi Barang Diterima'}
+                      >
+                        <CheckCircle2 size={12} />
+                        <span>{currentPov === 'seller' ? 'Selesai' : 'Diterima'}</span>
+                      </button>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="hidden md:block overflow-x-auto">
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="border-b border-slate-100 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                    <th className="py-3 px-3">Kode & Waktu</th>
+                    <th className="py-3 px-3">{currentPov === 'seller' ? 'Pemesan' : 'Tujuan Pengiriman'}</th>
+                    <th className="py-3 px-3">Rincian Komoditas</th>
+                    <th className="py-3 px-3 text-right">Total Nilai</th>
+                    <th className="py-3 px-3 text-center">Status</th>
+                    <th className="py-3 px-3 text-center">Aksi</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody className="divide-y divide-slate-100 text-xs">
+                  {filteredOrders.map((order) => (
+                    <tr key={order.order_code} className="hover:bg-slate-50/70 transition-colors">
+                      <td className="py-3 px-3">
+                        <span className="font-mono font-bold text-slate-800 block">{order.order_code}</span>
+                        <span className="text-[10px] text-slate-400 flex items-center gap-1 mt-0.5">
+                          <Calendar size={11} />
+                          {new Date(order.created_at).toLocaleDateString('id-ID', {
+                            day: 'numeric',
+                            month: 'short',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                          })}
+                        </span>
+                      </td>
+
+                      <td className="py-3 px-3">
+                        <span className="font-semibold text-slate-800 block">
+                          {currentPov === 'seller'
+                            ? (order.customer_name || 'Pelanggan')
+                            : (user?.name || 'Pesanan Saya')}
+                        </span>
+                        <span className="text-[10px] text-slate-400 block truncate max-w-[140px]">
+                          {order.shipping_address}
+                        </span>
+                      </td>
+
+                      <td className="py-3 px-3">
+                        <div className="space-y-0.5 max-w-[200px]">
+                          {(order.items || []).map((it) => (
+                            <div key={it.id || it.product_id} className="text-[11px] text-slate-600 truncate">
+                              <span className="font-medium text-slate-800">{it.product_name}</span>{' '}
+                              <span className="text-slate-400">({it.quantity} kg)</span>
+                            </div>
+                          ))}
+                        </div>
+                      </td>
+
+                      <td className="py-3 px-3 text-right font-black text-emerald-700">
+                        Rp {order.total_amount.toLocaleString('id-ID')}
+                      </td>
+
+                      <td className="py-3 px-3 text-center">
+                        <OrderStatusBadge status={order.status} />
+                      </td>
+
+                      <td className="py-3 px-3 text-center">
+                        <div className="flex items-center justify-center gap-1.5">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setSelectedOrder(order)
+                              setIsModalOpen(true)
+                            }}
+                            className="inline-flex items-center gap-1 px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[11px] rounded-md transition-colors cursor-pointer"
+                            title="Lihat Faktur & Rincian Lengkap"
+                          >
+                            <Eye size={12} />
+                            <span>Nota</span>
+                          </button>
+
+                          {currentPov === 'seller' && order.status === 'PAID' && (
+                            <button
+                              type="button"
+                              disabled={isUpdatingStatus}
+                              onClick={() => handleStatusChange(order.order_code, 'SHIPPED')}
+                              className="inline-flex items-center gap-1 px-2 py-1 bg-purple-50 hover:bg-purple-100 text-purple-700 border border-purple-200 font-bold text-[11px] rounded-md transition-colors cursor-pointer"
+                              title="Kirim Komoditas"
+                            >
+                              <Truck size={12} />
+                              <span>Kirim</span>
+                            </button>
+                          )}
+
+                          {order.status === 'SHIPPED' && (
+                            <button
+                              type="button"
+                              disabled={isUpdatingStatus}
+                              onClick={() => handleStatusChange(order.order_code, 'COMPLETED')}
+                              className="inline-flex items-center gap-1 px-2 py-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 font-bold text-[11px] rounded-md transition-colors cursor-pointer"
+                              title={currentPov === 'seller' ? 'Selesaikan Pesanan' : 'Konfirmasi Barang Diterima'}
+                            >
+                              <CheckCircle2 size={12} />
+                              <span>{currentPov === 'seller' ? 'Selesai' : 'Diterima'}</span>
+                            </button>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </>
         )}
       </div>
 
