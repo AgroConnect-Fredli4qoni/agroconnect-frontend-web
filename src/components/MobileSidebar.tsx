@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react'
+import { createPortal } from 'react-dom'
 import { Link, useLocation } from 'react-router-dom'
 import {
   X,
@@ -133,15 +134,15 @@ export function MobileSidebar(props: MobileSidebarProps): React.JSX.Element | nu
     },
   ]
 
-  return (
-    <div className="fixed inset-0 z-50 lg:hidden flex">
+  const sidebarContent = (
+    <div className="fixed inset-0 h-screen h-[100dvh] z-50 lg:hidden flex">
       <div
         className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs transition-opacity animate-in fade-in duration-200"
         onClick={onClose}
         aria-hidden="true"
       />
 
-      <div className="relative w-full max-w-xs sm:max-w-sm bg-white h-full shadow-2xl flex flex-col justify-between overflow-y-auto z-10 animate-in slide-in-from-left duration-250">
+      <div className="relative w-full max-w-xs sm:max-w-sm bg-white h-full max-h-screen max-h-[100dvh] shadow-2xl flex flex-col justify-between overflow-y-auto z-10 animate-in slide-in-from-left duration-250">
         <div>
           <div className="p-4 sm:p-5 border-b border-slate-100 flex items-center justify-between bg-slate-50/70">
             <Link to="/" className="flex items-center gap-2.5">
@@ -322,4 +323,8 @@ export function MobileSidebar(props: MobileSidebarProps): React.JSX.Element | nu
       </div>
     </div>
   )
+
+  return typeof document !== 'undefined'
+    ? createPortal(sidebarContent, document.body)
+    : sidebarContent
 }
