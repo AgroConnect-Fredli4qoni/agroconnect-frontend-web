@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { AlertCircle } from 'lucide-react'
 import { useAuth } from '../auth/AuthContext'
 import { fetchUserProfile } from '../../services/api'
@@ -16,9 +16,22 @@ import { ProfileEditor } from './ProfileEditor'
  */
 export function DashboardPage(): React.JSX.Element {
   const navigate = useNavigate()
+  const [searchParams, setSearchParams] = useSearchParams()
   const { user, token, isAuthenticated, logout, updateUserSession } = useAuth()
 
-  const [activeMenu, setActiveMenu] = useState<'stats' | 'profile' | 'products' | 'transactions'>('stats')
+  const tabParam = searchParams.get('tab')
+  const initialMenu = (tabParam && ['stats', 'profile', 'products', 'transactions'].includes(tabParam))
+    ? (tabParam as 'stats' | 'profile' | 'products' | 'transactions')
+    : 'stats'
+
+  const [activeMenu, setActiveMenu] = useState<'stats' | 'profile' | 'products' | 'transactions'>(initialMenu)
+
+  useEffect(() => {
+    const tab = searchParams.get('tab')
+    if (tab && ['stats', 'profile', 'products', 'transactions'].includes(tab)) {
+      setActiveMenu(tab as 'stats' | 'profile' | 'products' | 'transactions')
+    }
+  }, [searchParams])
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -61,7 +74,11 @@ export function DashboardPage(): React.JSX.Element {
         <DashboardSidebar
           user={user}
           activeMenu={activeMenu}
-          onSelectMenu={(menu) => setActiveMenu(menu as 'stats' | 'profile' | 'products' | 'transactions')}
+          onSelectMenu={(menu) => {
+            const nextMenu = menu as 'stats' | 'profile' | 'products' | 'transactions'
+            setActiveMenu(nextMenu)
+            setSearchParams({ tab: nextMenu })
+          }}
           onLogout={logout}
         />
 

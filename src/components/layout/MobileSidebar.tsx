@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { createPortal } from 'react-dom'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useSearchParams } from 'react-router-dom'
 import {
   X,
   Home,
@@ -11,11 +11,9 @@ import {
   ChevronRight,
   ShieldCheck,
   Sprout,
-  MapPin,
-  CreditCard,
-  Bell,
-  HelpCircle,
-  Settings,
+  BarChart3,
+  Receipt,
+  User,
 } from 'lucide-react'
 import { useAuth } from '../../features/auth/AuthContext'
 import { useCart } from '../../features/catalog/CartContext'
@@ -37,6 +35,7 @@ export interface MobileSidebarProps {
 export function MobileSidebar(props: MobileSidebarProps): React.JSX.Element | null {
   const { isOpen, onClose } = props
   const location = useLocation()
+  const [searchParams] = useSearchParams()
   const { user, isAuthenticated, logout } = useAuth()
   const { totalItems } = useCart()
 
@@ -101,38 +100,39 @@ export function MobileSidebar(props: MobileSidebarProps): React.JSX.Element | nu
     },
   ]
 
-  const secondaryNavLinks = [
+  const currentTab = searchParams.get('tab') || 'stats'
+  const isDashboardActive = location.pathname === '/dashboard'
+
+  const dashboardNavLinks = [
     {
-      to: isAuthenticated ? '/dashboard' : '/login',
-      label: 'Alamat Saya',
-      icon: MapPin,
-      active: false,
+      to: isAuthenticated ? '/dashboard?tab=stats' : '/login',
+      label: 'Statistik Penjualan',
+      icon: BarChart3,
+      active: isDashboardActive && currentTab === 'stats',
+      show: true,
     },
     {
-      to: isAuthenticated ? '/dashboard' : '/login',
-      label: 'Metode Pembayaran',
-      icon: CreditCard,
-      active: false,
+      to: isAuthenticated ? '/dashboard?tab=transactions' : '/login',
+      label: 'Kelola Transaksi',
+      icon: Receipt,
+      active: isDashboardActive && currentTab === 'transactions',
+      show: true,
     },
     {
-      to: isAuthenticated ? '/dashboard' : '/login',
-      label: 'Notifikasi',
-      icon: Bell,
-      active: false,
+      to: isAuthenticated ? '/dashboard?tab=profile' : '/login',
+      label: 'Profil Pengguna',
+      icon: User,
+      active: isDashboardActive && currentTab === 'profile',
+      show: true,
     },
     {
-      to: '/catalog',
-      label: 'Bantuan & Pusat Informasi',
-      icon: HelpCircle,
-      active: false,
+      to: isAuthenticated ? '/dashboard?tab=products' : '/login',
+      label: 'Kelola Komoditas',
+      icon: Sprout,
+      active: isDashboardActive && currentTab === 'products',
+      show: isRoleFarmer || isRoleAdmin,
     },
-    {
-      to: isAuthenticated ? '/dashboard' : '/login',
-      label: 'Pengaturan',
-      icon: Settings,
-      active: location.pathname === '/dashboard',
-    },
-  ]
+  ].filter((item) => item.show)
 
   const sidebarContent = (
     <div className="fixed inset-0 h-screen h-[100dvh] z-50 lg:hidden flex">
@@ -260,15 +260,16 @@ export function MobileSidebar(props: MobileSidebarProps): React.JSX.Element | nu
 
             <div className="pt-2 mt-2 border-t border-slate-100 space-y-1">
               <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 px-3 py-1 block">
-                Akun & Preferensi
+                Menu Dashboard
               </span>
 
-              {secondaryNavLinks.map((item) => {
+              {dashboardNavLinks.map((item) => {
                 const IconComp = item.icon
                 return (
                   <Link
                     key={item.label}
                     to={item.to}
+                    onClick={onClose}
                     className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                       item.active
                         ? 'bg-emerald-600 text-white shadow-xs'
