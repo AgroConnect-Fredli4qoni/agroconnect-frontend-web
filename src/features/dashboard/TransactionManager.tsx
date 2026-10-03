@@ -454,6 +454,7 @@ export function TransactionManager(): React.JSX.Element {
         onStatusUpdate={handleStatusChange}
         isUpdating={isUpdatingStatus}
         userRole={currentPov === 'seller' ? 'farmer' : 'buyer'}
+        sellerName={currentPov === 'seller' ? (user?.name || 'Mitra Petani Terdaftar') : 'Mitra Petani Terverifikasi'}
       />
     </div>
   )

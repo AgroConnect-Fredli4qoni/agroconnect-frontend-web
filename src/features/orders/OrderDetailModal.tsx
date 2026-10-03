@@ -15,6 +15,7 @@ import {
 import { Order, OrderStatus } from '../../types/order'
 import { getAllowedNextStatuses } from '../../services/orderPipeline'
 import { OrderStatusBadge } from './OrderStatusBadge'
+import { printOrderInvoice } from '../../utils/invoicePrinter'
 
 /**
  * OrderDetailModalProps defines configuration for viewing and updating order invoice details.
@@ -26,6 +27,7 @@ export interface OrderDetailModalProps {
   onStatusUpdate: (orderCode: string, newStatus: OrderStatus) => Promise<void>
   isUpdating?: boolean
   userRole?: string
+  sellerName?: string
 }
 
 function formatOrderDate(dateString?: string): string {
@@ -52,7 +54,7 @@ function formatOrderDate(dateString?: string): string {
  * @returns JSX Element rendering the invoice popup.
  */
 export function OrderDetailModal(props: OrderDetailModalProps): React.JSX.Element | null {
-  const { order, isOpen, onClose, onStatusUpdate, isUpdating = false, userRole } = props
+  const { order, isOpen, onClose, onStatusUpdate, isUpdating = false, userRole, sellerName } = props
 
   if (!isOpen || !order) {
     return null
@@ -268,7 +270,7 @@ export function OrderDetailModal(props: OrderDetailModalProps): React.JSX.Elemen
         <div className="px-6 py-3.5 bg-slate-50 border-t border-slate-100 flex items-center justify-between">
           <button
             type="button"
-            onClick={() => window.print()}
+            onClick={() => printOrderInvoice(order, sellerName)}
             className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 rounded-lg font-semibold text-xs transition-colors cursor-pointer"
           >
             <Printer size={13} />
