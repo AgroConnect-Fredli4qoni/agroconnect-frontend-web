@@ -7,7 +7,13 @@ import { DashboardSidebar } from './DashboardSidebar'
 import { FarmerProductsManager } from '../farmer/FarmerProductsManager'
 import { SalesStatsDashboard } from './SalesStatsDashboard'
 import { TransactionManager } from './TransactionManager'
+import { FarmerWalletTab } from './FarmerWalletTab'
 import { ProfileEditor } from './ProfileEditor'
+
+/**
+ * DashboardTab defines the available navigation views in user dashboard.
+ */
+export type DashboardTab = 'stats' | 'profile' | 'products' | 'transactions' | 'wallet'
 
 /**
  * DashboardPage provides the two-column authenticated dashboard layout hosting domain managers.
@@ -20,16 +26,16 @@ export function DashboardPage(): React.JSX.Element {
   const { user, token, isAuthenticated, logout, updateUserSession } = useAuth()
 
   const tabParam = searchParams.get('tab')
-  const initialMenu = (tabParam && ['stats', 'profile', 'products', 'transactions'].includes(tabParam))
-    ? (tabParam as 'stats' | 'profile' | 'products' | 'transactions')
+  const initialMenu: DashboardTab = (tabParam && ['stats', 'profile', 'products', 'transactions', 'wallet'].includes(tabParam))
+    ? (tabParam as DashboardTab)
     : 'stats'
 
-  const [activeMenu, setActiveMenu] = useState<'stats' | 'profile' | 'products' | 'transactions'>(initialMenu)
+  const [activeMenu, setActiveMenu] = useState<DashboardTab>(initialMenu)
 
   useEffect(() => {
     const tab = searchParams.get('tab')
-    if (tab && ['stats', 'profile', 'products', 'transactions'].includes(tab)) {
-      setActiveMenu(tab as 'stats' | 'profile' | 'products' | 'transactions')
+    if (tab && ['stats', 'profile', 'products', 'transactions', 'wallet'].includes(tab)) {
+      setActiveMenu(tab as DashboardTab)
     }
   }, [searchParams])
 
@@ -75,7 +81,7 @@ export function DashboardPage(): React.JSX.Element {
           user={user}
           activeMenu={activeMenu}
           onSelectMenu={(menu) => {
-            const nextMenu = menu as 'stats' | 'profile' | 'products' | 'transactions'
+            const nextMenu = menu as DashboardTab
             setActiveMenu(nextMenu)
             setSearchParams({ tab: nextMenu })
           }}
@@ -85,6 +91,7 @@ export function DashboardPage(): React.JSX.Element {
         <section className="flex-1 min-w-0 w-full space-y-6">
           {activeMenu === 'stats' && <SalesStatsDashboard />}
           {activeMenu === 'transactions' && <TransactionManager />}
+          {activeMenu === 'wallet' && <FarmerWalletTab />}
           {activeMenu === 'products' && <FarmerProductsManager />}
           {activeMenu === 'profile' && (
             <ProfileEditor

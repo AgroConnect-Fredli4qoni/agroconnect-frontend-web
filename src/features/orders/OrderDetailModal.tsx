@@ -167,6 +167,26 @@ export function OrderDetailModal(props: OrderDetailModalProps): React.JSX.Elemen
             </div>
 
             <div className="flex flex-wrap gap-2 pt-1">
+              {order.status === 'PENDING' && order.snap_token && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (typeof window !== 'undefined') {
+                      const snapClient = (window as unknown as { snap?: { pay: (token: string, options?: unknown) => void } }).snap
+                      if (snapClient && order.snap_token) {
+                        snapClient.pay(order.snap_token, {
+                          onSuccess: () => onStatusUpdate(order.order_code, 'PAID'),
+                        })
+                      }
+                    }
+                  }}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-bold text-xs shadow-2xs transition-all cursor-pointer"
+                >
+                  <CreditCard size={13} />
+                  <span>Bayar via Midtrans (QRIS/VA)</span>
+                </button>
+              )}
+
               {allowedTransitions.includes('PAID') && (
                 <button
                   type="button"

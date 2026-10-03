@@ -75,6 +75,16 @@ export function CartPage(): React.JSX.Element {
       const orderResult = await createOrder(payload, token)
       setCompletedOrder(orderResult)
       clearCart()
+
+      if (orderResult.snap_token && typeof window !== 'undefined') {
+        const snapClient = (window as unknown as { snap?: { pay: (token: string, options?: unknown) => void } }).snap
+        if (snapClient) {
+          snapClient.pay(orderResult.snap_token, {
+            onSuccess: () => navigate('/orders'),
+            onPending: () => navigate('/orders'),
+          })
+        }
+      }
     } catch (err: unknown) {
       if (err instanceof Error) {
         setErrorMsg(err.message)
@@ -122,9 +132,28 @@ export function CartPage(): React.JSX.Element {
           </div>
 
           <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
+            {completedOrder.snap_token && (
+              <button
+                type="button"
+                className="py-3 px-6 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white font-bold rounded-lg text-xs shadow-md transition-all cursor-pointer"
+                onClick={() => {
+                  if (typeof window !== 'undefined') {
+                    const snapClient = (window as unknown as { snap?: { pay: (token: string, options?: unknown) => void } }).snap
+                    if (snapClient && completedOrder.snap_token) {
+                      snapClient.pay(completedOrder.snap_token, {
+                        onSuccess: () => navigate('/orders'),
+                        onPending: () => navigate('/orders'),
+                      })
+                    }
+                  }
+                }}
+              >
+                Bayar Sekarang (Midtrans Snap)
+              </button>
+            )}
             <button
               type="button"
-              className="py-3 px-6 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg text-xs shadow-md transition-all cursor-pointer"
+              className="py-3 px-6 bg-slate-800 hover:bg-slate-900 text-white font-bold rounded-lg text-xs shadow-md transition-all cursor-pointer"
               onClick={() => navigate('/orders')}
             >
               Lihat Riwayat Pesanan

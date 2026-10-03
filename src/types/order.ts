@@ -42,6 +42,11 @@ export interface Order {
   total_amount: number
   status: OrderStatus
   shipping_address: string
+  snap_token?: string
+  snap_redirect_url?: string
+  payment_type?: string
+  payment_status?: string
+  paid_at?: string
   created_at: string
   items?: OrderItem[]
 }

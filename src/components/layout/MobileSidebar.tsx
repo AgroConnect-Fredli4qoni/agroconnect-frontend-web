@@ -14,6 +14,7 @@ import {
   BarChart3,
   Receipt,
   User,
+  Wallet,
 } from 'lucide-react'
 import { useAuth } from '../../features/auth/AuthContext'
 import { useCart } from '../../features/catalog/CartContext'
@@ -109,6 +110,13 @@ export function MobileSidebar(props: MobileSidebarProps): React.JSX.Element | nu
       label: 'Statistik Penjualan',
       icon: BarChart3,
       active: isDashboardActive && currentTab === 'stats',
+      show: true,
+    },
+    {
+      to: isAuthenticated ? '/dashboard?tab=wallet' : '/login',
+      label: 'Dompet AgroConnect',
+      icon: Wallet,
+      active: isDashboardActive && currentTab === 'wallet',
       show: true,
     },
     {
