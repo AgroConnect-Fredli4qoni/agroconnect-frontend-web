@@ -30,10 +30,10 @@ export function FarmerAboutTab(props: FarmerAboutTabProps): React.JSX.Element {
       <div className="bg-white rounded-2xl border border-slate-200/80 p-6 sm:p-8 shadow-xs space-y-4">
         <div className="flex items-center gap-2 text-slate-900">
           <Sprout size={20} className="text-emerald-700" />
-          <h3 className="font-black text-lg">Tentang Kelompok Tani & Lahan</h3>
+          <h3 className="font-black text-lg">Tentang Petani & Lahan</h3>
         </div>
         <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-          {farmer.description} Kelompok tani ini membina puluhan petani lokal di kawasan {farmer.origin_region} dengan menerapkan tata kelola budidaya terpadu demi menjaga kelestarian tanah dan menjamin kontinuitas pasokan pangan bergizi.
+          {farmer.description} Petani ini mengelola lahan di kawasan {farmer.origin_region} dengan menerapkan tata kelola budidaya terpadu demi menjaga kelestarian tanah dan menjamin kontinuitas pasokan pangan bergizi.
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t border-slate-100 text-xs">
           <div className="flex items-start gap-3 p-3.5 rounded-xl bg-slate-50 border border-slate-100">

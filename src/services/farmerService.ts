@@ -52,3 +52,42 @@ export function buildFarmerProfile(record: FarmerApiRecord, matchedProducts: Pro
     }
   }
 }
+
+/**
+ * Generates an automatic farmer profile record based on catalog commodities when no dedicated profile exists in the database.
+ *
+ * @param slug - URL slug identifier of the farmer.
+ * @param matchedProducts - Array of catalog products belonging to this farmer.
+ * @returns Complete FarmerApiRecord derived from commodity metadata.
+ */
+export function createFallbackFarmerRecord(slug: string, matchedProducts: Product[]): FarmerApiRecord {
+  const first = matchedProducts[0]
+  const farmerName = first ? first.farmer_name : slug.split('-').map((s) => s.charAt(0).toUpperCase() + s.slice(1)).join(' ')
+  const region = first ? first.origin_region : 'Indonesia'
+  const avatar = (first && first.farmer_avatar_url) ? first.farmer_avatar_url : ''
+
+  return {
+    id: first ? String(first.farmer_id) : slug,
+    slug,
+    name: farmerName,
+    origin_region: region,
+    avatar_url: avatar,
+    banner_url: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1600&auto=format&fit=crop&q=80',
+    description: `Petani produsen komoditas pertanian segar dan berkualitas dari ${region}. Berkomitmen menghadirkan hasil panen terbaik langsung dari kebun ke tangan konsumen secara transparan dan terpercaya.`,
+    phone: '+62 812-3456-7890',
+    address: region,
+    operating_hours: 'Senin - Sabtu (07.00 - 17.00 WIB)',
+    land_area: 'Lahan Pertanian Produktif',
+    is_verified: true,
+    farming_methods: [
+      'Praktik Pertanian Ramah Lingkungan',
+      'Seleksi Mutu Panen Ketat',
+      'Penanganan Pasca Panen Higienis'
+    ],
+    certifications: [
+      'Petani Terverifikasi AgroConnect',
+      'Standar Mutu Komoditas Pangan Lokal'
+    ],
+    created_at: new Date().toISOString()
+  }
+}

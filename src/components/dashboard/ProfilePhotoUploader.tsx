@@ -170,7 +170,7 @@ export function ProfilePhotoUploader(props: ProfilePhotoUploaderProps): React.JS
           <div className="space-y-0.5">
             <h3 className="text-sm font-bold text-slate-900">Foto Profil Akun</h3>
             <p className="text-xs text-slate-500">
-              Unggah foto portrait Anda agar mudah dikenali oleh mitra tani dan pembeli pada transaksi komoditas.
+              Unggah foto portrait Anda agar mudah dikenali oleh petani dan pembeli pada transaksi komoditas.
             </p>
           </div>
 

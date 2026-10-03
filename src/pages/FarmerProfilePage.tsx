@@ -5,7 +5,7 @@ import { Product } from '../types/product'
 import { FarmerApiRecord } from '../types/farmer'
 import { fetchProducts, fetchFarmerBySlug, deleteProduct } from '../services/api'
 import { useAuth } from '../context/AuthContext'
-import { slugifyFarmerName, buildFarmerProfile } from '../services/farmerService'
+import { slugifyFarmerName, buildFarmerProfile, createFallbackFarmerRecord } from '../services/farmerService'
 import { FarmerProfileHeader } from '../components/FarmerProfileHeader'
 import { FarmerAboutTab } from '../components/FarmerAboutTab'
 import { ProductCard } from '../components/ProductCard'
@@ -34,20 +34,38 @@ export function FarmerProfilePage(): React.JSX.Element {
   const [sortBy, setSortBy] = useState<SortType>('latest')
   const [selectedProductForDetail, setSelectedProductForDetail] = useState<Product | null>(null)
 
-  const targetSlug = slug || 'kelompok-tani-makmur'
+  const targetSlug = slug || 'budi-santoso'
 
   const loadData = useCallback(async (): Promise<void> => {
     setIsLoading(true)
     setErrorMessage(null)
     try {
-      const [productsData, farmerData] = await Promise.all([
-        fetchProducts(),
-        fetchFarmerBySlug(targetSlug)
-      ])
+      const productsData = await fetchProducts()
       setAllProducts(productsData)
-      setFarmerRecord(farmerData)
+
+      const matchingProducts = productsData.filter((p) => {
+        const pSlug = slugifyFarmerName(p.farmer_name)
+        return pSlug === targetSlug || p.farmer_name.toLowerCase().replace(/\s+/g, '-') === targetSlug
+      })
+
+      let farmerData: FarmerApiRecord | null = null
+      try {
+        farmerData = await fetchFarmerBySlug(targetSlug)
+      } catch {
+        farmerData = null
+      }
+
+      if (!farmerData && matchingProducts.length > 0) {
+        farmerData = createFallbackFarmerRecord(targetSlug, matchingProducts)
+      }
+
+      if (!farmerData) {
+        setErrorMessage(`Profil petani "${targetSlug}" tidak ditemukan di database katalog.`)
+      } else {
+        setFarmerRecord(farmerData)
+      }
     } catch {
-      setErrorMessage(`Profil kelompok tani "${targetSlug}" tidak ditemukan di database katalog.`)
+      setErrorMessage(`Gagal memuat katalog atau profil petani "${targetSlug}".`)
     } finally {
       setIsLoading(false)
     }
@@ -110,7 +128,7 @@ export function FarmerProfilePage(): React.JSX.Element {
     return (
       <div className="max-w-[1680px] mx-auto px-4 sm:px-8 lg:px-12 py-16 flex flex-col items-center justify-center space-y-3">
         <div className="w-9 h-9 border-3 border-emerald-600 border-t-transparent rounded-full animate-spin" />
-        <p className="text-xs text-slate-500 font-medium">Memuat profil dan etalase komoditas mitra petani dari database...</p>
+        <p className="text-xs text-slate-500 font-medium">Memuat profil dan etalase komoditas petani dari database...</p>
       </div>
     )
   }
@@ -123,7 +141,7 @@ export function FarmerProfilePage(): React.JSX.Element {
             <AlertCircle size={24} />
           </div>
           <div className="space-y-1">
-            <h3 className="text-base font-black text-slate-900">Profil Mitra Tani Tidak Ditemukan</h3>
+            <h3 className="text-base font-black text-slate-900">Profil Petani Tidak Ditemukan</h3>
             <p className="text-xs text-slate-500 leading-relaxed">
               {errorMessage || 'Data profil petani belum terdaftar dalam basis data katalog.'}
             </p>

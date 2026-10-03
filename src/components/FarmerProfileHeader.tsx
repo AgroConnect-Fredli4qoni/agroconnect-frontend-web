@@ -58,7 +58,7 @@ export function FarmerProfileHeader(props: FarmerProfileHeaderProps): React.JSX.
           <span>Kembali ke Katalog Hasil Panen</span>
         </Link>
         <span className="text-xs text-slate-400 font-medium">
-          Profil Resmi Mitra Tani AgroConnect
+          Profil Resmi Petani AgroConnect
         </span>
       </div>
 
