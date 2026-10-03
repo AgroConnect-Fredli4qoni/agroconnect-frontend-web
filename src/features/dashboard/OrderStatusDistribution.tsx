@@ -25,17 +25,17 @@ export function OrderStatusDistribution(props: OrderStatusDistributionProps): Re
   return (
     <div className="bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-6 shadow-xs flex flex-col justify-between">
       <div>
-        <div className="flex items-center justify-between mb-4 sm:mb-5">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center">
+        <div className="flex items-center justify-between gap-2 mb-4 sm:mb-5">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <div className="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
               <PieChart size={18} />
             </div>
-            <div>
-              <h3 className="text-sm font-bold text-slate-900">Distribusi Status Transaksi</h3>
-              <p className="text-[11px] text-slate-500">Persentase status pemrosesan pesanan sistem</p>
+            <div className="min-w-0">
+              <h3 className="text-xs sm:text-sm font-bold text-slate-900 truncate">Distribusi Status Transaksi</h3>
+              <p className="text-[10px] sm:text-[11px] text-slate-500 truncate">Persentase status pemrosesan pesanan sistem</p>
             </div>
           </div>
-          <span className="text-xs font-bold text-slate-700 bg-slate-100 px-2.5 py-1 rounded-full">
+          <span className="text-[11px] sm:text-xs font-bold text-slate-700 bg-slate-100 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full shrink-0">
             {totalOrders} Total
           </span>
         </div>

@@ -22,18 +22,18 @@ export function TopCommoditiesTable(props: TopCommoditiesTableProps): React.JSX.
   return (
     <div className="bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-6 shadow-xs flex flex-col justify-between">
       <div>
-        <div className="flex items-center justify-between mb-4 sm:mb-5">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center">
+        <div className="flex items-center justify-between gap-2 mb-4 sm:mb-5">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <div className="w-8 h-8 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">
               <Trophy size={18} />
             </div>
-            <div>
-              <h3 className="text-sm font-bold text-slate-900">Komoditas Terlaris</h3>
-              <p className="text-[11px] text-slate-500">Peringkat produk hasil tani dengan volume penjualan tertinggi</p>
+            <div className="min-w-0">
+              <h3 className="text-xs sm:text-sm font-bold text-slate-900 truncate">Komoditas Terlaris</h3>
+              <p className="text-[10px] sm:text-[11px] text-slate-500 truncate">Peringkat produk volume penjualan tertinggi</p>
             </div>
           </div>
-          <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full flex items-center gap-1">
-            <Sprout size={13} />
+          <span className="text-[10px] sm:text-xs font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full flex items-center gap-1 shrink-0">
+            <Sprout size={12} />
             Katalog Unggulan
           </span>
         </div>
