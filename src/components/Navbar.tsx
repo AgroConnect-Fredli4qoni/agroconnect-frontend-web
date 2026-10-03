@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom'
-import { ShoppingCart, ClipboardList, User, LogOut, Search, X } from 'lucide-react'
+import { ShoppingCart, ClipboardList, User, LogOut, Search, X, Menu } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { useCart } from '../context/CartContext'
+import { MobileSidebar } from './MobileSidebar'
 
 /**
  * NavbarProps defines callback for farmer product addition modal.
@@ -25,6 +26,7 @@ export function Navbar(_props?: NavbarProps): React.JSX.Element {
   const { totalItems } = useCart()
 
   const [searchQuery, setSearchQuery] = useState('')
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false)
 
   useEffect(() => {
     if (location.pathname === '/catalog') {
@@ -52,7 +54,16 @@ export function Navbar(_props?: NavbarProps): React.JSX.Element {
   return (
     <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-xs">
       <div className="max-w-[1680px] mx-auto px-4 sm:px-8 lg:px-12 py-3 flex items-center justify-between gap-2">
-        <div className="flex items-center gap-4 lg:gap-6 shrink-0">
+        <div className="flex items-center gap-2 sm:gap-4 lg:gap-6 shrink-0">
+          <button
+            type="button"
+            onClick={() => setIsMobileSidebarOpen(true)}
+            className="p-1.5 rounded-xl text-slate-600 hover:text-emerald-900 hover:bg-slate-100 lg:hidden transition-colors cursor-pointer"
+            title="Buka Menu Navigasi"
+          >
+            <Menu size={22} />
+          </button>
+
           <Link to="/" className="flex items-center gap-2.5 group">
             <img
               src="/images/logo/logo.png"
@@ -184,8 +195,13 @@ export function Navbar(_props?: NavbarProps): React.JSX.Element {
             </Link>
           </div>
         )}
+        </div>
       </div>
-    </div>
-  </header>
+
+      <MobileSidebar
+        isOpen={isMobileSidebarOpen}
+        onClose={() => setIsMobileSidebarOpen(false)}
+      />
+    </header>
   )
 }
