@@ -28,6 +28,23 @@ export interface OrderDetailModalProps {
   userRole?: string
 }
 
+function formatOrderDate(dateString?: string): string {
+  if (!dateString) return '-'
+  try {
+    const d = new Date(dateString)
+    if (isNaN(d.getTime())) return dateString
+    return d.toLocaleString('id-ID', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    })
+  } catch {
+    return dateString
+  }
+}
+
 /**
  * OrderDetailModal renders an interactive modal displaying transaction breakdown, buyer info, and status management.
  *
@@ -41,7 +58,8 @@ export function OrderDetailModal(props: OrderDetailModalProps): React.JSX.Elemen
     return null
   }
 
-  const allowedTransitions = getAllowedNextStatuses(order.status, userRole)
+  const currentStatus: OrderStatus = order.status || 'PENDING'
+  const allowedTransitions = getAllowedNextStatuses(currentStatus, userRole)
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-200">
@@ -51,18 +69,13 @@ export function OrderDetailModal(props: OrderDetailModalProps): React.JSX.Elemen
             <div>
               <div className="flex items-center gap-2">
                 <span className="font-mono text-sm font-black text-slate-800 bg-white px-2.5 py-1 rounded-md border border-slate-200 shadow-2xs">
-                  {order.order_code}
+                  {order.order_code || `ORD-${order.id}`}
                 </span>
-                <OrderStatusBadge status={order.status} size="md" />
+                <OrderStatusBadge status={currentStatus} size="md" />
               </div>
               <p className="text-[11px] text-slate-400 mt-1 flex items-center gap-1">
                 <Calendar size={12} />
-                <span>
-                  {new Date(order.created_at).toLocaleDateString('id-ID', {
-                    dateStyle: 'full',
-                    timeStyle: 'short',
-                  })}
-                </span>
+                <span>{formatOrderDate(order.created_at)}</span>
               </p>
             </div>
           </div>
@@ -98,7 +111,7 @@ export function OrderDetailModal(props: OrderDetailModalProps): React.JSX.Elemen
                 <MapPin size={14} className="text-emerald-600" />
                 Alamat Tujuan Pengiriman
               </span>
-              <p className="text-slate-700 leading-relaxed">{order.shipping_address}</p>
+              <p className="text-slate-700 leading-relaxed">{order.shipping_address || 'Alamat tujuan tidak dicantumkan'}</p>
             </div>
           </div>
 
@@ -120,13 +133,13 @@ export function OrderDetailModal(props: OrderDetailModalProps): React.JSX.Elemen
                       <tr key={item.id || item.product_id} className="hover:bg-slate-50/50">
                         <td className="py-3 px-4 font-semibold text-slate-800">{item.product_name}</td>
                         <td className="py-3 px-3 text-right text-slate-500">
-                          Rp {item.price.toLocaleString('id-ID')}
+                          Rp {Number(item.price || 0).toLocaleString('id-ID')}
                         </td>
                         <td className="py-3 px-3 text-center font-bold text-slate-700">
                           {item.quantity} kg
                         </td>
                         <td className="py-3 px-4 text-right font-bold text-emerald-700">
-                          Rp {item.subtotal.toLocaleString('id-ID')}
+                          Rp {Number(item.subtotal || ((item.price || 0) * (item.quantity || 1))).toLocaleString('id-ID')}
                         </td>
                       </tr>
                     ))
@@ -144,7 +157,7 @@ export function OrderDetailModal(props: OrderDetailModalProps): React.JSX.Elemen
                       Total Pembayaran:
                     </td>
                     <td className="py-3 px-4 text-right font-black text-emerald-700 text-sm">
-                      Rp {order.total_amount.toLocaleString('id-ID')}
+                      Rp {Number(order.total_amount || 0).toLocaleString('id-ID')}
                     </td>
                   </tr>
                 </tfoot>
