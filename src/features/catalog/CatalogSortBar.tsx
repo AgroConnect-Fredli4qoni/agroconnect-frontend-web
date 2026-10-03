@@ -48,14 +48,14 @@ export function CatalogSortBar(props: CatalogSortBarProps): React.JSX.Element {
   } = props
 
   return (
-    <div className="bg-white rounded-xl border border-slate-200/90 p-3.5 sm:p-4 shadow-xs space-y-3 sm:space-y-4">
+    <div className="bg-white rounded-xl border border-slate-200/90 p-3 sm:p-4 shadow-xs space-y-2.5 sm:space-y-4">
       <div className="flex flex-col sm:flex-row gap-2.5 sm:gap-3 items-stretch sm:items-center justify-between">
         <div className="flex items-center gap-2 w-full flex-1">
           <div className="relative flex-1 min-w-0">
             <Search size={17} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
             <input
               type="text"
-              placeholder="Cari komoditas tani (contoh: Beras, Cabai)..."
+              placeholder="Cari komoditas atau petani..."
               value={search}
               onChange={(e) => onSearchChange(e.target.value)}
               className="w-full pl-10 pr-10 py-2 sm:py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white text-slate-900 transition-all placeholder:text-slate-400 font-medium"
@@ -103,7 +103,7 @@ export function CatalogSortBar(props: CatalogSortBarProps): React.JSX.Element {
                 key={btn.id}
                 type="button"
                 onClick={() => onSortByChange(btn.id)}
-                className={`inline-flex items-center gap-1.5 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-lg text-xs font-bold transition-all cursor-pointer shrink-0 ${
+                className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 sm:px-3.5 sm:py-2 rounded-lg text-[11px] sm:text-xs font-bold transition-all cursor-pointer shrink-0 ${
                   isActive
                     ? 'bg-emerald-600 text-white shadow-2xs'
                     : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
@@ -117,13 +117,13 @@ export function CatalogSortBar(props: CatalogSortBarProps): React.JSX.Element {
         </div>
       </div>
 
-      <div className="flex items-center justify-between text-xs text-slate-500 font-medium px-1 pt-2 border-t border-slate-100">
-        <span>
+      <div className="flex items-center justify-between text-[11px] sm:text-xs text-slate-500 font-medium px-0.5 pt-2 border-t border-slate-100">
+        <span className="truncate">
           {totalCount > 0
-            ? `Menampilkan ${startIndex + 1} - ${Math.min(endIndex, totalCount)} dari ${totalCount} komoditas pangan`
-            : 'Tidak ada komoditas yang ditemukan'}
+            ? `Menampilkan ${startIndex + 1} - ${Math.min(endIndex, totalCount)} dari ${totalCount} komoditas`
+            : 'Tidak ada komoditas ditemukan'}
         </span>
-        <span className="font-semibold text-emerald-800">
+        <span className="hidden sm:inline font-semibold text-emerald-800 shrink-0">
           Maks. 9 produk per halaman
         </span>
       </div>

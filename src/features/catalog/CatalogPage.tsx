@@ -182,14 +182,14 @@ export function CatalogPage(props: CatalogPageProps): React.JSX.Element {
   const paginatedProducts = filteredAndSortedProducts.slice(startIndex, endIndex)
 
   return (
-    <div className="max-w-[1680px] mx-auto px-3.5 sm:px-8 lg:px-12 py-5 sm:py-8 pb-24 lg:pb-8 space-y-5 sm:space-y-6">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-200">
+    <div className="max-w-[1680px] mx-auto px-3.5 sm:px-8 lg:px-12 py-4 sm:py-8 pb-24 lg:pb-8 space-y-3.5 sm:space-y-6">
+      <div className="flex items-center justify-between gap-3 pb-3 sm:pb-4 border-b border-slate-200">
         <div>
-          <div className="flex items-center gap-2.5">
-            <Store size={24} className="text-emerald-700" />
-            <h1 className="text-2xl font-black text-slate-900 tracking-tight">Katalog Hasil Panen Petani</h1>
+          <div className="flex items-center gap-2">
+            <Store size={20} className="text-emerald-700 sm:w-6 sm:h-6 shrink-0" />
+            <h1 className="text-lg sm:text-2xl font-black text-slate-900 tracking-tight">Katalog Hasil Panen</h1>
           </div>
-          <p className="text-xs text-slate-500 mt-1">
+          <p className="hidden sm:block text-xs text-slate-500 mt-1">
             Jelajahi dan pesan komoditas pangan segar berkualitas tinggi langsung dari sentra pertanian lokal.
           </p>
         </div>
@@ -197,11 +197,12 @@ export function CatalogPage(props: CatalogPageProps): React.JSX.Element {
         {isAuthenticated && (
           <button
             type="button"
-            className="self-start md:self-auto inline-flex items-center gap-2 px-4 py-2.5 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 rounded-lg shadow-xs transition-all cursor-pointer"
+            className="inline-flex items-center gap-1.5 px-3 py-2 sm:px-4 sm:py-2.5 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 rounded-lg shadow-xs transition-all cursor-pointer shrink-0"
             onClick={() => setIsAddProductOpen(true)}
           >
-            <PlusCircle size={18} />
-            <span>Tambah Komoditas Baru</span>
+            <PlusCircle size={16} />
+            <span className="hidden sm:inline">Tambah Komoditas Baru</span>
+            <span className="sm:hidden">Tambah</span>
           </button>
         )}
       </div>

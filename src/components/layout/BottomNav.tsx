@@ -49,7 +49,7 @@ export function BottomNav(): React.JSX.Element {
   return (
     <nav
       aria-label="Mobile Navigation"
-      className="fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200/90 py-1.5 px-4 flex items-center justify-around lg:hidden shadow-lg"
+      className="fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-slate-200 py-1.5 px-4 flex items-center justify-around lg:hidden shadow-lg"
     >
       {navItems.map((item) => {
         const IconComponent = item.icon
