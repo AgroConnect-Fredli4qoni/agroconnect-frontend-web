@@ -7,7 +7,8 @@ import { ProductCard } from '../components/ProductCard'
 import { ProductDetailModal } from '../components/ProductDetailModal'
 import { Product } from '../types/product'
 import { WeatherResponse } from '../types/weather'
-import { fetchProducts, fetchWeather, deleteProduct } from '../services/api'
+import { fetchProducts, deleteProduct } from '../services/api'
+import { fetchCachedWeather } from '../services/weatherService'
 import { useAuth } from '../context/AuthContext'
 
 /**
@@ -29,7 +30,7 @@ export function HomePage(): React.JSX.Element {
   const loadWeather = useCallback(async (region: string): Promise<void> => {
     setIsWeatherLoading(true)
     try {
-      const data = await fetchWeather(region)
+      const data = await fetchCachedWeather(region)
       setWeather(data)
     } catch {
       setWeather(null)
