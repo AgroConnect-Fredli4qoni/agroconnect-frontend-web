@@ -1,5 +1,5 @@
 import React from 'react'
-import { Search, X, Clock, TrendingUp, ArrowUpDown } from 'lucide-react'
+import { Search, X, Clock, TrendingUp, ArrowUpDown, Filter } from 'lucide-react'
 
 /**
  * SortOption defines available sorting mechanisms for commodity marketplace based on real database attributes.
@@ -7,7 +7,7 @@ import { Search, X, Clock, TrendingUp, ArrowUpDown } from 'lucide-react'
 export type SortOption = 'latest' | 'price_asc' | 'price_desc' | 'stock'
 
 /**
- * CatalogSortBarProps defines search input, sort options, and count indicators.
+ * CatalogSortBarProps defines search input, sort options, count indicators, and mobile filter drawer trigger.
  */
 export interface CatalogSortBarProps {
   search: string
@@ -17,6 +17,8 @@ export interface CatalogSortBarProps {
   totalCount: number
   startIndex: number
   endIndex: number
+  onOpenFilter?: () => void
+  activeFiltersCount?: number
 }
 
 const SORT_BUTTONS: { id: SortOption; label: string; icon: React.ReactNode }[] = [
@@ -27,7 +29,7 @@ const SORT_BUTTONS: { id: SortOption; label: string; icon: React.ReactNode }[] =
 ]
 
 /**
- * CatalogSortBar provides top search input and sorting criteria switcher.
+ * CatalogSortBar provides top search input, mobile filter toggle, and sorting criteria switcher.
  *
  * @param props - Sort bar state and event handlers.
  * @returns JSX Element presenting top sorting bar.
@@ -40,34 +42,55 @@ export function CatalogSortBar(props: CatalogSortBarProps): React.JSX.Element {
     onSortByChange,
     totalCount,
     startIndex,
-    endIndex
+    endIndex,
+    onOpenFilter,
+    activeFiltersCount = 0
   } = props
 
   return (
-    <div className="bg-white rounded-xl border border-slate-200/90 p-4 shadow-xs space-y-4">
-      <div className="flex flex-col sm:flex-row gap-3 items-center justify-between">
-        <div className="relative flex-1 w-full">
-          <Search size={17} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
-          <input
-            type="text"
-            placeholder="Cari nama komoditas tani (contoh: Beras Pandan Wangi, Cabai Rawit)..."
-            value={search}
-            onChange={(e) => onSearchChange(e.target.value)}
-            className="w-full pl-10 pr-10 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white text-slate-900 transition-all placeholder:text-slate-400 font-medium"
-          />
-          {search && (
+    <div className="bg-white rounded-xl border border-slate-200/90 p-3.5 sm:p-4 shadow-xs space-y-3 sm:space-y-4">
+      <div className="flex flex-col sm:flex-row gap-2.5 sm:gap-3 items-stretch sm:items-center justify-between">
+        <div className="flex items-center gap-2 w-full flex-1">
+          <div className="relative flex-1 min-w-0">
+            <Search size={17} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+            <input
+              type="text"
+              placeholder="Cari komoditas tani (contoh: Beras, Cabai)..."
+              value={search}
+              onChange={(e) => onSearchChange(e.target.value)}
+              className="w-full pl-10 pr-10 py-2 sm:py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white text-slate-900 transition-all placeholder:text-slate-400 font-medium"
+            />
+            {search && (
+              <button
+                type="button"
+                onClick={() => onSearchChange('')}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1 cursor-pointer"
+                title="Bersihkan pencarian"
+              >
+                <X size={14} />
+              </button>
+            )}
+          </div>
+
+          {onOpenFilter && (
             <button
               type="button"
-              onClick={() => onSearchChange('')}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1 cursor-pointer"
-              title="Bersihkan pencarian"
+              onClick={onOpenFilter}
+              className="inline-flex lg:hidden items-center justify-center gap-1.5 px-3 py-2 bg-emerald-50 hover:bg-emerald-100 active:bg-emerald-200 border border-emerald-200 text-emerald-800 text-xs font-bold rounded-lg shadow-2xs transition-all cursor-pointer shrink-0"
+              title="Filter Lanjutan"
             >
-              <X size={14} />
+              <Filter size={15} className="text-emerald-700" />
+              <span>Filter</span>
+              {activeFiltersCount > 0 && (
+                <span className="w-4 h-4 rounded-full bg-emerald-600 text-white text-[10px] font-black flex items-center justify-center">
+                  {activeFiltersCount}
+                </span>
+              )}
             </button>
           )}
         </div>
 
-        <div className="flex items-center gap-1.5 w-full sm:w-auto overflow-x-auto pb-1 sm:pb-0">
+        <div className="flex items-center gap-1.5 w-full sm:w-auto overflow-x-auto pb-1 sm:pb-0 no-scrollbar">
           <div className="flex items-center gap-1 text-slate-500 text-xs font-bold mr-1 shrink-0">
             <ArrowUpDown size={14} className="text-emerald-700" />
             <span className="hidden md:inline">Urutkan:</span>
@@ -80,7 +103,7 @@ export function CatalogSortBar(props: CatalogSortBarProps): React.JSX.Element {
                 key={btn.id}
                 type="button"
                 onClick={() => onSortByChange(btn.id)}
-                className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer shrink-0 ${
+                className={`inline-flex items-center gap-1.5 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-lg text-xs font-bold transition-all cursor-pointer shrink-0 ${
                   isActive
                     ? 'bg-emerald-600 text-white shadow-2xs'
                     : 'bg-slate-100 text-slate-600 hover:bg-slate-200'

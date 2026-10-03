@@ -42,6 +42,16 @@ export function CatalogPage(props: CatalogPageProps): React.JSX.Element {
   const [sortBy, setSortBy] = useState<SortOption>('latest')
   const [currentPage, setCurrentPage] = useState<number>(1)
   const [selectedProductForDetail, setSelectedProductForDetail] = useState<Product | null>(null)
+  const [isMobileFilterOpen, setIsMobileFilterOpen] = useState<boolean>(false)
+
+  const activeFiltersCount = useMemo(() => {
+    let count = 0
+    if (category !== 'Semua') count++
+    if (selectedLocation !== 'Semua') count++
+    if (minPrice) count++
+    if (maxPrice) count++
+    return count
+  }, [category, selectedLocation, minPrice, maxPrice])
 
   const categories = useMemo(() => {
     const dynamicCats = Array.from(new Set(rawProducts.map((p) => p.category))).filter(Boolean).sort()
@@ -172,7 +182,7 @@ export function CatalogPage(props: CatalogPageProps): React.JSX.Element {
   const paginatedProducts = filteredAndSortedProducts.slice(startIndex, endIndex)
 
   return (
-    <div className="max-w-[1680px] mx-auto px-4 sm:px-8 lg:px-12 py-8 space-y-6">
+    <div className="max-w-[1680px] mx-auto px-3.5 sm:px-8 lg:px-12 py-5 sm:py-8 pb-24 lg:pb-8 space-y-5 sm:space-y-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-200">
         <div>
           <div className="flex items-center gap-2.5">
@@ -209,9 +219,11 @@ export function CatalogPage(props: CatalogPageProps): React.JSX.Element {
           onMaxPriceChange={setMaxPrice}
           onResetFilters={handleResetFilters}
           totalFiltered={filteredAndSortedProducts.length}
+          isMobileDrawerOpen={isMobileFilterOpen}
+          onCloseMobileDrawer={() => setIsMobileFilterOpen(false)}
         />
 
-        <main className="flex-1 min-w-0 space-y-6 w-full">
+        <main className="flex-1 min-w-0 space-y-5 sm:space-y-6 w-full">
           <CatalogSortBar
             search={search}
             onSearchChange={handleSearchChange}
@@ -220,7 +232,29 @@ export function CatalogPage(props: CatalogPageProps): React.JSX.Element {
             totalCount={filteredAndSortedProducts.length}
             startIndex={startIndex}
             endIndex={endIndex}
+            onOpenFilter={() => setIsMobileFilterOpen(true)}
+            activeFiltersCount={activeFiltersCount}
           />
+
+          <div className="lg:hidden flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1 -mt-2">
+            {categories.map((cat) => {
+              const isActive = category === cat
+              return (
+                <button
+                  key={cat}
+                  type="button"
+                  onClick={() => handleCategoryChange(cat)}
+                  className={`px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all cursor-pointer ${
+                    isActive
+                      ? 'bg-emerald-600 text-white shadow-xs'
+                      : 'bg-white text-slate-600 border border-slate-200 hover:border-emerald-300'
+                  }`}
+                >
+                  {cat}
+                </button>
+              )
+            })}
+          </div>
 
           {isProductsLoading ? (
             <div className="flex flex-col items-center justify-center py-20 space-y-3">
@@ -241,7 +275,7 @@ export function CatalogPage(props: CatalogPageProps): React.JSX.Element {
             </div>
           ) : (
             <div className="space-y-8">
-              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+              <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-3 sm:gap-6">
                 {paginatedProducts.map((product: Product) => (
                   <ProductCard
                     key={product.id}
@@ -258,7 +292,7 @@ export function CatalogPage(props: CatalogPageProps): React.JSX.Element {
                     Halaman {currentPage} dari {totalPages} ({filteredAndSortedProducts.length} komoditas)
                   </span>
 
-                  <div className="flex items-center gap-1.5">
+                  <div className="flex items-center gap-1.5 w-full sm:w-auto justify-between sm:justify-end">
                     <button
                       type="button"
                       disabled={currentPage <= 1}
@@ -266,29 +300,35 @@ export function CatalogPage(props: CatalogPageProps): React.JSX.Element {
                         setCurrentPage((prev) => Math.max(1, prev - 1))
                         window.scrollTo({ top: 0, behavior: 'smooth' })
                       }}
-                      className="inline-flex items-center gap-1 px-3.5 py-2 text-xs font-semibold rounded-lg border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition-all cursor-pointer shadow-2xs"
+                      className="inline-flex items-center gap-1 px-3 sm:px-3.5 py-2 text-xs font-semibold rounded-lg border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition-all cursor-pointer shadow-2xs"
                     >
                       <ChevronLeft size={16} />
                       <span>Sebelumnya</span>
                     </button>
 
-                    {Array.from({ length: totalPages }, (_, idx) => idx + 1).map((pageNum) => (
-                      <button
-                        key={pageNum}
-                        type="button"
-                        onClick={() => {
-                          setCurrentPage(pageNum)
-                          window.scrollTo({ top: 0, behavior: 'smooth' })
-                        }}
-                        className={`w-9 h-9 flex items-center justify-center text-xs font-bold rounded-lg transition-all cursor-pointer ${
-                          currentPage === pageNum
-                            ? 'bg-emerald-600 text-white shadow-xs'
-                            : 'border border-slate-200 bg-white text-slate-700 hover:bg-slate-50'
-                        }`}
-                      >
-                        {pageNum}
-                      </button>
-                    ))}
+                    <div className="hidden sm:flex items-center gap-1.5">
+                      {Array.from({ length: totalPages }, (_, idx) => idx + 1).map((pageNum) => (
+                        <button
+                          key={pageNum}
+                          type="button"
+                          onClick={() => {
+                            setCurrentPage(pageNum)
+                            window.scrollTo({ top: 0, behavior: 'smooth' })
+                          }}
+                          className={`w-9 h-9 flex items-center justify-center text-xs font-bold rounded-lg transition-all cursor-pointer ${
+                            currentPage === pageNum
+                              ? 'bg-emerald-600 text-white shadow-xs'
+                              : 'border border-slate-200 bg-white text-slate-700 hover:bg-slate-50'
+                          }`}
+                        >
+                          {pageNum}
+                        </button>
+                      ))}
+                    </div>
+
+                    <span className="sm:hidden text-xs font-bold text-slate-700 px-2">
+                      {currentPage} / {totalPages}
+                    </span>
 
                     <button
                       type="button"
@@ -297,7 +337,7 @@ export function CatalogPage(props: CatalogPageProps): React.JSX.Element {
                         setCurrentPage((prev) => Math.min(totalPages, prev + 1))
                         window.scrollTo({ top: 0, behavior: 'smooth' })
                       }}
-                      className="inline-flex items-center gap-1 px-3.5 py-2 text-xs font-semibold rounded-lg border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition-all cursor-pointer shadow-2xs"
+                      className="inline-flex items-center gap-1 px-3 sm:px-3.5 py-2 text-xs font-semibold rounded-lg border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition-all cursor-pointer shadow-2xs"
                     >
                       <span>Berikutnya</span>
                       <ChevronRight size={16} />
