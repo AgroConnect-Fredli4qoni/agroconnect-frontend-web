@@ -36,8 +36,17 @@ export interface HttpClient {
 export class FetchHttpAdapter implements HttpClient {
   private baseUrl: string
 
-  constructor(baseUrl: string = 'http://localhost:8080') {
-    this.baseUrl = baseUrl
+  constructor(baseUrl?: string) {
+    const metaEnv = ((import.meta as unknown) as Record<string, unknown>)['env'] as Record<string, string> | undefined
+    if (baseUrl) {
+      this.baseUrl = baseUrl
+    } else if (metaEnv?.VITE_API_BASE_URL) {
+      this.baseUrl = metaEnv.VITE_API_BASE_URL
+    } else if (typeof window !== 'undefined' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+      this.baseUrl = window.location.origin
+    } else {
+      this.baseUrl = 'http://localhost:8080'
+    }
   }
 
   public async request<TResponse, TBody = unknown>(options: RequestOptions<TBody>): Promise<TResponse> {
