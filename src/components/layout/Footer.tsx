@@ -1,7 +1,7 @@
 import React from 'react'
 
 /**
- * Footer displays platform metadata, BNSP SKKNI Level 6 certification standard, and BMKG integration attribution.
+ * Footer displays platform metadata and copyright attribution.
  *
  * @returns Rendered JSX element for global application footer.
  */
@@ -22,8 +22,7 @@ export function Footer(): React.JSX.Element {
         </div>
 
         <div className="flex flex-col md:items-end gap-1 text-slate-400">
-          <span>Standardisasi Kompetensi SKKNI Level 6 (BNSP)</span>
-          <span>Data Cuaca Terintegrasi Badan Meteorologi, Klimatologi, dan Geofisika (BMKG)</span>
+          <span>&copy; {new Date().getFullYear()} AgroConnect by fredli4qoni. Hak Cipta Dilindungi.</span>
         </div>
       </div>
     </footer>
