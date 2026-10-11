@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { X, Building2, Smartphone, AlertCircle, CheckCircle2, ArrowRight } from 'lucide-react'
+import { X, Building2, Smartphone, AlertCircle, CheckCircle2, ArrowRight, Wallet, Check } from 'lucide-react'
 import { requestWithdrawal } from '../../services/walletService'
 import { PayoutAccount } from '../../types/wallet'
 
@@ -28,6 +28,8 @@ const QUICK_AMOUNTS = [50000, 100000, 250000, 500000]
 export function WithdrawModal(props: WithdrawModalProps): React.JSX.Element | null {
   const { isOpen, onClose, currentBalance, token, onSuccess, payoutAccounts = [] } = props
 
+  const [sourceType, setSourceType] = useState<'saved' | 'manual'>('saved')
+  const [selectedAccountId, setSelectedAccountId] = useState<number | null>(null)
   const [targetType, setTargetType] = useState<'bank' | 'ewallet'>('bank')
   const [targetProvider, setTargetProvider] = useState<string>(BANK_PROVIDERS[0])
   const [targetAccount, setTargetAccount] = useState<string>('')
@@ -38,18 +40,38 @@ export function WithdrawModal(props: WithdrawModalProps): React.JSX.Element | nu
   const [isSuccess, setIsSuccess] = useState<boolean>(false)
 
   useEffect(() => {
-    if (isOpen && payoutAccounts.length > 0) {
-      const primary = payoutAccounts.find((a) => a.is_primary) || payoutAccounts[0]
-      if (primary) {
-        setTargetType(primary.account_type)
-        setTargetProvider(primary.provider_name)
-        setTargetAccount(primary.account_number)
-        setAccountHolder(primary.account_holder)
+    if (isOpen) {
+      setErrorMsg('')
+      setAmountStr('')
+      if (payoutAccounts.length > 0) {
+        setSourceType('saved')
+        const primary = payoutAccounts.find((a) => a.is_primary) || payoutAccounts[0]
+        if (primary) {
+          setSelectedAccountId(primary.id)
+          setTargetType(primary.account_type)
+          setTargetProvider(primary.provider_name)
+          setTargetAccount(primary.account_number)
+          setAccountHolder(primary.account_holder)
+        }
+      } else {
+        setSourceType('manual')
+        setTargetType('bank')
+        setTargetProvider(BANK_PROVIDERS[0])
+        setTargetAccount('')
+        setAccountHolder('')
       }
     }
   }, [isOpen, payoutAccounts])
 
   if (!isOpen) return null
+
+  const handleSelectSavedAccount = (acc: PayoutAccount): void => {
+    setSelectedAccountId(acc.id)
+    setTargetType(acc.account_type)
+    setTargetProvider(acc.provider_name)
+    setTargetAccount(acc.account_number)
+    setAccountHolder(acc.account_holder)
+  }
 
   const handleTypeChange = (type: 'bank' | 'ewallet'): void => {
     setTargetType(type)
@@ -79,14 +101,22 @@ export function WithdrawModal(props: WithdrawModalProps): React.JSX.Element | nu
       return
     }
 
-    if (!targetAccount.trim()) {
-      setErrorMsg(targetType === 'bank' ? 'Nomor rekening bank wajib diisi' : 'Nomor handphone akun e-wallet wajib diisi')
-      return
-    }
+    if (sourceType === 'saved') {
+      const selected = payoutAccounts.find((a) => a.id === selectedAccountId)
+      if (!selected) {
+        setErrorMsg('Silakan pilih salah satu rekening tujuan')
+        return
+      }
+    } else {
+      if (!targetAccount.trim()) {
+        setErrorMsg(targetType === 'bank' ? 'Nomor rekening bank wajib diisi' : 'Nomor handphone akun e-wallet wajib diisi')
+        return
+      }
 
-    if (!accountHolder.trim()) {
-      setErrorMsg('Nama pemilik akun / rekening wajib diisi')
-      return
+      if (!accountHolder.trim()) {
+        setErrorMsg('Nama pemilik akun / rekening wajib diisi')
+        return
+      }
     }
 
     setIsLoading(true)
@@ -147,7 +177,7 @@ export function WithdrawModal(props: WithdrawModalProps): React.JSX.Element | nu
             </p>
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="p-5 sm:p-6 space-y-4 max-h-[80vh] overflow-y-auto">
+          <form onSubmit={handleSubmit} className="p-5 sm:p-6 space-y-4 max-h-[85vh] overflow-y-auto">
             {errorMsg && (
               <div className="flex items-center gap-2 p-3 bg-rose-50 border border-rose-200 text-rose-700 rounded-xl text-xs font-semibold">
                 <AlertCircle size={16} className="shrink-0" />
@@ -155,10 +185,15 @@ export function WithdrawModal(props: WithdrawModalProps): React.JSX.Element | nu
               </div>
             )}
 
-            <div className="p-3.5 bg-emerald-50/80 border border-emerald-200/80 rounded-2xl flex items-center justify-between">
-              <div>
-                <span className="text-[11px] font-bold text-emerald-800 uppercase tracking-wider block">Saldo Siap Ditarik</span>
-                <span className="text-lg font-black text-emerald-900">Rp {currentBalance.toLocaleString('id-ID')}</span>
+            <div className="p-3.5 bg-emerald-50 border border-emerald-200/80 rounded-2xl flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center shrink-0 shadow-2xs">
+                  <Wallet size={18} />
+                </div>
+                <div>
+                  <span className="text-[11px] font-bold text-emerald-800 uppercase tracking-wider block">Saldo Siap Ditarik</span>
+                  <span className="text-lg font-black text-emerald-950">Rp {currentBalance.toLocaleString('id-ID')}</span>
+                </div>
               </div>
               <button
                 type="button"
@@ -170,156 +205,216 @@ export function WithdrawModal(props: WithdrawModalProps): React.JSX.Element | nu
             </div>
 
             {payoutAccounts && payoutAccounts.length > 0 && (
-              <div>
-                <label className="text-xs font-bold text-slate-700 block mb-1.5">
-                  Gunakan Rekening / E-Wallet Tersimpan
-                </label>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                  {payoutAccounts.map((acc) => {
-                    const isSelected = targetAccount === acc.account_number && targetProvider === acc.provider_name
-                    return (
-                      <button
-                        key={acc.id}
-                        type="button"
-                        onClick={() => {
-                          setTargetType(acc.account_type)
-                          setTargetProvider(acc.provider_name)
-                          setTargetAccount(acc.account_number)
-                          setAccountHolder(acc.account_holder)
-                        }}
-                        className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer flex items-center gap-2.5 ${
-                          isSelected
-                            ? 'border-emerald-600 bg-emerald-50 text-emerald-900 ring-1 ring-emerald-600/30'
-                            : 'border-slate-200 bg-slate-50/50 hover:bg-slate-100 text-slate-700'
-                        }`}
-                      >
-                        <span className={`p-1.5 rounded-lg shrink-0 ${acc.account_type === 'bank' ? 'bg-blue-100 text-blue-800' : 'bg-emerald-100 text-emerald-800'}`}>
-                          {acc.account_type === 'bank' ? <Building2 size={14} /> : <Smartphone size={14} />}
-                        </span>
-                        <div className="min-w-0 flex-1">
-                          <div className="text-[11px] font-bold truncate flex items-center justify-between">
-                            <span>{acc.provider_name}</span>
+              <div className="space-y-2.5">
+                <div className="flex p-1 bg-slate-100 rounded-xl gap-1">
+                  <button
+                    type="button"
+                    onClick={() => setSourceType('saved')}
+                    className={`flex-1 py-1.5 px-3 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
+                      sourceType === 'saved'
+                        ? 'bg-white text-emerald-800 shadow-xs'
+                        : 'text-slate-600 hover:text-slate-900'
+                    }`}
+                  >
+                    <CheckCircle2 size={13} className={sourceType === 'saved' ? 'text-emerald-600' : 'text-slate-400'} />
+                    <span>Rekening Tersimpan ({payoutAccounts.length})</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setSourceType('manual')}
+                    className={`flex-1 py-1.5 px-3 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
+                      sourceType === 'manual'
+                        ? 'bg-white text-emerald-800 shadow-xs'
+                        : 'text-slate-600 hover:text-slate-900'
+                    }`}
+                  >
+                    <span>+ Rekening Baru</span>
+                  </button>
+                </div>
+
+                {sourceType === 'saved' && (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                    {payoutAccounts.map((acc) => {
+                      const isSelected = selectedAccountId === acc.id
+                      return (
+                        <button
+                          key={acc.id}
+                          type="button"
+                          onClick={() => handleSelectSavedAccount(acc)}
+                          className={`p-3 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between gap-2.5 relative ${
+                            isSelected
+                              ? 'border-emerald-600 bg-emerald-50/70 text-slate-900 ring-2 ring-emerald-500/20 shadow-xs'
+                              : 'border-slate-200 bg-slate-50/50 hover:bg-slate-100/80 text-slate-700'
+                          }`}
+                        >
+                          <div className="flex items-start justify-between gap-2 w-full">
+                            <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                              <span className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 ${
+                                acc.account_type === 'bank' ? 'bg-blue-100 text-blue-700' : 'bg-emerald-100 text-emerald-700'
+                              }`}>
+                                {acc.account_type === 'bank' ? <Building2 size={15} /> : <Smartphone size={15} />}
+                              </span>
+                              <div className="min-w-0 flex-1">
+                                <p className="text-xs font-bold text-slate-900 truncate">{acc.provider_name}</p>
+                                <p className="text-[10px] text-slate-500 truncate">{acc.account_holder}</p>
+                              </div>
+                            </div>
                             {acc.is_primary && (
-                              <span className="text-[9px] px-1.5 py-0.5 bg-emerald-600 text-white rounded-full font-black">
+                              <span className="shrink-0 px-2 py-0.5 bg-emerald-600 text-white rounded-md text-[9px] font-black uppercase tracking-wider">
                                 Utama
                               </span>
                             )}
                           </div>
-                          <div className="text-[10px] font-mono text-slate-500 truncate">
-                            {acc.account_number}
+
+                          <div className="pt-2 border-t border-slate-200/60 flex items-center justify-between text-[11px]">
+                            <span className="font-mono text-slate-600 font-semibold tracking-wider">
+                              {acc.account_number}
+                            </span>
+                            <span className={`w-4 h-4 rounded-full border flex items-center justify-center ${
+                              isSelected ? 'border-emerald-600 bg-emerald-600 text-white' : 'border-slate-300 bg-white'
+                            }`}>
+                              {isSelected && <Check size={10} strokeWidth={3} />}
+                            </span>
                           </div>
-                        </div>
-                      </button>
-                    )
-                  })}
+                        </button>
+                      )
+                    })}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {(sourceType === 'manual' || payoutAccounts.length === 0) && (
+              <div className="space-y-3.5 p-3.5 bg-slate-50/70 border border-slate-200/80 rounded-2xl">
+                <div>
+                  <label className="text-xs font-bold text-slate-700 block mb-1.5">Metode Penarikan</label>
+                  <div className="grid grid-cols-2 gap-2">
+                    <button
+                      type="button"
+                      onClick={() => handleTypeChange('bank')}
+                      className={`flex items-center justify-center gap-2 py-2 px-3 rounded-xl border text-xs font-bold transition-all cursor-pointer ${
+                        targetType === 'bank'
+                          ? 'bg-emerald-600 text-white border-emerald-600 shadow-xs'
+                          : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
+                      }`}
+                    >
+                      <Building2 size={15} />
+                      <span>Rekening Bank</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleTypeChange('ewallet')}
+                      className={`flex items-center justify-center gap-2 py-2 px-3 rounded-xl border text-xs font-bold transition-all cursor-pointer ${
+                        targetType === 'ewallet'
+                          ? 'bg-emerald-600 text-white border-emerald-600 shadow-xs'
+                          : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
+                      }`}
+                    >
+                      <Smartphone size={15} />
+                      <span>E-Wallet</span>
+                    </button>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="text-xs font-bold text-slate-700 block mb-1.5">
+                    {targetType === 'bank' ? 'Pilih Bank Tujuan' : 'Pilih Layanan E-Wallet'}
+                  </label>
+                  <select
+                    value={targetProvider}
+                    onChange={(e) => setTargetProvider(e.target.value)}
+                    className="w-full px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all cursor-pointer"
+                  >
+                    {(targetType === 'bank' ? BANK_PROVIDERS : EWALLET_PROVIDERS).map((prov) => (
+                      <option key={prov} value={prov}>
+                        {prov}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="text-xs font-bold text-slate-700 block mb-1.5">
+                    {targetType === 'bank' ? 'Nomor Rekening' : 'Nomor Handphone E-Wallet'}
+                  </label>
+                  <input
+                    type="text"
+                    placeholder={targetType === 'bank' ? 'Contoh: 0129-01-084729-50-3' : 'Contoh: 081234567890'}
+                    value={targetAccount}
+                    onChange={(e) => setTargetAccount(e.target.value)}
+                    className="w-full px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="text-xs font-bold text-slate-700 block mb-1.5">Nama Pemilik Akun</label>
+                  <input
+                    type="text"
+                    placeholder="Contoh: Budi Santoso (sesuai rekening)"
+                    value={accountHolder}
+                    onChange={(e) => setAccountHolder(e.target.value)}
+                    className="w-full px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all"
+                    required
+                  />
                 </div>
               </div>
             )}
 
             <div>
-              <label className="text-xs font-bold text-slate-700 block mb-2">Metode Penarikan</label>
-              <div className="grid grid-cols-2 gap-2">
-                <button
-                  type="button"
-                  onClick={() => handleTypeChange('bank')}
-                  className={`flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl border text-xs font-bold transition-all cursor-pointer ${
-                    targetType === 'bank'
-                      ? 'bg-emerald-600 text-white border-emerald-600 shadow-xs'
-                      : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
-                  }`}
-                >
-                  <Building2 size={16} />
-                  <span>Rekening Bank</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleTypeChange('ewallet')}
-                  className={`flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl border text-xs font-bold transition-all cursor-pointer ${
-                    targetType === 'ewallet'
-                      ? 'bg-emerald-600 text-white border-emerald-600 shadow-xs'
-                      : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
-                  }`}
-                >
-                  <Smartphone size={16} />
-                  <span>E-Wallet</span>
-                </button>
-              </div>
-            </div>
-
-            <div>
-              <label className="text-xs font-bold text-slate-700 block mb-1.5">
-                {targetType === 'bank' ? 'Pilih Bank Tujuan' : 'Pilih Layanan E-Wallet'}
-              </label>
-              <select
-                value={targetProvider}
-                onChange={(e) => setTargetProvider(e.target.value)}
-                className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-all cursor-pointer"
-              >
-                {(targetType === 'bank' ? BANK_PROVIDERS : EWALLET_PROVIDERS).map((prov) => (
-                  <option key={prov} value={prov}>
-                    {prov}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div>
-              <label className="text-xs font-bold text-slate-700 block mb-1.5">
-                {targetType === 'bank' ? 'Nomor Rekening' : 'Nomor Handphone E-Wallet'}
-              </label>
-              <input
-                type="text"
-                placeholder={targetType === 'bank' ? 'Contoh: 0129-01-084729-50-3' : 'Contoh: 081234567890'}
-                value={targetAccount}
-                onChange={(e) => setTargetAccount(e.target.value)}
-                className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-all"
-                required
-              />
-            </div>
-
-            <div>
-              <label className="text-xs font-bold text-slate-700 block mb-1.5">Nama Pemilik Akun</label>
-              <input
-                type="text"
-                placeholder="Contoh: Budi Santoso (harus sesuai identitas akun)"
-                value={accountHolder}
-                onChange={(e) => setAccountHolder(e.target.value)}
-                className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-all"
-                required
-              />
-            </div>
-
-            <div>
               <label className="text-xs font-bold text-slate-700 block mb-1.5">Jumlah Penarikan (Rp)</label>
-              <input
-                type="number"
-                placeholder="Minimal 10000"
-                value={amountStr}
-                onChange={(e) => setAmountStr(e.target.value)}
-                min="10000"
-                max={currentBalance}
-                className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-all"
-                required
-              />
+              <div className="relative">
+                <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-500 pointer-events-none">Rp</span>
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  placeholder="10.000"
+                  value={amountStr ? Number(amountStr).toLocaleString('id-ID') : ''}
+                  onChange={(e) => {
+                    const raw = e.target.value.replace(/\D/g, '')
+                    setAmountStr(raw)
+                  }}
+                  className="w-full pl-9 pr-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-all"
+                  required
+                />
+              </div>
 
-              <div className="flex flex-wrap gap-1.5 mt-2">
-                {QUICK_AMOUNTS.map((amt) => (
-                  <button
-                    key={amt}
-                    type="button"
-                    onClick={() => handleQuickAmount(amt)}
-                    className="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 rounded-lg text-[10px] font-bold text-slate-700 transition-colors cursor-pointer"
-                  >
-                    + Rp {(amt / 1000).toLocaleString('id-ID')}rb
-                  </button>
-                ))}
+              <div className="flex items-center justify-between text-[11px] text-slate-500 mt-1">
+                <span>Minimal penarikan Rp 10.000</span>
+                {Number(amountStr) > currentBalance && (
+                  <span className="text-rose-600 font-bold">Melebihi saldo tersedia</span>
+                )}
+              </div>
+
+              <div className="grid grid-cols-4 gap-1.5 mt-2">
+                {QUICK_AMOUNTS.map((amt) => {
+                  const isActive = amountStr === String(amt)
+                  const isDisabled = amt > currentBalance
+                  return (
+                    <button
+                      key={amt}
+                      type="button"
+                      disabled={isDisabled}
+                      onClick={() => handleQuickAmount(amt)}
+                      className={`py-1.5 px-2 rounded-lg text-[11px] font-bold transition-all cursor-pointer text-center border ${
+                        isActive
+                          ? 'bg-emerald-600 text-white border-emerald-600 shadow-2xs'
+                          : isDisabled
+                          ? 'bg-slate-50 text-slate-300 border-slate-100 cursor-not-allowed'
+                          : 'bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200'
+                      }`}
+                    >
+                      Rp {(amt / 1000).toLocaleString('id-ID')}rb
+                    </button>
+                  )
+                })}
               </div>
             </div>
 
             <div className="pt-2">
               <button
                 type="submit"
-                disabled={isLoading}
+                disabled={isLoading || !amountStr || Number(amountStr) < 10000 || Number(amountStr) > currentBalance}
                 className="w-full py-3 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 disabled:opacity-50 text-white rounded-2xl text-xs font-black transition-all flex items-center justify-center gap-2 shadow-xs cursor-pointer"
               >
                 {isLoading ? (
@@ -338,3 +433,4 @@ export function WithdrawModal(props: WithdrawModalProps): React.JSX.Element | nu
     </div>
   )
 }
+
