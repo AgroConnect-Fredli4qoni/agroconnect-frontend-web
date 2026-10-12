@@ -9,35 +9,58 @@ import { SalesStatsDashboard } from './SalesStatsDashboard'
 import { TransactionManager } from './TransactionManager'
 import { FarmerWalletTab } from './FarmerWalletTab'
 import { ProfileEditor } from './ProfileEditor'
+import { AdminSidebar, AdminTabType } from '../admin/AdminSidebar'
+import { AdminOverviewTab } from '../admin/AdminOverviewTab'
+import { AdminUsersTab } from '../admin/AdminUsersTab'
+import { AdminOrdersTab } from '../admin/AdminOrdersTab'
+import { AdminCatalogTab } from '../admin/AdminCatalogTab'
+import { AdminWithdrawalsTab } from '../admin/AdminWithdrawalsTab'
+import { AdminHealthTab } from '../admin/AdminHealthTab'
 
 /**
- * DashboardTab defines the available navigation views in user dashboard.
+ * DashboardTab defines the available navigation views in regular user dashboard.
  */
 export type DashboardTab = 'stats' | 'profile' | 'products' | 'transactions' | 'wallet'
 
 /**
- * DashboardPage provides the two-column authenticated dashboard layout hosting domain managers.
+ * DashboardPage provides the authenticated layout hosting domain managers for farmers, buyers, and administrators.
  *
- * @returns JSX Element rendering the user dashboard.
+ * @returns JSX Element rendering the user or administrator dashboard.
  */
 export function DashboardPage(): React.JSX.Element {
   const navigate = useNavigate()
   const [searchParams, setSearchParams] = useSearchParams()
   const { user, token, isAuthenticated, logout, updateUserSession } = useAuth()
 
+  const isAdmin = user?.role === 'admin'
+
   const tabParam = searchParams.get('tab')
-  const initialMenu: DashboardTab = (tabParam && ['stats', 'profile', 'products', 'transactions', 'wallet'].includes(tabParam))
+  const validAdminTabs: AdminTabType[] = ['overview', 'users', 'orders', 'catalog', 'withdrawals', 'health', 'profile']
+  const validUserTabs: DashboardTab[] = ['stats', 'profile', 'products', 'transactions', 'wallet']
+
+  const initialAdminTab: AdminTabType = tabParam && validAdminTabs.includes(tabParam as AdminTabType)
+    ? (tabParam as AdminTabType)
+    : 'overview'
+
+  const initialUserTab: DashboardTab = tabParam && validUserTabs.includes(tabParam as DashboardTab)
     ? (tabParam as DashboardTab)
     : 'stats'
 
-  const [activeMenu, setActiveMenu] = useState<DashboardTab>(initialMenu)
+  const [activeAdminMenu, setActiveAdminMenu] = useState<AdminTabType>(initialAdminTab)
+  const [activeUserMenu, setActiveUserMenu] = useState<DashboardTab>(initialUserTab)
 
   useEffect(() => {
     const tab = searchParams.get('tab')
-    if (tab && ['stats', 'profile', 'products', 'transactions', 'wallet'].includes(tab)) {
-      setActiveMenu(tab as DashboardTab)
+    if (isAdmin) {
+      if (tab && validAdminTabs.includes(tab as AdminTabType)) {
+        setActiveAdminMenu(tab as AdminTabType)
+      }
+    } else {
+      if (tab && validUserTabs.includes(tab as DashboardTab)) {
+        setActiveUserMenu(tab as DashboardTab)
+      }
     }
-  }, [searchParams])
+  }, [searchParams, isAdmin])
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -74,26 +97,60 @@ export function DashboardPage(): React.JSX.Element {
     )
   }
 
+  if (isAdmin) {
+    return (
+      <div className="max-w-[1680px] mx-auto px-3.5 sm:px-8 lg:px-12 py-6 sm:py-8 pb-24 lg:pb-8">
+        <div className="flex flex-col lg:flex-row items-start gap-8">
+          <AdminSidebar
+            user={user}
+            activeMenu={activeAdminMenu}
+            onSelectMenu={(menu) => {
+              setActiveAdminMenu(menu)
+              setSearchParams({ tab: menu })
+            }}
+            onLogout={logout}
+          />
+
+          <section className="flex-1 min-w-0 w-full space-y-6">
+            {activeAdminMenu === 'overview' && <AdminOverviewTab />}
+            {activeAdminMenu === 'users' && <AdminUsersTab />}
+            {activeAdminMenu === 'orders' && <AdminOrdersTab />}
+            {activeAdminMenu === 'catalog' && <AdminCatalogTab />}
+            {activeAdminMenu === 'withdrawals' && <AdminWithdrawalsTab />}
+            {activeAdminMenu === 'health' && <AdminHealthTab />}
+            {activeAdminMenu === 'profile' && (
+              <ProfileEditor
+                user={user}
+                token={token}
+                onUpdateSuccess={(updatedUser, updatedToken) => updateUserSession(updatedUser, updatedToken)}
+              />
+            )}
+          </section>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="max-w-[1680px] mx-auto px-3.5 sm:px-8 lg:px-12 py-6 sm:py-8 pb-24 lg:pb-8">
       <div className="flex flex-col lg:flex-row items-start gap-8">
         <DashboardSidebar
           user={user}
-          activeMenu={activeMenu}
+          activeMenu={activeUserMenu}
           onSelectMenu={(menu) => {
             const nextMenu = menu as DashboardTab
-            setActiveMenu(nextMenu)
+            setActiveUserMenu(nextMenu)
             setSearchParams({ tab: nextMenu })
           }}
           onLogout={logout}
         />
 
         <section className="flex-1 min-w-0 w-full space-y-6">
-          {activeMenu === 'stats' && <SalesStatsDashboard />}
-          {activeMenu === 'transactions' && <TransactionManager />}
-          {activeMenu === 'wallet' && <FarmerWalletTab />}
-          {activeMenu === 'products' && <FarmerProductsManager />}
-          {activeMenu === 'profile' && (
+          {activeUserMenu === 'stats' && <SalesStatsDashboard />}
+          {activeUserMenu === 'transactions' && <TransactionManager />}
+          {activeUserMenu === 'wallet' && <FarmerWalletTab />}
+          {activeUserMenu === 'products' && <FarmerProductsManager />}
+          {activeUserMenu === 'profile' && (
             <ProfileEditor
               user={user}
               token={token}

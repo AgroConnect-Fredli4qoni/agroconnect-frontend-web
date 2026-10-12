@@ -15,6 +15,9 @@ import {
   Receipt,
   User,
   Wallet,
+  Users,
+  ArrowDownToLine,
+  Activity,
 } from 'lucide-react'
 import { useAuth } from '../../features/auth/AuthContext'
 import { useCart } from '../../features/catalog/CartContext'
@@ -79,12 +82,14 @@ export function MobileSidebar(props: MobileSidebarProps): React.JSX.Element | nu
       label: 'Beranda',
       icon: Home,
       active: location.pathname === '/',
+      show: true,
     },
     {
       to: '/catalog',
       label: 'Kategori & Produk',
       icon: Store,
       active: location.pathname.startsWith('/catalog') || location.pathname.startsWith('/katalog'),
+      show: true,
     },
     {
       to: '/cart',
@@ -92,55 +97,102 @@ export function MobileSidebar(props: MobileSidebarProps): React.JSX.Element | nu
       icon: ShoppingCart,
       active: location.pathname === '/cart',
       badge: totalItems > 0 ? totalItems : undefined,
+      show: !isRoleAdmin,
     },
     {
-      to: isAuthenticated ? '/orders' : '/login',
-      label: 'Pesanan Saya',
+      to: isAuthenticated ? (isRoleAdmin ? '/dashboard?tab=orders' : '/orders') : '/login',
+      label: isRoleAdmin ? 'Audit Pesanan' : 'Pesanan Saya',
       icon: ClipboardList,
       active: location.pathname === '/orders',
-    },
-  ]
-
-  const currentTab = searchParams.get('tab') || 'stats'
-  const isDashboardActive = location.pathname === '/dashboard'
-
-  const dashboardNavLinks = [
-    {
-      to: isAuthenticated ? '/dashboard?tab=stats' : '/login',
-      label: 'Statistik Penjualan',
-      icon: BarChart3,
-      active: isDashboardActive && currentTab === 'stats',
       show: true,
-    },
-    {
-      to: isAuthenticated ? '/dashboard?tab=wallet' : '/login',
-      label: 'Dompet AgroConnect',
-      icon: Wallet,
-      active: isDashboardActive && currentTab === 'wallet',
-      show: true,
-    },
-    {
-      to: isAuthenticated ? '/dashboard?tab=transactions' : '/login',
-      label: 'Kelola Transaksi',
-      icon: Receipt,
-      active: isDashboardActive && currentTab === 'transactions',
-      show: true,
-    },
-    {
-      to: isAuthenticated ? '/dashboard?tab=profile' : '/login',
-      label: 'Profil Pengguna',
-      icon: User,
-      active: isDashboardActive && currentTab === 'profile',
-      show: true,
-    },
-    {
-      to: isAuthenticated ? '/dashboard?tab=products' : '/login',
-      label: 'Kelola Komoditas',
-      icon: Sprout,
-      active: isDashboardActive && currentTab === 'products',
-      show: isRoleFarmer || isRoleAdmin,
     },
   ].filter((item) => item.show)
+
+  const currentTab = searchParams.get('tab') || (isRoleAdmin ? 'overview' : 'stats')
+  const isDashboardActive = location.pathname === '/dashboard'
+
+  const dashboardNavLinks = isRoleAdmin
+    ? [
+        {
+          to: isAuthenticated ? '/dashboard?tab=overview' : '/login',
+          label: 'Ringkasan Eksekutif',
+          icon: BarChart3,
+          active: isDashboardActive && currentTab === 'overview',
+        },
+        {
+          to: isAuthenticated ? '/dashboard?tab=users' : '/login',
+          label: 'Manajemen Pengguna',
+          icon: Users,
+          active: isDashboardActive && currentTab === 'users',
+        },
+        {
+          to: isAuthenticated ? '/dashboard?tab=orders' : '/login',
+          label: 'Audit Transaksi Global',
+          icon: Receipt,
+          active: isDashboardActive && currentTab === 'orders',
+        },
+        {
+          to: isAuthenticated ? '/dashboard?tab=catalog' : '/login',
+          label: 'Moderasi Komoditas',
+          icon: Sprout,
+          active: isDashboardActive && currentTab === 'catalog',
+        },
+        {
+          to: isAuthenticated ? '/dashboard?tab=withdrawals' : '/login',
+          label: 'Pencairan Saldo Petani',
+          icon: ArrowDownToLine,
+          active: isDashboardActive && currentTab === 'withdrawals',
+        },
+        {
+          to: isAuthenticated ? '/dashboard?tab=health' : '/login',
+          label: 'Status Microservices',
+          icon: Activity,
+          active: isDashboardActive && currentTab === 'health',
+        },
+        {
+          to: isAuthenticated ? '/dashboard?tab=profile' : '/login',
+          label: 'Profil Administrator',
+          icon: User,
+          active: isDashboardActive && currentTab === 'profile',
+        },
+      ]
+    : [
+        {
+          to: isAuthenticated ? '/dashboard?tab=stats' : '/login',
+          label: 'Statistik Penjualan',
+          icon: BarChart3,
+          active: isDashboardActive && currentTab === 'stats',
+          show: true,
+        },
+        {
+          to: isAuthenticated ? '/dashboard?tab=wallet' : '/login',
+          label: 'Dompet AgroConnect',
+          icon: Wallet,
+          active: isDashboardActive && currentTab === 'wallet',
+          show: true,
+        },
+        {
+          to: isAuthenticated ? '/dashboard?tab=transactions' : '/login',
+          label: 'Kelola Transaksi',
+          icon: Receipt,
+          active: isDashboardActive && currentTab === 'transactions',
+          show: true,
+        },
+        {
+          to: isAuthenticated ? '/dashboard?tab=profile' : '/login',
+          label: 'Profil Pengguna',
+          icon: User,
+          active: isDashboardActive && currentTab === 'profile',
+          show: true,
+        },
+        {
+          to: isAuthenticated ? '/dashboard?tab=products' : '/login',
+          label: 'Kelola Komoditas',
+          icon: Sprout,
+          active: isDashboardActive && currentTab === 'products',
+          show: isRoleFarmer,
+        },
+      ].filter((item) => item.show)
 
   const sidebarContent = (
     <div className="fixed inset-0 h-screen h-[100dvh] z-50 lg:hidden flex">

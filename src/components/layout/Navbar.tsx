@@ -102,20 +102,22 @@ export function Navbar(_props?: NavbarProps): React.JSX.Element {
         </form>
 
         <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
-          <Link
-            to="/cart"
-            className={`relative p-2 sm:p-2.5 rounded-lg transition-all cursor-pointer ${
-              location.pathname === '/cart' ? 'bg-emerald-50 text-emerald-700' : 'text-slate-700 hover:text-emerald-700 hover:bg-emerald-50'
-            }`}
-            title="Keranjang Belanja"
-          >
-            <ShoppingCart size={21} />
-            {totalItems > 0 && (
-              <span className="absolute -top-1 -right-1 bg-emerald-600 text-white text-[10px] font-black w-4.5 h-4.5 rounded-full flex items-center justify-center shadow-xs">
-                {totalItems}
-              </span>
-            )}
-          </Link>
+          {user?.role !== 'admin' && (
+            <Link
+              to="/cart"
+              className={`relative p-2 sm:p-2.5 rounded-lg transition-all cursor-pointer ${
+                location.pathname === '/cart' ? 'bg-emerald-50 text-emerald-700' : 'text-slate-700 hover:text-emerald-700 hover:bg-emerald-50'
+              }`}
+              title="Keranjang Belanja"
+            >
+              <ShoppingCart size={21} />
+              {totalItems > 0 && (
+                <span className="absolute -top-1 -right-1 bg-emerald-600 text-white text-[10px] font-black w-4.5 h-4.5 rounded-full flex items-center justify-center shadow-xs">
+                  {totalItems}
+                </span>
+              )}
+            </Link>
+          )}
 
           <button
             type="button"
@@ -128,14 +130,14 @@ export function Navbar(_props?: NavbarProps): React.JSX.Element {
 
           {isAuthenticated && (
             <Link
-              to="/orders"
+              to={user?.role === 'admin' ? '/dashboard?tab=orders' : '/orders'}
               className={`hidden lg:inline-flex items-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-lg transition-all cursor-pointer ${
                 location.pathname === '/orders' ? 'bg-emerald-50 text-emerald-700 font-bold' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
               }`}
-              title="Riwayat Transaksi Pesanan"
+              title={user?.role === 'admin' ? 'Audit Transaksi Pesanan' : 'Riwayat Transaksi Pesanan'}
             >
               <ClipboardList size={18} />
-              <span>Pesanan</span>
+              <span>{user?.role === 'admin' ? 'Audit Pesanan' : 'Pesanan'}</span>
             </Link>
           )}
 
@@ -148,7 +150,7 @@ export function Navbar(_props?: NavbarProps): React.JSX.Element {
                     ? 'bg-emerald-50/90 border-emerald-300 text-emerald-950 shadow-2xs'
                     : 'border-transparent hover:bg-slate-100 hover:border-slate-200 text-slate-700'
                 }`}
-                title="Dashboard Pengguna"
+                title={user.role === 'admin' ? 'Portal Administrator' : 'Dashboard Pengguna'}
               >
                 <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gradient-to-tr from-emerald-600 to-teal-500 text-white flex items-center justify-center font-bold text-xs ring-1 ring-emerald-500/20 shadow-2xs overflow-hidden shrink-0">
                   {user.avatar_url ? (
@@ -157,10 +159,15 @@ export function Navbar(_props?: NavbarProps): React.JSX.Element {
                     <span>{user.name ? user.name.charAt(0).toUpperCase() : 'U'}</span>
                   )}
                 </div>
-                <div className="flex items-center">
-                  <span className="text-xs font-semibold text-slate-800 group-hover:text-emerald-700 transition-colors max-w-[130px] truncate leading-none">
+                <div className="flex items-center gap-1.5">
+                  <span className="text-xs font-semibold text-slate-800 group-hover:text-emerald-700 transition-colors max-w-[110px] truncate leading-none">
                     {user.name}
                   </span>
+                  {user.role === 'admin' && (
+                    <span className="px-1.5 py-0.5 rounded-md bg-purple-100 text-purple-700 text-[10px] font-bold">
+                      Admin
+                    </span>
+                  )}
                 </div>
               </Link>
               <button
