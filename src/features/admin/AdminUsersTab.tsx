@@ -19,11 +19,12 @@ import { AdminUser } from '../../types/admin'
  * @returns Formatted currency string.
  */
 function formatRupiah(amount: number): string {
+  const safeAmount = typeof amount === 'number' && !isNaN(amount) ? amount : 0
   return new Intl.NumberFormat('id-ID', {
     style: 'currency',
     currency: 'IDR',
     maximumFractionDigits: 0,
-  }).format(amount)
+  }).format(safeAmount)
 }
 
 /**
@@ -209,10 +210,10 @@ export function AdminUsersTab(): React.JSX.Element {
                     <td className="py-3.5 px-4">
                       <div className="inline-flex items-center gap-1 font-semibold text-slate-700">
                         <ShoppingBag size={13} className="text-slate-400" />
-                        <span>{u.total_orders}</span>
+                        <span>{u.total_orders ?? u.order_count ?? 0}</span>
                       </div>
                     </td>
-                    <td className="py-3.5 px-4 font-bold text-slate-900">{formatRupiah(u.total_spent)}</td>
+                    <td className="py-3.5 px-4 font-bold text-slate-900">{formatRupiah(u.total_spent ?? u.total_volume ?? 0)}</td>
                   </tr>
                 ))
               ) : (

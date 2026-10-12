@@ -29,7 +29,9 @@ export interface AdminUser {
   avatar_url: string
   created_at: string
   total_orders: number
+  order_count?: number
   total_spent: number
+  total_volume?: number
 }
 
 /**
@@ -42,7 +44,9 @@ export interface AdminWithdrawalItem {
   farmer_email: string
   amount: number
   bank_name: string
+  target_provider?: string
   account_number: string
+  target_account?: string
   account_holder: string
   status: 'PENDING' | 'APPROVED' | 'REJECTED' | 'COMPLETED'
   admin_notes: string

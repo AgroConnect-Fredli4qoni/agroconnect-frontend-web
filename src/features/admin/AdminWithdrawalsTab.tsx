@@ -228,7 +228,7 @@ export function AdminWithdrawalsTab(): React.JSX.Element {
                     <td className="py-3.5 px-4">
                       <div className="flex items-center gap-1.5 font-bold text-slate-800">
                         <Building2 size={13} className="text-emerald-600" />
-                        <span>{w.bank_name} - {w.account_number}</span>
+                        <span>{w.bank_name || w.target_provider || 'Bank'} - {w.account_number || w.target_account}</span>
                       </div>
                       <div className="text-[11px] text-slate-500">a.n. {w.account_holder}</div>
                     </td>
@@ -289,7 +289,7 @@ export function AdminWithdrawalsTab(): React.JSX.Element {
               </div>
               <div className="flex justify-between">
                 <span className="text-slate-500">Tujuan Bank:</span>
-                <span className="font-semibold text-slate-800">{activeItem.bank_name} - {activeItem.account_number}</span>
+                <span className="font-semibold text-slate-800">{activeItem.bank_name || activeItem.target_provider || 'Bank'} - {activeItem.account_number || activeItem.target_account}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-slate-500">Atas Nama:</span>
