@@ -157,12 +157,14 @@ export function AdminHealthTab(): React.JSX.Element {
         })}
       </div>
 
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 text-white shadow-xl space-y-3">
+      <div className="bg-gradient-to-br from-emerald-50/80 via-white to-teal-50/60 border border-emerald-200/80 rounded-2xl p-6 text-slate-800 shadow-xs space-y-3">
         <div className="flex items-center gap-3">
-          <ShieldCheck size={24} className="text-emerald-400 shrink-0" />
-          <h2 className="text-base font-bold text-slate-100">Jaminan Keandalan Arsitektur AgroConnect</h2>
+          <div className="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0 shadow-2xs">
+            <ShieldCheck size={22} />
+          </div>
+          <h2 className="text-base font-bold text-slate-900">Jaminan Keandalan Arsitektur AgroConnect</h2>
         </div>
-        <p className="text-xs text-slate-300 leading-relaxed">
+        <p className="text-xs text-slate-600 leading-relaxed">
           Sistem menerapkan prinsip pemisahan tanggung jawab penuh (*separation of concerns*). Transaksi keuangan diproses secara atomik di engine MySQL dengan isolasi ACID, data spesifikasi produk disimpan dalam MongoDB dengan skema fleksibel, prediksi cuaca dikalkulasi asinkron via Python FastAPI terhubung API BMKG, dan seluruh lalu lintas gerbang diarahkan melalui API Gateway Reverse Proxy Golang.
         </p>
       </div>
