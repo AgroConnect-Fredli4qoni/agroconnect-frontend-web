@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
-import { Mail, Lock, ArrowRight, Eye, EyeOff } from 'lucide-react'
+import { Mail, Lock, ArrowRight, Eye, EyeOff, CheckCircle2 } from 'lucide-react'
 import { useAuth } from './AuthContext'
 
 /**
@@ -13,20 +13,25 @@ export function LoginPage(): React.JSX.Element {
   const location = useLocation()
   const { login } = useAuth()
 
-  const [email, setEmail] = useState('')
+  const navState = location.state as {
+    from?: { pathname: string }
+    registeredSuccess?: string
+    registeredEmail?: string
+  } | null
+
+  const [email, setEmail] = useState(navState?.registeredEmail || '')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [errorMsg, setErrorMsg] = useState('')
-  const [successMsg, setSuccessMsg] = useState('')
+  const [successMsg, setSuccessMsg] = useState(navState?.registeredSuccess || '')
 
-  const from = (location.state as { from?: { pathname: string } })?.from?.pathname || '/'
+  const from = navState?.from?.pathname || '/'
 
   const handleSubmit = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault()
     setIsLoading(true)
     setErrorMsg('')
-    setSuccessMsg('')
 
     try {
       await login({ email, password })
@@ -46,7 +51,17 @@ export function LoginPage(): React.JSX.Element {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center py-12 px-4 bg-slate-50">
+    <div className="min-h-screen flex flex-col items-center justify-center py-12 px-4 bg-slate-50 relative">
+      {successMsg && (
+        <div className="fixed top-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 bg-emerald-700 text-white px-5 py-3.5 rounded-2xl shadow-2xl border border-emerald-500 ring-4 ring-emerald-100 transition-all">
+          <CheckCircle2 size={22} className="shrink-0 text-emerald-200" />
+          <div>
+            <h4 className="text-xs font-black leading-tight">Akun Berhasil Didaftarkan!</h4>
+            <p className="text-[11px] text-emerald-100">{successMsg}</p>
+          </div>
+        </div>
+      )}
+
       <div className="mb-6 text-center">
         <Link to="/" className="inline-flex items-center justify-center gap-2.5 group">
           <img
@@ -72,8 +87,9 @@ export function LoginPage(): React.JSX.Element {
           </div>
         )}
         {successMsg && (
-          <div className="p-3.5 rounded-lg text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200 mb-4">
-            {successMsg}
+          <div className="p-3.5 rounded-xl text-xs font-bold bg-emerald-50 text-emerald-800 border border-emerald-200 mb-4 flex items-center gap-2.5">
+            <CheckCircle2 size={16} className="text-emerald-600 shrink-0" />
+            <span>{successMsg}</span>
           </div>
         )}
 

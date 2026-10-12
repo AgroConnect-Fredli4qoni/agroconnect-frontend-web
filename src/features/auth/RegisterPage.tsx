@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
-import { User, Mail, Lock, ArrowRight, Eye, EyeOff } from 'lucide-react'
+import { User, Mail, Lock, ArrowRight, Eye, EyeOff, CheckCircle2 } from 'lucide-react'
 import { useAuth } from './AuthContext'
 
 /**
@@ -19,10 +19,12 @@ export function RegisterPage(): React.JSX.Element {
 
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [errorMsg, setErrorMsg] = useState<string>('')
+  const [successMsg, setSuccessMsg] = useState<string>('')
 
   const handleSubmit = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault()
     setErrorMsg('')
+    setSuccessMsg('')
     setIsLoading(true)
 
     try {
@@ -32,11 +34,15 @@ export function RegisterPage(): React.JSX.Element {
         password,
         role: 'farmer'
       })
-      navigate('/login', {
-        state: {
-          registeredSuccess: 'Registrasi berhasil! Silakan masuk dengan akun baru Anda.'
-        }
-      })
+      setSuccessMsg('Akun berhasil dibuat! Mengalihkan ke halaman masuk...')
+      setTimeout(() => {
+        navigate('/login', {
+          state: {
+            registeredEmail: email,
+            registeredSuccess: 'Akun Anda berhasil didaftarkan! Silakan masuk dengan kata sandi Anda.'
+          }
+        })
+      }, 1200)
     } catch (err: unknown) {
       if (err instanceof Error) {
         setErrorMsg(err.message)
@@ -49,7 +55,17 @@ export function RegisterPage(): React.JSX.Element {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center py-12 px-4 bg-slate-50">
+    <div className="min-h-screen flex flex-col items-center justify-center py-12 px-4 bg-slate-50 relative">
+      {successMsg && (
+        <div className="fixed top-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 bg-emerald-700 text-white px-5 py-3.5 rounded-2xl shadow-2xl border border-emerald-500 ring-4 ring-emerald-100 transition-all">
+          <CheckCircle2 size={22} className="shrink-0 text-emerald-200" />
+          <div>
+            <h4 className="text-xs font-black leading-tight">Registrasi Berhasil!</h4>
+            <p className="text-[11px] text-emerald-100">{successMsg}</p>
+          </div>
+        </div>
+      )}
+
       <div className="mb-6 text-center">
         <Link to="/" className="inline-flex items-center justify-center gap-2.5 group">
           <img
@@ -72,6 +88,13 @@ export function RegisterPage(): React.JSX.Element {
         {errorMsg && (
           <div className="p-3.5 rounded-lg text-xs font-medium bg-rose-50 text-rose-700 border border-rose-200 mb-4">
             {errorMsg}
+          </div>
+        )}
+
+        {successMsg && (
+          <div className="p-3.5 rounded-xl text-xs font-bold bg-emerald-50 text-emerald-800 border border-emerald-200 mb-4 flex items-center gap-2.5">
+            <CheckCircle2 size={16} className="text-emerald-600 shrink-0" />
+            <span>{successMsg}</span>
           </div>
         )}
 
